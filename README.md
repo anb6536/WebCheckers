@@ -7,7 +7,7 @@ a web micro-framework.
 ## Team
 
 - Aahish Balimane
-- MEMBER2
+- Aaron Peterham
 - MEMBER3
 - MEMBER4
 
