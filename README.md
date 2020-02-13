@@ -8,7 +8,7 @@ a web micro-framework.
 
 - Aahish Balimane
 - Aaron Peterham
-- MEMBER3
+- Hugh Gallo
 - MEMBER4
 
 
