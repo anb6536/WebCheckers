@@ -2,18 +2,23 @@ package com.webcheckers.api;
 
 import java.util.logging.Logger;
 
+import com.webcheckers.appl.PlayerLobby;
+
 import spark.Request;
 import spark.Response;
 
 public class SignOutRoute implements spark.Route {
     private static final Logger LOG = Logger.getLogger(SignOutRoute.class.getName());
+    private PlayerLobby lobby;
 
-    public SignOutRoute() {
+    public SignOutRoute(PlayerLobby lobby) {
+        this.lobby = lobby;
         LOG.config("SignOutRoute is initialized.");
     }
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
+        lobby.removePlayer(request.session().attribute("UserAttrib"));
         request.session().removeAttribute("UserAttrib");
         response.redirect("/");
         return null;

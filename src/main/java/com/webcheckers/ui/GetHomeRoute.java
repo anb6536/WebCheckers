@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 
-import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
 
 import spark.ModelAndView;
@@ -57,7 +56,7 @@ public class GetHomeRoute implements Route {
     vm.put("message", WELCOME_MSG);
     // currentUser shenanigans for logins
     if (request.session().attribute("UserAttrib") != null) {
-      vm.put("currentUser", new Player(request.session().attribute("UserAttrib")));
+      vm.put("currentUser", request.session().attribute("UserAttrib"));
     }
     // render the View
     return templateEngine.render(new ModelAndView(vm, "home.ftl"));
