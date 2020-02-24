@@ -1,42 +1,46 @@
 package com.webcheckers.ui;
 
-import static spark.Spark.*;
+import static spark.Spark.get;
+import static spark.Spark.post;
+import static spark.Spark.staticFileLocation;
 
 import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.google.gson.Gson;
+import com.webcheckers.api.SignInApiRoute;
+import com.webcheckers.api.SignOutRoute;
 
 import spark.TemplateEngine;
 
-
 /**
- * The server that initializes the set of HTTP request handlers.
- * This defines the <em>web application interface</em> for this
- * WebCheckers application.
+ * The server that initializes the set of HTTP request handlers. This defines
+ * the <em>web application interface</em> for this WebCheckers application.
  *
  * <p>
- * There are multiple ways in which you can have the client issue a
- * request and the application generate responses to requests. If your team is
- * not careful when designing your approach, you can quickly create a mess
- * where no one can remember how a particular request is issued or the response
- * gets generated. Aim for consistency in your approach for similar
- * activities or requests.
+ * There are multiple ways in which you can have the client issue a request and
+ * the application generate responses to requests. If your team is not careful
+ * when designing your approach, you can quickly create a mess where no one can
+ * remember how a particular request is issued or the response gets generated.
+ * Aim for consistency in your approach for similar activities or requests.
  * </p>
  *
- * <p>Design choices for how the client makes a request include:
+ * <p>
+ * Design choices for how the client makes a request include:
  * <ul>
- *     <li>Request URL</li>
- *     <li>HTTP verb for request (GET, POST, PUT, DELETE and so on)</li>
- *     <li><em>Optional:</em> Inclusion of request parameters</li>
+ * <li>Request URL</li>
+ * <li>HTTP verb for request (GET, POST, PUT, DELETE and so on)</li>
+ * <li><em>Optional:</em> Inclusion of request parameters</li>
  * </ul>
  * </p>
  *
- * <p>Design choices for generating a response to a request include:
+ * <p>
+ * Design choices for generating a response to a request include:
  * <ul>
- *     <li>View templates with conditional elements</li>
- *     <li>Use different view templates based on results of executing the client request</li>
- *     <li>Redirecting to a different application URL</li>
+ * <li>View templates with conditional elements</li>
+ * <li>Use different view templates based on results of executing the client
+ * request</li>
+ * <li>Redirecting to a different application URL</li>
  * </ul>
  * </p>
  *
@@ -53,7 +57,8 @@ public class WebServer {
    * The URL pattern to request the Home page.
    */
   public static final String HOME_URL = "/";
-
+  public static final String SIGNOUT_URL = "/signout";
+  public static final String SIGNIN_URL = "/signin";
   //
   // Attributes
   //
@@ -68,13 +73,12 @@ public class WebServer {
   /**
    * The constructor for the Web Server.
    *
-   * @param templateEngine
-   *    The default {@link TemplateEngine} to render page-level HTML views.
-   * @param gson
-   *    The Google JSON parser object used to render Ajax responses.
+   * @param templateEngine The default {@link TemplateEngine} to render page-level
+   *                       HTML views.
+   * @param gson           The Google JSON parser object used to render Ajax
+   *                       responses.
    *
-   * @throws NullPointerException
-   *    If any of the parameters are {@code null}.
+   * @throws NullPointerException If any of the parameters are {@code null}.
    */
   public WebServer(final TemplateEngine templateEngine, final Gson gson) {
     // validation
@@ -138,7 +142,9 @@ public class WebServer {
 
     // Shows the Checkers game Home page.
     get(HOME_URL, new GetHomeRoute(templateEngine));
-
+    post(SIGNOUT_URL, new SignOutRoute());
+    get(SIGNIN_URL, new SignInRoute(templateEngine));
+    post(SIGNIN_URL, new SignInApiRoute());
     //
     LOG.config("WebServer is initialized.");
   }

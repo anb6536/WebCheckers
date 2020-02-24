@@ -5,13 +5,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+import com.webcheckers.model.Player;
+import com.webcheckers.util.Message;
+
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 import spark.TemplateEngine;
-
-import com.webcheckers.util.Message;
 
 /**
  * The UI Controller to GET the Home page.
@@ -26,10 +27,10 @@ public class GetHomeRoute implements Route {
   private final TemplateEngine templateEngine;
 
   /**
-   * Create the Spark Route (UI controller) to handle all {@code GET /} HTTP requests.
+   * Create the Spark Route (UI controller) to handle all {@code GET /} HTTP
+   * requests.
    *
-   * @param templateEngine
-   *   the HTML template rendering engine
+   * @param templateEngine the HTML template rendering engine
    */
   public GetHomeRoute(final TemplateEngine templateEngine) {
     this.templateEngine = Objects.requireNonNull(templateEngine, "templateEngine is required");
@@ -40,13 +41,10 @@ public class GetHomeRoute implements Route {
   /**
    * Render the WebCheckers Home page.
    *
-   * @param request
-   *   the HTTP request
-   * @param response
-   *   the HTTP response
+   * @param request  the HTTP request
+   * @param response the HTTP response
    *
-   * @return
-   *   the rendered HTML for the Home page
+   * @return the rendered HTML for the Home page
    */
   @Override
   public Object handle(Request request, Response response) {
@@ -57,8 +55,11 @@ public class GetHomeRoute implements Route {
 
     // display a user message in the Home page
     vm.put("message", WELCOME_MSG);
-
+    // currentUser shenanigans for logins
+    if (request.session().attribute("UserAttrib") != null) {
+      vm.put("currentUser", new Player(request.session().attribute("UserAttrib")));
+    }
     // render the View
-    return templateEngine.render(new ModelAndView(vm , "home.ftl"));
+    return templateEngine.render(new ModelAndView(vm, "home.ftl"));
   }
 }
