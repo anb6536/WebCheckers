@@ -148,7 +148,7 @@ public class WebServer {
     get(HOME_URL, new GetHomeRoute(templateEngine));
     post(SIGNOUT_URL, new SignOutRoute(lobby));
     get(SIGNIN_URL, new SignInRoute(templateEngine));
-    post(SIGNIN_URL, new SignInApiRoute(lobby));
+    post(SIGNIN_URL, new SignInApiRoute(lobby, templateEngine));
     //
     LOG.config("WebServer is initialized.");
   }

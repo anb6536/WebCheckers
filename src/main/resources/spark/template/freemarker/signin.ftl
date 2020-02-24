@@ -1,4 +1,14 @@
 <!DOCTYPE html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+  <meta http-equiv="refresh" content="10">
+  <title>Web Checkers | Sign in</title>
+  <link rel="stylesheet" type="text/css" href="/css/style.css">
+</head>
+<div class="page">
+<h1> Web Checkers | Sign In </h1>
+<div class="body">
+<#include "message.ftl"/>
 <form id="signin" method="post" action="/signin">
     <div>
         <label for="username"> Enter your username: </label>
@@ -13,3 +23,5 @@
 </div>
 -->
 </form>
+</div>
+</div>

@@ -18,6 +18,7 @@ public class PlayerLobby {
             if (playersLoggedIn.contains(name)) {
                 return null;
             } else {
+                playersLoggedIn.add(name);
                 return new Player(name);
             }
         }
