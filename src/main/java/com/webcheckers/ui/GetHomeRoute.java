@@ -1,11 +1,11 @@
 package com.webcheckers.ui;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.LongBinaryOperator;
 import java.util.logging.Logger;
 
 import com.webcheckers.appl.PlayerLobby;
+import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
 
 import spark.ModelAndView;
@@ -63,11 +63,32 @@ public class GetHomeRoute implements Route {
     // Getting and displaying number of logged in users
     int numLoggedIn = playerLobby.getNumLoggedInPlayers();
     vm.put("numLoggedIn", numLoggedIn);
+    // Have a default signedIn value has false
+    vm.put("signedIn", false);
 
+    // Declare list of potential players
+    List<String> playerList = null;
     // currentUser shenanigans for logins
     if (request.session().attribute("UserAttrib") != null) {
       vm.put("currentUser", request.session().attribute("UserAttrib"));
+      // Assign signedIn value to be true once player gets a UserAttrib
+      vm.put("signedIn", true);
+      playerList = new ArrayList<String>(playerLobby.getLoggedInPlayers());
+      // The player representing the current user
+      Player currentPlayer =  request.session().attribute("UserAttrib");
+      // Remove the current player from the list of players they could play against
+      if (playerList != null && currentPlayer != null) {
+        playerList.remove(currentPlayer.name);
+      }
+      vm.put("readyPlayers", playerList);
+    } else {
+      // Boolean value if the player has signed in or not
+      vm.put("signedIn", true);// Get the list of players to render
+
     }
+
+
+
     // render the View
     return templateEngine.render(new ModelAndView(vm, "home.ftl"));
   }

@@ -30,6 +30,16 @@
         </p>
 
     </div>
+
+
+    <#if currentUser??>
+            <ol>
+                <#list readyPlayers as readyPlayer>
+                    <li> ${readyPlayer} </li>
+                </#list>
+            </ol>
+    </#if>
+
     <!-- TODO: future content on the Home:
             to start games,
             spectating active games,
