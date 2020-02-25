@@ -19,7 +19,17 @@
 
     <!-- Provide a message to the user, if supplied. -->
     <#include "message.ftl" />
+    <div>
 
+        <p>
+        There are <#if numLoggedIn gt 0 >
+            ${numLoggedIn}
+        <#else> no
+        </#if>
+        players logged in
+        </p>
+
+    </div>
     <!-- TODO: future content on the Home:
             to start games,
             spectating active games,

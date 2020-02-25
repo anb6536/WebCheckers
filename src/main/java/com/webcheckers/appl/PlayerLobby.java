@@ -31,4 +31,14 @@ public class PlayerLobby {
             }
         }
     }
+
+    // Gets the players logged in
+    public List<String> getLoggedInPlayers() {
+       return this.playersLoggedIn;
+    }
+
+    public int getNumLoggedInPlayers() {
+        return this.playersLoggedIn.size();
+    }
+
 }

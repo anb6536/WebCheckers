@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+import com.webcheckers.appl.PlayerLobby;
 import com.webcheckers.util.Message;
 
 import spark.ModelAndView;
@@ -22,8 +23,8 @@ public class GetHomeRoute implements Route {
   private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
 
   private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
-
   private final TemplateEngine templateEngine;
+  private PlayerLobby playerLobby;
 
   /**
    * Create the Spark Route (UI controller) to handle all {@code GET /} HTTP
@@ -31,11 +32,15 @@ public class GetHomeRoute implements Route {
    *
    * @param templateEngine the HTML template rendering engine
    */
-  public GetHomeRoute(final TemplateEngine templateEngine) {
+  public GetHomeRoute(final TemplateEngine templateEngine, PlayerLobby playerLobby) {
     this.templateEngine = Objects.requireNonNull(templateEngine, "templateEngine is required");
     //
+
+    // Getting access to the application's player lobby
+    this.playerLobby = playerLobby;
     LOG.config("GetHomeRoute is initialized.");
   }
+
 
   /**
    * Render the WebCheckers Home page.
@@ -54,6 +59,11 @@ public class GetHomeRoute implements Route {
 
     // display a user message in the Home page
     vm.put("message", WELCOME_MSG);
+
+    // Getting and displaying number of logged in users
+    int numLoggedIn = playerLobby.getNumLoggedInPlayers();
+    vm.put("numLoggedIn", numLoggedIn);
+
     // currentUser shenanigans for logins
     if (request.session().attribute("UserAttrib") != null) {
       vm.put("currentUser", request.session().attribute("UserAttrib"));
