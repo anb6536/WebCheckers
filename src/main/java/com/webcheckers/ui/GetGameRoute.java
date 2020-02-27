@@ -1,6 +1,7 @@
 package com.webcheckers.ui;
 
 import com.google.gson.Gson;
+import com.webcheckers.appl.PlayerLobby;
 import com.webcheckers.model.Player;
 import spark.*;
 
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
+
 import static com.webcheckers.model.Game.Mode.PLAY;
 
 public class GetGameRoute implements Route {
@@ -23,9 +25,13 @@ public class GetGameRoute implements Route {
     private static final String RED_PLAYER = "redPlayer";
     private static final String WHITE_PLAYER = "whitePlayer";
     private static final String ACTIVE_COLOR = "activeColor";
+    private static final String TITLE = "title";
+    private static final String USERATTRIB = "UserAttrib";
+    private PlayerLobby playerLobby;
 
-    public GetGameRoute(TemplateEngine templateEngine) {
+    public GetGameRoute(TemplateEngine templateEngine, PlayerLobby lobby) {
         this.templateEngine = templateEngine;
+        this.playerLobby = lobby;
         this.gson = new Gson();
         LOG.config("GetGameRoute is Initialized");
     }
@@ -36,14 +42,19 @@ public class GetGameRoute implements Route {
         Map<String, Object> vm = new HashMap<>();
         Session session = request.session();
 
-        Player player = session.attribute(CURRENT_USER);
+        Player player = session.attribute(USERATTRIB);
         vm.put(CURRENT_USER, player);
         String gameId = session.attribute(GAME_ID);
+
         vm.put(GAME_ID, gameId);
         vm.put(VIEW_MODE, PLAY);
-        vm.put(RED_PLAYER, session.attribute(WHITE_PLAYER));
-        vm.put(WHITE_PLAYER, session.attribute(RED_PLAYER));
-        vm.put(MODE_OPTIONS, this.gson.);
+        vm.put(RED_PLAYER, player); // TODO figure out who is white player
+        Map<String, Player> playerObjects = playerLobby.getPlayerObjects();
+        String opponentName = request.queryParamsValues("opponent")[0];
+        vm.put(WHITE_PLAYER, playerObjects.get(opponentName)); // TODO figure out who is red player
+        vm.put(MODE_OPTIONS, this.gson);
+        vm.put(ACTIVE_COLOR, "Blue"); // TODO figure out what active color is
+        vm.put(TITLE, "descriptvie title");
 
 
         return templateEngine.render(new ModelAndView(vm, "game.ftl"));

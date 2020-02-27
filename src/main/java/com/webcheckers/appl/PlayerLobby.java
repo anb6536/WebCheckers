@@ -1,16 +1,20 @@
 package com.webcheckers.appl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.webcheckers.model.Player;
 
 public class PlayerLobby {
     private List<String> playersLoggedIn;
+    private Map<String, Player> playerMap;
     private Object syncObject = new Object();
 
     public PlayerLobby() {
         playersLoggedIn = new ArrayList<String>();
+        playerMap = new HashMap<String, Player>();
     }
 
     public Player addPlayer(String name) {
@@ -19,7 +23,9 @@ public class PlayerLobby {
                 return null;
             } else {
                 playersLoggedIn.add(name);
-                return new Player(name);
+                Player player = new Player(name);
+                playerMap.put(name, player);
+                return player;
             }
         }
     }
@@ -28,17 +34,22 @@ public class PlayerLobby {
         synchronized (syncObject) {
             if (playersLoggedIn.contains(player.getname())) {
                 playersLoggedIn.remove(player.getname());
+                playerMap.remove(player.getname());
             }
         }
     }
 
     // Gets the players logged in
     public List<String> getLoggedInPlayers() {
-       return this.playersLoggedIn;
+        return this.playersLoggedIn;
     }
 
     public int getNumLoggedInPlayers() {
         return this.playersLoggedIn.size();
+    }
+
+    public Map<String, Player> getPlayerObjects() {
+        return playerMap;
     }
 
 

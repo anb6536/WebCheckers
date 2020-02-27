@@ -81,7 +81,7 @@ public class WebServer {
    *                       responses.
    *
    * @param lobby          The playerLobby for everything
-   * 
+   *
    * @throws NullPointerException If any of the parameters are {@code null}.
    */
   public WebServer(final TemplateEngine templateEngine, final Gson gson, final PlayerLobby lobby) {
@@ -150,7 +150,7 @@ public class WebServer {
     post(SIGNOUT_URL, new SignOutRoute(lobby));
     get(SIGNIN_URL, new SignInRoute(templateEngine));
     post(SIGNIN_URL, new SignInApiRoute(lobby, templateEngine));
-    get(GAME_URL, new GetGameRoute(templateEngine));
+    get(GAME_URL, new GetGameRoute(templateEngine,lobby));
     //
     LOG.config("WebServer is initialized.");
   }
