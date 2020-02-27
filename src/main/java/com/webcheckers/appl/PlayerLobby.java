@@ -6,8 +6,8 @@ import java.util.List;
 import com.webcheckers.model.Player;
 
 public class PlayerLobby {
-    List<String> playersLoggedIn;
-    Object syncObject = new Object();
+    private List<String> playersLoggedIn;
+    private Object syncObject = new Object();
 
     public PlayerLobby() {
         playersLoggedIn = new ArrayList<String>();
@@ -26,8 +26,8 @@ public class PlayerLobby {
 
     public void removePlayer(Player player) {
         synchronized (syncObject) {
-            if (playersLoggedIn.contains(player.name)) {
-                playersLoggedIn.remove(player.name);
+            if (playersLoggedIn.contains(player.getname())) {
+                playersLoggedIn.remove(player.getname());
             }
         }
     }

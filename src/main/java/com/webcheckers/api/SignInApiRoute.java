@@ -14,8 +14,8 @@ import spark.Route;
 import spark.TemplateEngine;
 
 public class SignInApiRoute implements Route {
-    PlayerLobby lobby;
-    TemplateEngine engine;
+    private PlayerLobby lobby;
+    private TemplateEngine engine;
 
     public SignInApiRoute(PlayerLobby lobby, TemplateEngine engine) {
         this.lobby = lobby;

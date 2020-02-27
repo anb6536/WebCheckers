@@ -1,17 +1,24 @@
 package com.webcheckers.model;
 
 public class Player {
-    public String name;
+    private String name;
+
+    public Player(String name) {
+        this.name = name;
+    }
 
     public String getname() {
         return name;
     }
 
-    public void setname(String name) {
-        this.name = name;
-    }
-
-    public Player(String name) {
-        this.name = name;
+    @Override
+    public boolean equals( Object player ){
+        if ( player instanceof Player ){
+            Player nPlayer = (Player) player;
+            return this.getname().equals(nPlayer.getname());
+        }
+        else{
+            return false;
+        }
     }
 }

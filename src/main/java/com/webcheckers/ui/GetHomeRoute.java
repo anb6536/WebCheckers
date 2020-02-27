@@ -78,7 +78,7 @@ public class GetHomeRoute implements Route {
       Player currentPlayer =  request.session().attribute("UserAttrib");
       // Remove the current player from the list of players they could play against
       if (playerList != null && currentPlayer != null) {
-        playerList.remove(currentPlayer.name);
+        playerList.remove(currentPlayer.getname());
       }
       vm.put("readyPlayers", playerList);
     } else {
