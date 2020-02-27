@@ -35,13 +35,11 @@
     <#if currentUser??>
             <ol>
                 <#list readyPlayers as readyPlayer>
-                    <#if (readyPlayer.equals() == false)>
-                        <li>
-                            <form action="/game" method="GET">
-                                <input type="submit" name="opponent" value="${readyPlayer}">
-                            </form>
-                        </li>
-                    </#if>
+                    <li>
+                        <form action="/game" method="GET">
+                            <input type="submit" name="opponent" value="${readyPlayer}">
+                        </form>
+                    </li>
                 </#list>
             </ol>
     </#if>
