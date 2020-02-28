@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 public class UserModel {
     private static final Logger LOG = Logger.getLogger(UserModel.class.getName());
 
-    public static Map<String, PlayerTypes.types> playersWithTypes = new HashMap<String, PlayerTypes.types>();
+    public static Map<String, Piece.Color> playersWithTypes = new HashMap<String, Piece.Color>();
     List<Player> loggedInPlayers;
 
     public UserModel() {

@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import com.webcheckers.appl.PlayerLobby;
 import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
+import static com.webcheckers.ui.GetGameRoute.*;
 
 import com.webcheckers.util.OneToOneMap;
 import spark.ModelAndView;
@@ -54,7 +55,7 @@ public class GetHomeRoute implements Route {
    */
   @Override
   public Object handle(Request request, Response response) {
-    Player player = request.session().attribute(GetGameRoute.USERATTRIB);
+    Player player = request.session().attribute("UserAttrib");
     if(player!=null && playersInGame.containsVal(player.getname())){
       response.redirect(WebServer.GAME_URL+"?opponent=" + playersInGame.getFromVal(player.getname()));
     }
@@ -82,6 +83,10 @@ public class GetHomeRoute implements Route {
       playerList = new ArrayList<String>(playerLobby.getLoggedInPlayers());
       // The player representing the current user
       Player currentPlayer =  request.session().attribute("UserAttrib");
+      String opponentName = request.queryParams("opponent");
+      Player opponent = playerLobby.getPlayer(opponentName);
+      vm.put("opponent", opponent);
+      request.session().attribute("opponent", opponent);
       // Remove the current player from the list of players they could play against
       // TODO this may have meant to be playerList.isEmpty() or something else
       if (playerList != null && currentPlayer != null) {

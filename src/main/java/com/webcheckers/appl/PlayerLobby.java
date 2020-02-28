@@ -17,6 +17,14 @@ public class PlayerLobby {
         playerMap = new HashMap<String, Player>();
     }
 
+    public Player getPlayer ( String Username ){
+        if ( playersLoggedIn.contains(Username) ){
+            return playerMap.get(Username);
+        }
+        else {
+            return null;
+        }
+    }
     public Player addPlayer(String name) {
         synchronized (syncObject) {
             if (playersLoggedIn.contains(name)) {
