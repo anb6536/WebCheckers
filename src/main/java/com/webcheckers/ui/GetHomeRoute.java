@@ -8,6 +8,7 @@ import com.webcheckers.appl.PlayerLobby;
 import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
 
+import com.webcheckers.util.OneToOneMap;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -25,7 +26,7 @@ public class GetHomeRoute implements Route {
   private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
   private final TemplateEngine templateEngine;
   private PlayerLobby playerLobby;
-
+  protected static OneToOneMap<String,String> playersInGame = new OneToOneMap<String,String>();
   /**
    * Create the Spark Route (UI controller) to handle all {@code GET /} HTTP
    * requests.
@@ -52,6 +53,10 @@ public class GetHomeRoute implements Route {
    */
   @Override
   public Object handle(Request request, Response response) {
+    Player player = request.session().attribute(GetGameRoute.USERATTRIB);
+    if(player!=null && playersInGame.containsVal(player.getname())){
+      response.redirect(WebServer.GAME_URL+"?opponent=" + playersInGame.getFromVal(player.getname()));
+    }
     LOG.finer("GetHomeRoute is invoked.");
     //
     Map<String, Object> vm = new HashMap<>();
@@ -77,6 +82,7 @@ public class GetHomeRoute implements Route {
       // The player representing the current user
       Player currentPlayer =  request.session().attribute("UserAttrib");
       // Remove the current player from the list of players they could play against
+      // TODO this may have meant to be playerList.isEmpty() or something else
       if (playerList != null && currentPlayer != null) {
         playerList.remove(currentPlayer.getname());
       }

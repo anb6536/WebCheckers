@@ -6,6 +6,7 @@ import com.webcheckers.model.Player;
 import spark.*;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -26,7 +27,7 @@ public class GetGameRoute implements Route {
     private static final String WHITE_PLAYER = "whitePlayer";
     private static final String ACTIVE_COLOR = "activeColor";
     private static final String TITLE = "title";
-    private static final String USERATTRIB = "UserAttrib";
+    public static final String USERATTRIB = "UserAttrib";
     private PlayerLobby playerLobby;
 
     public GetGameRoute(TemplateEngine templateEngine, PlayerLobby lobby) {
@@ -37,21 +38,36 @@ public class GetGameRoute implements Route {
     }
 
 
+    /**
+     * handle all requests where we are in the game
+     * @param request idek TODO
+     * @param response idek TODO
+     * @return the templateEngine? TODO
+     * @throws Exception TODO why?
+     */
     @Override
     public Object handle(Request request, Response response) throws Exception {
-        Map<String, Object> vm = new HashMap<>();
+        // get the current session
         Session session = request.session();
 
+        // get the current player object and opponent name
         Player player = session.attribute(USERATTRIB);
+        String opponentName = request.queryParamsValues("opponent")[0];
+
+        // make sure this opponent playerName pair are registered
+        if(!GetHomeRoute.playersInGame.containsKey(player.getname())){
+            GetHomeRoute.playersInGame.put(player.getname(),opponentName);
+        }
+
+        // make a new vm to put values in and populate the values
+        Map<String, Object> vm = new HashMap<>();
         vm.put(CURRENT_USER, player);
         String gameId = session.attribute(GAME_ID);
-
         vm.put(GAME_ID, gameId);
         vm.put(VIEW_MODE, PLAY);
-        vm.put(RED_PLAYER, player); // TODO figure out who is white player
+        vm.put(RED_PLAYER, player); // TODO figure out who should be white and red
         Map<String, Player> playerObjects = playerLobby.getPlayerObjects();
-        String opponentName = request.queryParamsValues("opponent")[0];
-        vm.put(WHITE_PLAYER, playerObjects.get(opponentName)); // TODO figure out who is red player
+        vm.put(WHITE_PLAYER, playerObjects.get(opponentName)); // TODO figure out who should be white and red
         vm.put(MODE_OPTIONS, this.gson);
         vm.put(ACTIVE_COLOR, "Blue"); // TODO figure out what active color is
         vm.put(TITLE, "descriptvie title");
