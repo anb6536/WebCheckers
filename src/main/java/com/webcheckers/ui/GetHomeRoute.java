@@ -26,6 +26,7 @@ public class GetHomeRoute implements Route {
   private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
   private final TemplateEngine templateEngine;
   private PlayerLobby playerLobby;
+  // TODO move this to UserModel in model
   protected static OneToOneMap<String,String> playersInGame = new OneToOneMap<String,String>();
   /**
    * Create the Spark Route (UI controller) to handle all {@code GET /} HTTP
