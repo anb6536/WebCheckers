@@ -42,7 +42,6 @@ public class GetGameRoute implements Route {
         Map<String, Object> vm = new HashMap<>();
         Session session = request.session();
         vm.put(TITLE, "Welcome to the Game of WEBCHECKERS");
-        System.out.println(session.attributes());
         Player player = session.attribute("UserAttrib");
         String opponentName = request.queryParams("opponent");
         Player opponent = lobby.getPlayer(opponentName);
