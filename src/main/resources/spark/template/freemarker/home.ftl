@@ -37,7 +37,7 @@
             <#list readyPlayers as readyPlayer>
                 <li>
                     <form action = "/game" method="GET">
-                        <input type="submit" name=opponent value="${readyPlayer.getname()}">
+                        <input type="submit" name="opponent" value="${readyPlayer.getname()}">
                     </form>
                 </li>
             </#list>

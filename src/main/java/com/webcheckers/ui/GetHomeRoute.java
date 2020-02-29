@@ -60,9 +60,10 @@ public class GetHomeRoute implements Route {
   @Override
   public Object handle(Request request, Response response) {
     Player player = request.session().attribute("UserAttrib");
-    if(player!=null && playersInGame.containsVal(player.getname())){
-      response.redirect(WebServer.GAME_URL+"?opponent=" + playersInGame.getFromVal(player.getname()));
-    }
+//    if(player!=null && playersInGame.containsVal(player.getname())){
+//      response.redirect(WebServer.HOME_URL);
+//      response.redirect(WebServer.GAME_URL+"?opponent=" + playersInGame.getFromVal(player.getname()));
+//    }
     LOG.finer("GetHomeRoute is invoked.");
     //
     Map<String, Object> vm = new HashMap<>();
@@ -89,10 +90,10 @@ public class GetHomeRoute implements Route {
       Player currentPlayer =  request.session().attribute("UserAttrib");
       String opponentName = request.queryParams("opponent");
       Player opponent = playerLobby.getPlayer(opponentName);
-      if ( opponentName!=null && opponent.isInGame() ){
-        vm.put("message", Message.error("This player is already in a Game"));
-        return templateEngine.render(new ModelAndView(vm, "home.ftl"));
-      }
+//      if ( opponentName!=null && opponent.isInGame() ){
+//        vm.put("message", Message.error("This player is already in a Game"));
+//        return templateEngine.render(new ModelAndView(vm, "home.ftl"));
+//      }
       vm.put("opponent", opponent);
       request.session().attribute("opponent", opponent);
       // Remove the current player from the list of players they could play against
@@ -105,6 +106,11 @@ public class GetHomeRoute implements Route {
       if ( currentPlayer.isInGame() && opponentName==null){
         response.redirect(WebServer.GAME_URL);
         halt();
+      }
+
+      else if (request.queryParams("error")!=null) {
+        vm.put("message", Message.error("This player is already in the game"));
+        return templateEngine.render(new ModelAndView(vm, "home.ftl"));
       }
 
     } else {

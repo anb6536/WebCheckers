@@ -49,16 +49,23 @@ public class GetGameRoute implements Route {
         String opponentName = request.queryParams("opponent");
         Player opponent = lobby.getPlayer(opponentName);
         if ( opponentName!=null && opponent.isInGame() ){
+            player.leftGame();
             vm.put("message", Message.error("This player is already in a Game"));
             vm.put(TITLE, "Welcome!");
             List<Player> newPlayerList = lobby.getLoggedInPlayers();
-            newPlayerList.remove(player);
-            vm.put("readyPlayers", newPlayerList);
+            List<Player> deepCopy = new ArrayList<>();
+            for ( Player player1 : newPlayerList ){
+                if ( !player1.equals(player) ){
+                    deepCopy.add(player1);
+                }
+            }
+            vm.put("readyPlayers", deepCopy);
             vm.put("currentUser", player);
             vm.put("numLoggedIn", lobby.getNumLoggedInPlayers());
-            return templateEngine.render(new ModelAndView(vm, "home.ftl"));
-//            response.redirect(WebServer.HOME_URL);
-//            halt();
+            vm.put("isReturned", true);
+            response.redirect("?error=true");
+//            return templateEngine.render(new ModelAndView(vm, "home.ftl"));
+            halt();
         }
         vm.put(VIEW_MODE, PLAY);
         vm.put(ACTIVE_COLOR, RED);
