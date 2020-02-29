@@ -60,10 +60,9 @@ public class GetHomeRoute implements Route {
   @Override
   public Object handle(Request request, Response response) {
     Player player = request.session().attribute("UserAttrib");
-//    if(player!=null && playersInGame.containsVal(player.getname())){
-//      response.redirect(WebServer.HOME_URL);
-//      response.redirect(WebServer.GAME_URL+"?opponent=" + playersInGame.getFromVal(player.getname()));
-//    }
+    if(player!=null && playersInGame.containsVal(player.getname())){
+      response.redirect(WebServer.GAME_URL+"?opponent=" + playersInGame.getFromVal(player.getname()));
+    }
     LOG.finer("GetHomeRoute is invoked.");
     //
     Map<String, Object> vm = new HashMap<>();
