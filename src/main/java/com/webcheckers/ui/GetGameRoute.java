@@ -2,6 +2,7 @@ package com.webcheckers.ui;
 
 import com.google.gson.Gson;
 import com.webcheckers.appl.PlayerLobby;
+import com.webcheckers.model.Piece;
 import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
 import spark.*;
@@ -9,7 +10,7 @@ import spark.*;
 import java.util.*;
 import java.util.logging.Logger;
 import static com.webcheckers.model.Game.Mode.PLAY;
-import static com.webcheckers.model.Piece.Color.*;
+import static com.webcheckers.model.Piece.color.RED;
 import static spark.Spark.halt;
 
 public class GetGameRoute implements Route {
