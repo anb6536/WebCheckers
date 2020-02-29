@@ -1,17 +1,13 @@
 package com.webcheckers.ui;
 
 import java.util.*;
-import java.util.function.LongBinaryOperator;
 import java.util.logging.Logger;
 
 import com.webcheckers.appl.PlayerLobby;
 import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
 
-import static com.webcheckers.model.Game.Mode.PLAY;
-import static com.webcheckers.ui.GetGameRoute.*;
 import static spark.Spark.halt;
-import static spark.route.HttpMethod.get;
 
 import com.webcheckers.util.OneToOneMap;
 import spark.ModelAndView;
@@ -89,10 +85,6 @@ public class GetHomeRoute implements Route {
       Player currentPlayer =  request.session().attribute("UserAttrib");
       String opponentName = request.queryParams("opponent");
       Player opponent = playerLobby.getPlayer(opponentName);
-//      if ( opponentName!=null && opponent.isInGame() ){
-//        vm.put("message", Message.error("This player is already in a Game"));
-//        return templateEngine.render(new ModelAndView(vm, "home.ftl"));
-//      }
       vm.put("opponent", opponent);
       request.session().attribute("opponent", opponent);
       // Remove the current player from the list of players they could play against

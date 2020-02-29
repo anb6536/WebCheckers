@@ -2,7 +2,6 @@ package com.webcheckers.ui;
 
 import com.google.gson.Gson;
 import com.webcheckers.appl.PlayerLobby;
-import com.webcheckers.model.Game;
 import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
 import spark.*;
@@ -11,7 +10,6 @@ import java.util.*;
 import java.util.logging.Logger;
 import static com.webcheckers.model.Game.Mode.PLAY;
 import static com.webcheckers.model.Piece.Color.*;
-import static com.webcheckers.appl.PlayerLobby.*;
 import static spark.Spark.halt;
 
 public class GetGameRoute implements Route {
@@ -64,7 +62,6 @@ public class GetGameRoute implements Route {
             vm.put("numLoggedIn", lobby.getNumLoggedInPlayers());
             vm.put("isReturned", true);
             response.redirect("?error=true");
-//            return templateEngine.render(new ModelAndView(vm, "home.ftl"));
             halt();
         }
         vm.put(VIEW_MODE, PLAY);
@@ -76,15 +73,12 @@ public class GetGameRoute implements Route {
             lobby.addMatch(player, opponent);
             player.joinedGame();
             opponent.joinedGame();
-//            lobby.removePlayer(player);
-//            lobby.removePlayer(opponent);
             vm.put(RED_PLAYER, player);
             vm.put(WHITE_PLAYER, opponent);
         }
         else{
             vm.put(RED_PLAYER, lobby.getOpponent(player));
             vm.put(WHITE_PLAYER, player);
-            //return templateEngine.render(new ModelAndView(vm, "game.ftl"));
         }
         session.attribute(CURRENT_USER, vm.get(CURRENT_USER));
         session.attribute(RED_PLAYER, vm.get(RED_PLAYER));
@@ -92,9 +86,6 @@ public class GetGameRoute implements Route {
         session.attribute(ACTIVE_COLOR, vm.get(ACTIVE_COLOR));
         session.attribute(GAME_ID, gameId);
 
-//        if ( request.requestMethod().equals("GET")){
-//
-//        }
         return templateEngine.render(new ModelAndView(vm, "game.ftl"));
     }
 }
