@@ -7,9 +7,7 @@ import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
 import spark.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Logger;
 import static com.webcheckers.model.Game.Mode.PLAY;
 import static com.webcheckers.model.Piece.Color.*;
@@ -53,7 +51,9 @@ public class GetGameRoute implements Route {
         if ( opponentName!=null && opponent.isInGame() ){
             vm.put("message", Message.error("This player is already in a Game"));
             vm.put(TITLE, "Welcome!");
-            vm.put("readyPlayers", lobby.getLoggedInPlayers());
+            List<Player> newPlayerList = lobby.getLoggedInPlayers();
+            newPlayerList.remove(player);
+            vm.put("readyPlayers", newPlayerList);
             vm.put("currentUser", player);
             vm.put("numLoggedIn", lobby.getNumLoggedInPlayers());
             return templateEngine.render(new ModelAndView(vm, "home.ftl"));
