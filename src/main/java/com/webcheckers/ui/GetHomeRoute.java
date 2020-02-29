@@ -29,6 +29,7 @@ public class GetHomeRoute implements Route {
   private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
 
   private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
+  private static final Message IN_GAME_ERROR_MSG = Message.info("This player is already in a Game");
   private final TemplateEngine templateEngine;
   private PlayerLobby playerLobby;
   // TODO move this to UserModel in model
@@ -60,17 +61,20 @@ public class GetHomeRoute implements Route {
   @Override
   public Object handle(Request request, Response response) {
     Player player = request.session().attribute("UserAttrib");
-    if(player!=null && playersInGame.containsVal(player.getname())){
-      response.redirect(WebServer.GAME_URL+"?opponent=" + playersInGame.getFromVal(player.getname()));
+    if (player != null && playersInGame.containsVal(player.getname())) {
+      response.redirect(WebServer.GAME_URL + "?opponent=" + playersInGame.getFromVal(player.getname()));
     }
     LOG.finer("GetHomeRoute is invoked.");
     //
     Map<String, Object> vm = new HashMap<>();
     vm.put("title", "Welcome!");
 
-    // display a user message in the Home page
-    vm.put("message", WELCOME_MSG);
-
+    if (request.queryParams("inGameError") != null){
+      vm.put("message",IN_GAME_ERROR_MSG);
+    }else {
+      // display a user message in the Home page
+      vm.put("message", WELCOME_MSG);
+    }
     // Getting and displaying number of logged in users
     int numLoggedIn = playerLobby.getNumLoggedInPlayers();
     vm.put("numLoggedIn", numLoggedIn);
@@ -95,7 +99,7 @@ public class GetHomeRoute implements Route {
       }
       vm.put("opponent", opponent);
       request.session().attribute("opponent", opponent);
-      // Remove the current player from the list of players they could play against
+//       Remove the current player from the list of players they could play against
       // TODO this may have meant to be playerList.isEmpty() or something else
       if (playerList != null && currentPlayer != null) {
         playerList.remove(currentPlayer);

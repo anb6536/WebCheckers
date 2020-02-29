@@ -49,16 +49,8 @@ public class GetGameRoute implements Route {
         String opponentName = request.queryParams("opponent");
         Player opponent = lobby.getPlayer(opponentName);
         if ( opponentName!=null && opponent.isInGame() ){
-            vm.put("message", Message.error("This player is already in a Game"));
-            vm.put(TITLE, "Welcome!");
-            List<Player> newPlayerList = lobby.getLoggedInPlayers();
-            newPlayerList.remove(player);
-            vm.put("readyPlayers", newPlayerList);
-            vm.put("currentUser", player);
-            vm.put("numLoggedIn", lobby.getNumLoggedInPlayers());
-            return templateEngine.render(new ModelAndView(vm, "home.ftl"));
-//            response.redirect(WebServer.HOME_URL);
-//            halt();
+            response.redirect("?inGameError=true");
+            halt();
         }
         vm.put(VIEW_MODE, PLAY);
         vm.put(ACTIVE_COLOR, RED);
