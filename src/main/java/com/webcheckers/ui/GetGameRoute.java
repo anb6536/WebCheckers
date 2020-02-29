@@ -2,7 +2,9 @@ package com.webcheckers.ui;
 
 import com.google.gson.Gson;
 import com.webcheckers.appl.PlayerLobby;
+import com.webcheckers.model.Game;
 import com.webcheckers.model.Player;
+import com.webcheckers.util.Message;
 import spark.*;
 
 import java.util.HashMap;
@@ -12,6 +14,7 @@ import java.util.logging.Logger;
 import static com.webcheckers.model.Game.Mode.PLAY;
 import static com.webcheckers.model.Piece.Color.*;
 import static com.webcheckers.appl.PlayerLobby.*;
+import static spark.Spark.halt;
 
 public class GetGameRoute implements Route {
 
@@ -41,18 +44,50 @@ public class GetGameRoute implements Route {
     public Object handle(Request request, Response response) throws Exception {
         Map<String, Object> vm = new HashMap<>();
         Session session = request.session();
-        vm.put(TITLE, "Welcome to the Game of WEBCHECKERS");
+        vm.put(TITLE, "GAME");
+
+        LOG.finer("GetGameRoute is invoked");
         Player player = session.attribute("UserAttrib");
         String opponentName = request.queryParams("opponent");
         Player opponent = lobby.getPlayer(opponentName);
-        vm.put(CURRENT_USER, player);
-        String gameId = session.attribute(GAME_ID);
-        vm.put(GAME_ID, gameId);
+        if ( opponentName!=null && opponent.isInGame() ){
+            vm.put("message", Message.error("This player is already in a Game"));
+            vm.put(TITLE, "Welcome!");
+            vm.put("readyPlayers", lobby.getLoggedInPlayers());
+            vm.put("currentUser", player);
+            vm.put("numLoggedIn", lobby.getNumLoggedInPlayers());
+            return templateEngine.render(new ModelAndView(vm, "home.ftl"));
+//            response.redirect(WebServer.HOME_URL);
+//            halt();
+        }
         vm.put(VIEW_MODE, PLAY);
-        vm.put(RED_PLAYER, session.attribute("UserAttrib"));
-        vm.put(WHITE_PLAYER, opponent);
         vm.put(ACTIVE_COLOR, RED);
+        String gameId = String.valueOf(lobby.getId(player));
+        vm.put(GAME_ID, gameId);
+        vm.put(CURRENT_USER, player);
+        if ( opponent != null ){
+            lobby.addMatch(player, opponent);
+            player.joinedGame();
+            opponent.joinedGame();
+//            lobby.removePlayer(player);
+//            lobby.removePlayer(opponent);
+            vm.put(RED_PLAYER, player);
+            vm.put(WHITE_PLAYER, opponent);
+        }
+        else{
+            vm.put(RED_PLAYER, lobby.getOpponent(player));
+            vm.put(WHITE_PLAYER, player);
+            //return templateEngine.render(new ModelAndView(vm, "game.ftl"));
+        }
+        session.attribute(CURRENT_USER, vm.get(CURRENT_USER));
+        session.attribute(RED_PLAYER, vm.get(RED_PLAYER));
+        session.attribute(WHITE_PLAYER, vm.get(WHITE_PLAYER));
+        session.attribute(ACTIVE_COLOR, vm.get(ACTIVE_COLOR));
+        session.attribute(GAME_ID, gameId);
 
+//        if ( request.requestMethod().equals("GET")){
+//
+//        }
         return templateEngine.render(new ModelAndView(vm, "game.ftl"));
     }
 }

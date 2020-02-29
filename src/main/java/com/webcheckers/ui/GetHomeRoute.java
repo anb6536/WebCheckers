@@ -7,7 +7,11 @@ import java.util.logging.Logger;
 import com.webcheckers.appl.PlayerLobby;
 import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
+
+import static com.webcheckers.model.Game.Mode.PLAY;
 import static com.webcheckers.ui.GetGameRoute.*;
+import static spark.Spark.halt;
+import static spark.route.HttpMethod.get;
 
 import com.webcheckers.util.OneToOneMap;
 import spark.ModelAndView;
@@ -74,25 +78,35 @@ public class GetHomeRoute implements Route {
     vm.put("signedIn", false);
 
     // Declare list of potential players
-    List<String> playerList = null;
+    List<Player> playerList = null;
     // currentUser shenanigans for logins
     if (request.session().attribute("UserAttrib") != null) {
       vm.put("currentUser", request.session().attribute("UserAttrib"));
       // Assign signedIn value to be true once player gets a UserAttrib
       vm.put("signedIn", true);
-      playerList = new ArrayList<String>(playerLobby.getLoggedInPlayers());
+      playerList = new ArrayList<Player>(playerLobby.getLoggedInPlayers());
       // The player representing the current user
       Player currentPlayer =  request.session().attribute("UserAttrib");
       String opponentName = request.queryParams("opponent");
       Player opponent = playerLobby.getPlayer(opponentName);
+      if ( opponentName!=null && opponent.isInGame() ){
+        vm.put("message", Message.error("This player is already in a Game"));
+        return templateEngine.render(new ModelAndView(vm, "home.ftl"));
+      }
       vm.put("opponent", opponent);
       request.session().attribute("opponent", opponent);
       // Remove the current player from the list of players they could play against
       // TODO this may have meant to be playerList.isEmpty() or something else
       if (playerList != null && currentPlayer != null) {
-        playerList.remove(currentPlayer.getname());
+        playerList.remove(currentPlayer);
       }
       vm.put("readyPlayers", playerList);
+
+      if ( currentPlayer.isInGame() && opponentName==null){
+        response.redirect(WebServer.GAME_URL);
+        halt();
+      }
+
     } else {
       // Boolean value if the player has signed in or not
       vm.put("signedIn", true);// Get the list of players to render
