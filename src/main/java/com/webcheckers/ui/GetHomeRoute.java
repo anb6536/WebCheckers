@@ -56,6 +56,8 @@ public class GetHomeRoute implements Route {
   @Override
   public Object handle(Request request, Response response) {
     Player player = request.session().attribute("UserAttrib");
+
+    // if the player should be in the game TODO CHECK IF THIS IS A TRUE COMMENT
     if(player!=null && playersInGame.containsVal(player.getname())){
       response.redirect(WebServer.GAME_URL+"?opponent=" + playersInGame.getFromVal(player.getname()));
     }
@@ -75,43 +77,45 @@ public class GetHomeRoute implements Route {
 
     // Declare list of potential players
     List<Player> playerList = null;
+
     // currentUser shenanigans for logins
     if (request.session().attribute("UserAttrib") != null) {
       vm.put("currentUser", request.session().attribute("UserAttrib"));
+
       // Assign signedIn value to be true once player gets a UserAttrib
       vm.put("signedIn", true);
       playerList = new ArrayList<Player>(playerLobby.getLoggedInPlayers());
+
       // The player representing the current user
       Player currentPlayer =  request.session().attribute("UserAttrib");
       String opponentName = request.queryParams("opponent");
       Player opponent = playerLobby.getPlayer(opponentName);
       vm.put("opponent", opponent);
       request.session().attribute("opponent", opponent);
+
       // Remove the current player from the list of players they could play against
-      // TODO this may have meant to be playerList.isEmpty() or something else
+      // TODO I believe this is meant to be playerList.isEmpty()
       if (playerList != null && currentPlayer != null) {
         playerList.remove(currentPlayer);
       }
       vm.put("readyPlayers", playerList);
 
-      if ( currentPlayer.isInGame() && opponentName==null){
+      // if the current player is in a game and we aren't already there
+      if ( currentPlayer != null && currentPlayer.isInGame() && opponentName==null){
         response.redirect(WebServer.GAME_URL);
         halt();
       }
-
+      // if I attempted to start a game with someone who is already in a game
       else if (request.queryParams("error")!=null) {
         vm.put("message", Message.error("This player is already in the game"));
         return templateEngine.render(new ModelAndView(vm, "home.ftl"));
       }
 
     } else {
+
       // Boolean value if the player has signed in or not
       vm.put("signedIn", true);// Get the list of players to render
-
     }
-
-
-
     // render the View
     return templateEngine.render(new ModelAndView(vm, "home.ftl"));
   }

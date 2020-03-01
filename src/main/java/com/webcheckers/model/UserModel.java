@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
+// TODO REMOVE THIS.
 public class UserModel {
     private static final Logger LOG = Logger.getLogger(UserModel.class.getName());
 
