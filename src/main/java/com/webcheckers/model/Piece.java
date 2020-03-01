@@ -6,7 +6,6 @@ package com.webcheckers.model;
 public class Piece {
     /**
      * the color of the piece
-     * // TODO ENUMS ARE CAPITAL
      */
     public enum color{
         RED,
@@ -14,8 +13,7 @@ public class Piece {
     }
 
     /**
-     *  TODO ENUMS ARE CAPITAL
-     * whether the piece is kinged
+     * The type of the piece
      */
     public enum type{
         SINGLE,
@@ -31,17 +29,7 @@ public class Piece {
      */
     public Piece( color color ){
         this.color = color;
-        // TODO this gets the variable type and gets single in a non static way
         this.type = type.SINGLE;
-    }
-
-    // TODO i don't think this is the proper way to access this? (at any rate this isn't used)
-    public color getRed(){
-        return color.RED;
-    }
-
-    public color getWhite(){
-        return color.WHITE;
     }
 
     /**

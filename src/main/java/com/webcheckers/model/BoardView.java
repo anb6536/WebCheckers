@@ -10,7 +10,6 @@ public class BoardView {
     private List<Row> rows;
 
     // create an already created board
-    // TODO perhaps makeboard() in GetGameRoute should be a constructor?
     public BoardView( List<Row> rows ){
         this.rows = rows;
     }

@@ -57,7 +57,7 @@ public class GetHomeRoute implements Route {
   public Object handle(Request request, Response response) {
     Player player = request.session().attribute("UserAttrib");
 
-    // if the player should be in the game TODO CHECK IF THIS IS A TRUE COMMENT
+    // if the player should be in the game
     if(player!=null && playersInGame.containsVal(player.getname())){
       response.redirect(WebServer.GAME_URL+"?opponent=" + playersInGame.getFromVal(player.getname()));
     }
@@ -94,8 +94,7 @@ public class GetHomeRoute implements Route {
       request.session().attribute("opponent", opponent);
 
       // Remove the current player from the list of players they could play against
-      // TODO I believe this is meant to be playerList.isEmpty()
-      if (playerList != null && currentPlayer != null) {
+      if (!playerList.isEmpty()&& currentPlayer != null) {
         playerList.remove(currentPlayer);
       }
       vm.put("readyPlayers", playerList);

@@ -47,7 +47,7 @@ public class GetGameRoute implements Route {
      * @param request the request made to view the page
      * @param response our response to that request
      * @return the templateEngines view
-     * @throws Exception TODO WE DON'T NEED TO THROW EXCEPTION?
+     * @throws Exception
      */
     @Override
     public Object handle(Request request, Response response) throws Exception {
@@ -67,23 +67,6 @@ public class GetGameRoute implements Route {
         // if the opponent is in the gmae, return to the home page with an error parameter
         if ( opponentName!=null && opponent.isInGame() ){
             player.leftGame();
-
-            // TODO WE CAN GET RID OF THIS I BELIEVE ******************************
-            // we deal with displaying stuff in GetHomeRoute. vm is never used
-            vm.put("message", Message.error("This player is already in a Game"));
-            vm.put(TITLE, "Welcome!");
-            List<Player> newPlayerList = lobby.getLoggedInPlayers();
-            List<Player> deepCopy = new ArrayList<>();
-            for ( Player player1 : newPlayerList ){
-                if ( !player1.equals(player) ){
-                    deepCopy.add(player1);
-                }
-            }
-            vm.put("readyPlayers", deepCopy);
-            vm.put("currentUser", player);
-            vm.put("numLoggedIn", lobby.getNumLoggedInPlayers());
-            vm.put("isReturned", true);
-            // TODO ****************************************************************
             response.redirect("?error=true");
             halt();
         }
@@ -109,7 +92,6 @@ public class GetGameRoute implements Route {
             vm.put(BOARD, boardView);
         }
         else{
-            // TODO CAN "lobby.getOpponenet(player)" be replaced with opponent since they are both references to the player object
             vm.put(RED_PLAYER, lobby.getOpponent(player));
             vm.put(WHITE_PLAYER, player);
             vm.put(BOARD, opponentBoard);
@@ -126,7 +108,6 @@ public class GetGameRoute implements Route {
         return templateEngine.render(new ModelAndView(vm, "game.ftl"));
     }
 
-    // TODO perhaps make board should be a constructor?
     /**
      * create a BoardView with correct starting positions
      * @return the start of a board
@@ -222,7 +203,6 @@ public class GetGameRoute implements Route {
         }
     }
 
-    // TODO this could be static and should probably be in the BoardView class
     /**
      * flip the board so that the other player has a correct facing board
      * @param boardView the filled out board for a game that is facing the original way
