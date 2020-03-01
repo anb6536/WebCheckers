@@ -2,8 +2,7 @@ package com.webcheckers.ui;
 
 import com.google.gson.Gson;
 import com.webcheckers.appl.PlayerLobby;
-import com.webcheckers.model.Piece;
-import com.webcheckers.model.Player;
+import com.webcheckers.model.*;
 import com.webcheckers.util.Message;
 import spark.*;
 
@@ -28,6 +27,7 @@ public class GetGameRoute implements Route {
     private static final String RED_PLAYER = "redPlayer";
     private static final String WHITE_PLAYER = "whitePlayer";
     private static final String ACTIVE_COLOR = "activeColor";
+    private static final String BOARD = "board";
 
     public GetGameRoute(TemplateEngine templateEngine, PlayerLobby lobby) {
         this.templateEngine = templateEngine;
@@ -70,16 +70,19 @@ public class GetGameRoute implements Route {
         String gameId = String.valueOf(lobby.getId(player));
         vm.put(GAME_ID, gameId);
         vm.put(CURRENT_USER, player);
+        BoardView boardView = makeBoard();
         if ( opponent != null ){
             lobby.addMatch(player, opponent);
             player.joinedGame();
             opponent.joinedGame();
             vm.put(RED_PLAYER, player);
             vm.put(WHITE_PLAYER, opponent);
+            vm.put(BOARD, boardView);
         }
         else{
             vm.put(RED_PLAYER, lobby.getOpponent(player));
             vm.put(WHITE_PLAYER, player);
+            vm.put(BOARD, boardView);
         }
         session.attribute(CURRENT_USER, vm.get(CURRENT_USER));
         session.attribute(RED_PLAYER, vm.get(RED_PLAYER));
@@ -88,5 +91,36 @@ public class GetGameRoute implements Route {
         session.attribute(GAME_ID, gameId);
 
         return templateEngine.render(new ModelAndView(vm, "game.ftl"));
+    }
+
+    public BoardView makeBoard(){
+        List<Row> rows = new ArrayList<>();
+        for ( int i=0 ; i<8 ; i++ ){
+            List<Space> spaces = new ArrayList<>();
+            for ( int j=0 ; j<8 ; j++ ){
+                Space space = new Space(i+j);
+                if ( i%2 == 0 ){
+                    if ( j%2 == 0 ){
+                        space.setColor(Space.Color.DARK);
+                    }
+                    else {
+                        space.setColor(Space.Color.LIGHT);
+                    }
+                }
+                else {
+                    if ( j%2 != 0 ){
+                        space.setColor(Space.Color.DARK);
+                    }
+                    else {
+                        space.setColor(Space.Color.LIGHT);
+                    }
+                }
+                spaces.add(space);
+            }
+            Row row = new Row(i, spaces);
+            rows.add(row);
+        }
+        BoardView boardView = new BoardView(rows);
+        return boardView;
     }
 }

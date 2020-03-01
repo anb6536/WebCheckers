@@ -2,7 +2,7 @@ package com.webcheckers.model;
 
 public class Space {
 
-    private enum Color{
+    public enum Color{
         DARK,
         LIGHT;
     }
