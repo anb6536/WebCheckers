@@ -28,6 +28,10 @@ public class Space {
         this.color = color;
     }
 
+    public Color getColor(){
+        return this.color;
+    }
+
     public boolean isValid(){
         if ( this.piece == null && this.color==Color.DARK ){
             return true;

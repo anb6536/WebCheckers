@@ -10,6 +10,10 @@ public class BoardView {
         this.rows = rows;
     }
 
+    public List<Row> getRows(){
+        return this.rows;
+    }
+
     public Iterator<Row> iterator(){
         return this.rows.iterator();
     }

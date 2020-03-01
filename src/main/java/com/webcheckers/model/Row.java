@@ -16,6 +16,10 @@ public class Row {
         return this.index;
     }
 
+    public List<Space> getSpaces(){
+        return this.spaces;
+    }
+
     public Iterator<Space> iterator(){
         return this.spaces.iterator();
     }

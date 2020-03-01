@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.logging.Logger;
 import static com.webcheckers.model.Game.Mode.PLAY;
 import static com.webcheckers.model.Piece.color.RED;
+import static com.webcheckers.model.Piece.color.WHITE;
 import static spark.Spark.halt;
 
 public class GetGameRoute implements Route {
@@ -71,6 +72,9 @@ public class GetGameRoute implements Route {
         vm.put(GAME_ID, gameId);
         vm.put(CURRENT_USER, player);
         BoardView boardView = makeBoard();
+        addPiece(boardView);
+        BoardView opponentBoard = flipBoard(boardView);
+
         if ( opponent != null ){
             lobby.addMatch(player, opponent);
             player.joinedGame();
@@ -82,7 +86,7 @@ public class GetGameRoute implements Route {
         else{
             vm.put(RED_PLAYER, lobby.getOpponent(player));
             vm.put(WHITE_PLAYER, player);
-            vm.put(BOARD, boardView);
+            vm.put(BOARD, opponentBoard);
         }
         session.attribute(CURRENT_USER, vm.get(CURRENT_USER));
         session.attribute(RED_PLAYER, vm.get(RED_PLAYER));
@@ -101,18 +105,18 @@ public class GetGameRoute implements Route {
                 Space space = new Space(i+j);
                 if ( i%2 == 0 ){
                     if ( j%2 == 0 ){
-                        space.setColor(Space.Color.DARK);
+                        space.setColor(Space.Color.LIGHT);
                     }
                     else {
-                        space.setColor(Space.Color.LIGHT);
+                        space.setColor(Space.Color.DARK);
                     }
                 }
                 else {
                     if ( j%2 != 0 ){
-                        space.setColor(Space.Color.DARK);
+                        space.setColor(Space.Color.LIGHT);
                     }
                     else {
-                        space.setColor(Space.Color.LIGHT);
+                        space.setColor(Space.Color.DARK);
                     }
                 }
                 spaces.add(space);
@@ -122,5 +126,56 @@ public class GetGameRoute implements Route {
         }
         BoardView boardView = new BoardView(rows);
         return boardView;
+    }
+
+    public void addPiece( BoardView boardView ){
+        List<Row> rows = boardView.getRows();
+        int i = 0;
+        for ( Row row : rows ){
+            List<Space> spaces = row.getSpaces();
+            for ( Space space : spaces ){
+                if ( i>=6 ){
+                    if ( space.isValid() ){
+                        Piece piece = new Piece(RED);
+                        space.setPiece(piece);
+                    }
+                }
+                else if (i<=1){
+                    if ( space.isValid() ){
+                        Piece piece = new Piece(WHITE);
+                        space.setPiece(piece);
+                    }
+                }
+            }
+            i++;
+        }
+    }
+
+    public BoardView flipBoard( BoardView boardView ){
+        Row[] rows = new Row[8];
+        List<Row> rows1 = boardView.getRows();
+        List<Row> newRow = new ArrayList<>();
+        int i = 7;
+        for ( Row row : rows1 ){
+            Space[] spaces = new Space[8];
+            List<Space> spaces1 = row.getSpaces();
+            List<Space> newSpaces = new ArrayList<>();
+            int j=7;
+            for ( Space space : spaces1 ){
+                spaces[j] = space;
+                j--;
+            }
+            for ( int k=0 ; k<8 ; k++ ){
+                newSpaces.add(spaces[k]);
+            }
+            Row newRow1 = new Row(row.getIndex(), newSpaces);
+            rows[i] = newRow1;
+            i--;
+        }
+        for (int j=0 ; j<8 ; j++){
+            newRow.add(rows[j]);
+        }
+        BoardView boardView1 = new BoardView(newRow);
+        return boardView1;
     }
 }
