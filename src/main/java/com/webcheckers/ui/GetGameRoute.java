@@ -181,7 +181,7 @@ public class GetGameRoute implements Route {
             List<Space> spaces = row.getSpaces();
             for ( Space space : spaces ){
                 // if the row should be filled with red pieces
-                if ( i>=6 ){
+                if ( i>=5 ){
                     // if the space is a dark square
                     if ( space.isValid() ){
                         // add a red piece to the space on the board
@@ -190,7 +190,7 @@ public class GetGameRoute implements Route {
                     }
                 }
                 // if the row should be filled with white pieces
-                else if (i<=1){
+                else if (i<=2){
                     // if the space is a dark square
                     if ( space.isValid() ){
                         // add a white piece to the space on the board
