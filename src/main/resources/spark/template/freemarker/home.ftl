@@ -33,11 +33,15 @@
 
 
     <#if currentUser??>
-            <ol>
-                <#list readyPlayers as readyPlayer>
-                    <li> ${readyPlayer} </li>
-                </#list>
-            </ol>
+        <ol>
+            <#list readyPlayers as readyPlayer>
+                <li>
+                    <form action = "/game" method="GET">
+                        <input type="submit" name="opponent" value="${readyPlayer.getname()}">
+                    </form>
+                </li>
+            </#list>
+        </ol>
     </#if>
 
     <!-- TODO: future content on the Home:

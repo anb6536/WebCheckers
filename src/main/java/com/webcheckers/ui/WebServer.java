@@ -60,6 +60,7 @@ public class WebServer {
   public static final String HOME_URL = "/";
   public static final String SIGNOUT_URL = "/signout";
   public static final String SIGNIN_URL = "/signin";
+  public static final String GAME_URL = "/game";
   //
   // Attributes
   //
@@ -80,7 +81,7 @@ public class WebServer {
    *                       responses.
    *
    * @param lobby          The playerLobby for everything
-   * 
+   *
    * @throws NullPointerException If any of the parameters are {@code null}.
    */
   public WebServer(final TemplateEngine templateEngine, final Gson gson, final PlayerLobby lobby) {
@@ -149,8 +150,12 @@ public class WebServer {
     post(SIGNOUT_URL, new SignOutRoute(lobby));
     get(SIGNIN_URL, new SignInRoute(templateEngine));
     post(SIGNIN_URL, new SignInApiRoute(lobby, templateEngine));
-    //
+    get(GAME_URL, new GetGameRoute(templateEngine, lobby));
     LOG.config("WebServer is initialized.");
+  }
+
+  public PlayerLobby getLobby(){
+    return this.lobby;
   }
 
 }
