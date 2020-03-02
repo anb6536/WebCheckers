@@ -125,7 +125,7 @@ public class GetGameRoute implements Route {
 
             // add a space to the row 8 times
             for ( int j=0 ; j<8 ; j++ ){
-                Space space = new Space(i+j);
+                Space space = new Space(j);
 
                 // if it is an even row
                 if ( i%2 == 0 ){
