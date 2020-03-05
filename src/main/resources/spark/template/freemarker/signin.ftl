@@ -11,7 +11,7 @@
 <form id="signin" method="post" action="/signin">
     <div>
         <label for="username"> Enter your username: </label>
-        <input type="text" name="username" id="username" required />
+        <input type="text" name="username" id="username" maxlength="20" required />
     </div>
     <div>
         <input type="submit" value="Sign in" />
