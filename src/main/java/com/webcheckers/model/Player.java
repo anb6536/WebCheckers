@@ -20,7 +20,7 @@ public class Player {
      * simple getter
      * @return the username of the player
      */
-    public String getname() {
+    public String getName() {
         return name;
     }
 
@@ -55,7 +55,7 @@ public class Player {
     public boolean equals( Object player ){
         if ( player instanceof Player ){
             Player nPlayer = (Player) player;
-            return this.getname().equals(nPlayer.getname());
+            return this.getName().equals(nPlayer.getName());
         }
         else{
             return false;

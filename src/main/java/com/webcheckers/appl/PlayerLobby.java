@@ -100,7 +100,7 @@ public class PlayerLobby {
      */
     public Player getPlayer ( String username ){
         for (Player player : playersLoggedIn){
-            if ( player.getname().equals(username)){
+            if ( player.getName().equals(username)){
                 // found the correct player
                 return player;
             }
@@ -117,7 +117,7 @@ public class PlayerLobby {
     public Player addPlayer(String name) {
         synchronized (syncObject) {
             for ( Player player : playersLoggedIn ){
-                if ( player.getname().equals(name) ){
+                if ( player.getName().equals(name) ){
                     // the username already exists
                     return null;
                 }
