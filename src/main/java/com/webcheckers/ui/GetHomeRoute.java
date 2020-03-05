@@ -58,8 +58,8 @@ public class GetHomeRoute implements Route {
     Player player = request.session().attribute("UserAttrib");
 
     // if the player should be in the game
-    if(player!=null && playersInGame.containsVal(player.getname())){
-      response.redirect(WebServer.GAME_URL+"?opponent=" + playersInGame.getFromVal(player.getname()));
+    if(player!=null && playersInGame.containsVal(player.getName())){
+      response.redirect(WebServer.GAME_URL+"?opponent=" + playersInGame.getFromVal(player.getName()));
     }
     LOG.finer("GetHomeRoute is invoked.");
     //
