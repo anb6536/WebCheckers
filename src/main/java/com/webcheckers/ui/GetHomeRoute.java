@@ -106,7 +106,7 @@ public class GetHomeRoute implements Route {
       }
       // if I attempted to start a game with someone who is already in a game
       else if (request.queryParams("error") != null) {
-        vm.put("message", Message.error("This player is already in the game"));
+        vm.put("message", Message.error("This player is already in a game"));
         return templateEngine.render(new ModelAndView(vm, "home.ftl"));
       }
 
