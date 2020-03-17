@@ -38,7 +38,7 @@ public class GetGameRouteTest {
         engine = mock(TemplateEngine.class);
 
         playerLobby = new PlayerLobby();
-        CuT = new GetGameRoute(engine, playerLobby);
+        CuT = new GetGameRoute(engine, playerLobby, null);
     }
 
     @Test
