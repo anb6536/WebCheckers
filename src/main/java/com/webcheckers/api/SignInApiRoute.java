@@ -26,6 +26,7 @@ public class SignInApiRoute implements Route {
     public Object handle(Request request, Response response) throws Exception {
         String username = request.queryParams("username");
         Map<String, Object> vm = new HashMap<>();
+
         if (username.length() > 20) { // need to change this value here and in signin.ftl for future reference
             vm.put("message", Message.error("Your username must be less than twenty characters long"));
         }
@@ -35,6 +36,7 @@ public class SignInApiRoute implements Route {
                     "You must have a username with at least 1 alphaneumric character and it cannot start or end with a space"));
             return engine.render(new ModelAndView(vm, "signin.ftl"));
         }
+
         Player player = lobby.addPlayer(username);
         if (player != null) {
             request.session().attribute("UserAttrib", player);

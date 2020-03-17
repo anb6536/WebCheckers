@@ -7,44 +7,45 @@ public class Piece {
     /**
      * the color of the piece
      */
-    public enum color{
-        RED,
-        WHITE
+    public enum Color {
+        RED, WHITE
     }
 
     /**
      * The type of the piece
      */
-    public enum type{
-        SINGLE,
-        KING
+    public enum Type {
+        SINGLE, KING
     }
 
-    private type type;
-    private color color;
+    private Type type;
+    private Color color;
 
     /**
      * create a piece
+     * 
      * @param color the color the piece
      */
-    public Piece( color color ){
+    public Piece(Color color) {
         this.color = color;
         this.type = type.SINGLE;
     }
 
     /**
      * get the type of piece this is (king or single)
+     * 
      * @return the type
      */
-    public type getType(){
+    public Type getType() {
         return this.type;
     }
 
     /**
      * get the color of this piece
+     * 
      * @return the color
      */
-    public color getColor(){
+    public Color getColor() {
         return this.color;
     }
 
