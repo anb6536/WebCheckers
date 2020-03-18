@@ -1,29 +1,21 @@
 package com.webcheckers.ui;
 
 import org.junit.jupiter.api.BeforeEach;
-import spark.Request;
-import spark.Response;
-import spark.Session;
-import spark.TemplateEngine;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import spark.*;
 
-import static org.mockito.ArgumentMatchers.endsWith;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@Tag("UI-Tier")
 public class SignInRouteTest {
     private Request request;
     private Response response;
     private Session session;
     private TemplateEngine templateEngine;
     private SignInRoute signInRoute;
-
-    private static final String VALID_USERNAME = "Player";
-    private static final String VALID_USERNAME_2 = "Player 1";
-    private static final String NON_ALPHA_USERNAME = "#playerName#";
-    private static final String EMPTY_NAME = "";
-    private static final String SPACE_END = "player ";
-    private static final String SPACE_START = " player";
-    private static final String SPACES = "         ";
 
     @BeforeEach
     void setup(){
@@ -36,4 +28,14 @@ public class SignInRouteTest {
         signInRoute = new SignInRoute(templateEngine);
     }
 
+    @Test
+    void getRequest(){
+        final TemplateEngineTester tester = new TemplateEngineTester();
+        when(templateEngine.render(any(ModelAndView.class))).thenAnswer(tester.makeAnswer());
+        when(request.requestMethod()).thenReturn("GET");
+        signInRoute.handle(request, response);
+        tester.assertViewModelExists();
+        tester.assertViewModelIsaMap();
+        tester.assertViewName("signin.ftl");
+    }
 }

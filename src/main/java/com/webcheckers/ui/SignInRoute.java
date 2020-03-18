@@ -1,5 +1,7 @@
 package com.webcheckers.ui;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import spark.ModelAndView;
@@ -19,8 +21,9 @@ public class SignInRoute implements Route {
     }
 
     @Override
-    public Object handle(Request request, Response response) throws Exception {
-        return engine.render(new ModelAndView(null, "signin.ftl"));
+    public Object handle(Request request, Response response){
+        Map<String, Object> vm = new HashMap<>();
+        return engine.render(new ModelAndView(vm, "signin.ftl"));
     }
 
 }
