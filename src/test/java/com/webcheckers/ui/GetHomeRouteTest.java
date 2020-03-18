@@ -60,4 +60,25 @@ public class GetHomeRouteTest {
         testHelper.assertViewModelAttribute("opponent", null);
         testHelper.assertViewModelAttribute("currentUser", currentPlayer);
     }
+    @Test
+    public void notSignedIn() {
+//        Player currentPlayer = new Player(PLAYER_A);
+//        playerLobby.addPlayer(PLAYER_A);
+        // when the class gets the session, return the mock session
+        when(request.session()).thenReturn(session);
+//        when(session.attribute(USER_ATTR)).thenReturn(currentPlayer);
+        final TemplateEngineTester testHelper = new TemplateEngineTester();
+        when(engine.render(any(ModelAndView.class))).thenAnswer(testHelper.makeAnswer());
+        // handle the request
+        try {
+            CuT.handle(request, response);
+        } catch (Exception e) {
+            fail(e);
+        }
+
+        // check that everything is good
+        testHelper.assertViewModelAttribute("title", "Welcome!");
+        testHelper.assertViewModelAttribute("signedIn", false);
+        testHelper.assertViewModelAttribute("numLoggedIn", 0);
+    }
 }

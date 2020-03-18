@@ -113,7 +113,8 @@ public class GetHomeRoute implements Route {
     } else {
 
       // Boolean value if the player has signed in or not
-      vm.put("signedIn", true);// Get the list of players to render
+      // the should not be signed in
+      vm.put("signedIn", false);// Get the list of players to render
     }
     // render the View
     return templateEngine.render(new ModelAndView(vm, "home.ftl"));
