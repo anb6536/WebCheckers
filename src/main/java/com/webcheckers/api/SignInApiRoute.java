@@ -29,6 +29,7 @@ public class SignInApiRoute implements Route {
 
         if (username.length() > 20) { // need to change this value here and in signin.ftl for future reference
             vm.put("message", Message.error("Your username must be less than twenty characters long"));
+            return engine.render(new ModelAndView(vm, "signin.ftl"));
         }
         if (!username.matches("[a-zA-Z0-9 ]+") || username.charAt(0) == ' '
                 || username.charAt(username.length() - 1) == ' ') {
