@@ -21,6 +21,7 @@ public class SignInRouteTest {
     private static final String VALID_USERNAME_2 = "Player 1";
     private static final String NON_ALPHA_USERNAME = "#playerName#";
     private static final String EMPTY_NAME = "";
+    private static final String SPACE_END = "player ";
     private static final String SPACE_START = " player";
     private static final String SPACES = "         ";
 
