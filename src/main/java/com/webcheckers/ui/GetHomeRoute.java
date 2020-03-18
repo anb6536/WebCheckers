@@ -94,10 +94,9 @@ public class GetHomeRoute implements Route {
       vm.put("readyPlayers", playerList);
 
       // if the current player is in a game and we aren't already there
-      // if the current player should be in a game
       if (currentPlayer != null && currentPlayer.isInGame()) {
         response.redirect(WebServer.GAME_URL);
-        halt();
+        return null;
       }
       // if I attempted to start a game with someone who is already in a game
       else if (request.queryParams("error") != null) {

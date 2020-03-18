@@ -3,14 +3,17 @@ package com.webcheckers.ui;
 import com.webcheckers.appl.PlayerLobby;
 import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.stubbing.Answer;
 import spark.*;
+
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class GetHomeRouteTest {
     private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
@@ -114,10 +117,14 @@ public class GetHomeRouteTest {
         testHelper.assertViewModelAttribute("opponent", opponent);
         testHelper.assertViewModelAttribute("currentUser", currentPlayer);
     }
+
     @Test
     public void inGame() {
         Player currentPlayer = new Player(PLAYER_A);
         Player opponent = new Player(PLAYER_B);
+        // simulate the other player starting the game
+        currentPlayer.joinedGame();
+        opponent.joinedGame();
         playerLobby.addPlayer(PLAYER_A);
         playerLobby.addPlayer(PLAYER_B);
         playerLobby.addMatch(opponent, currentPlayer);
@@ -128,19 +135,13 @@ public class GetHomeRouteTest {
         when(engine.render(any(ModelAndView.class))).thenAnswer(testHelper.makeAnswer());
         // handle the request
         try {
-            CuT.handle(request, response);
+            // make sure this starts a game
+            Assertions.assertNull(CuT.handle(request, response));
         } catch (Exception e) {
             fail(e);
         }
-
-        // check that everything is good
-        testHelper.assertViewModelAttribute("title", "Welcome!");
-        testHelper.assertViewModelAttribute("numLoggedIn", 2);
-        testHelper.assertViewModelAttribute("signedIn", true);
-//todo
-        testHelper.assertViewModelAttribute("opponent", null);
-        testHelper.assertViewModelAttribute("currentUser", currentPlayer);
     }
+
     @Test
     public void notSignedIn() {
 //        Player currentPlayer = new Player(PLAYER_A);
