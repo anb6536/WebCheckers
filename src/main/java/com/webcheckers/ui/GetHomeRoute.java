@@ -27,8 +27,6 @@ public class GetHomeRoute implements Route {
   private static final Message WELCOME_MSG = Message.info("Welcome to the world of online Checkers.");
   private final TemplateEngine templateEngine;
   private PlayerLobby playerLobby;
-  // TODO move this to UserModel in model
-  protected static OneToOneMap<String, String> playersInGame = new OneToOneMap<String, String>();
 
   /**
    * Create the Spark Route (UI controller) to handle all {@code GET /} HTTP
@@ -57,10 +55,6 @@ public class GetHomeRoute implements Route {
   public Object handle(Request request, Response response) {
     Player player = request.session().attribute("UserAttrib");
 
-    // if the player should be in the game
-    if (player != null && playersInGame.containsVal(player.getName())) {
-      response.redirect(WebServer.GAME_URL + "?opponent=" + playersInGame.getFromVal(player.getName()));
-    }
     LOG.finer("GetHomeRoute is invoked.");
     //
     Map<String, Object> vm = new HashMap<>();
@@ -100,7 +94,8 @@ public class GetHomeRoute implements Route {
       vm.put("readyPlayers", playerList);
 
       // if the current player is in a game and we aren't already there
-      if (currentPlayer != null && currentPlayer.isInGame() && opponentName == null) {
+      // if the current player should be in a game
+      if (currentPlayer != null && currentPlayer.isInGame()) {
         response.redirect(WebServer.GAME_URL);
         halt();
       }

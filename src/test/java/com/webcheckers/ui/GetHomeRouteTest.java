@@ -60,6 +60,87 @@ public class GetHomeRouteTest {
         testHelper.assertViewModelAttribute("opponent", null);
         testHelper.assertViewModelAttribute("currentUser", currentPlayer);
     }
+
+    @Test
+    public void twoSignedIn() {
+        Player currentPlayer = new Player(PLAYER_A);
+        Player otherPlayer = new Player(PLAYER_B);
+        playerLobby.addPlayer(PLAYER_A);
+        playerLobby.addPlayer(PLAYER_B);
+        // when the class gets the session, return the mock session
+        when(request.session()).thenReturn(session);
+        when(session.attribute(USER_ATTR)).thenReturn(currentPlayer);
+        final TemplateEngineTester testHelper = new TemplateEngineTester();
+        when(engine.render(any(ModelAndView.class))).thenAnswer(testHelper.makeAnswer());
+        // handle the request
+        try {
+            CuT.handle(request, response);
+        } catch (Exception e) {
+            fail(e);
+        }
+
+        // check that everything is good
+        testHelper.assertViewModelAttribute("title", "Welcome!");
+        testHelper.assertViewModelAttribute("numLoggedIn", 2);
+        testHelper.assertViewModelAttribute("signedIn", true);
+        testHelper.assertViewModelAttribute("opponent", null);
+        testHelper.assertViewModelAttribute("currentUser", currentPlayer);
+    }
+
+    @Test
+    public void startedGame() {
+        Player currentPlayer = new Player(PLAYER_A);
+        Player opponent = new Player(PLAYER_B);
+        playerLobby.addPlayer(PLAYER_A);
+        playerLobby.addPlayer(PLAYER_B);
+        playerLobby.addMatch(opponent, currentPlayer);
+        // when the class gets the session, return the mock session
+        when(request.session()).thenReturn(session);
+        when(session.attribute(USER_ATTR)).thenReturn(currentPlayer);
+        when(request.queryParams("opponent")).thenReturn(PLAYER_B);
+        final TemplateEngineTester testHelper = new TemplateEngineTester();
+        when(engine.render(any(ModelAndView.class))).thenAnswer(testHelper.makeAnswer());
+        // handle the request
+        try {
+            CuT.handle(request, response);
+        } catch (Exception e) {
+            fail(e);
+        }
+
+        // check that everything is good
+        testHelper.assertViewModelAttribute("title", "Welcome!");
+        testHelper.assertViewModelAttribute("numLoggedIn", 2);
+        testHelper.assertViewModelAttribute("signedIn", true);
+        testHelper.assertViewModelAttribute("opponent", opponent);
+        testHelper.assertViewModelAttribute("currentUser", currentPlayer);
+    }
+    @Test
+    public void inGame() {
+        Player currentPlayer = new Player(PLAYER_A);
+        Player opponent = new Player(PLAYER_B);
+        playerLobby.addPlayer(PLAYER_A);
+        playerLobby.addPlayer(PLAYER_B);
+        playerLobby.addMatch(opponent, currentPlayer);
+        // when the class gets the session, return the mock session
+        when(request.session()).thenReturn(session);
+        when(session.attribute(USER_ATTR)).thenReturn(currentPlayer);
+        final TemplateEngineTester testHelper = new TemplateEngineTester();
+        when(engine.render(any(ModelAndView.class))).thenAnswer(testHelper.makeAnswer());
+        // handle the request
+        try {
+            CuT.handle(request, response);
+        } catch (Exception e) {
+            fail(e);
+        }
+
+        // check that everything is good
+        testHelper.assertViewModelAttribute("title", "Welcome!");
+        testHelper.assertViewModelAttribute("numLoggedIn", 2);
+        testHelper.assertViewModelAttribute("signedIn", true);
+//todo
+        testHelper.assertViewModelAttribute("opponent", null);
+        testHelper.assertViewModelAttribute("currentUser", currentPlayer);
+    }
     @Test
     public void notSignedIn() {
 //        Player currentPlayer = new Player(PLAYER_A);
