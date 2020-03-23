@@ -52,25 +52,62 @@ This section describes the features of the application.
 ### MVP Features
 > _Provide a list of top-level Epics and/or Stories of the MVP._
 
+* #### Player Sign-in
+    * As a player, I want to be able to sign-in so that I can play a game of checkers
+* #### Player Sign-out
+    * As a player who is signed into WebCheckers, I want to be able to sign out so that I am not placed in any new games
+* #### Start a Game
+    * As a Player, I want to start a game so that I can play checkers against an opponent. 
+* #### Single Move
+    * As a Player, I want to be able to move my pieces diagonally away from me so that I can advance towards the far end of the board
+* #### Backwards Move
+    * As a player with a kinged piece, I want to complete a simple move, a single jump move, or a multiple jump move with kinged pieces but towards my side of the board so I can reposition or capture opponent’s pieces with my kinged piece.
+* #### Jump Moves
+    * As a Player, I want to make a jump move so that I can advance forward.
+    * ##### Single Jump Move
+        * As the player, I want to be able to move an eligible piece in a jump over opponents diagonally towards the opponent so I can capture an enemy piece.
+    * ##### Multiple Jump Move
+        * As the player, I want to move an eligible piece in multiple jumps over opponent’s pieces diagonally in a recursive fashion towards the opponent so I can capture multiple enemy pieces.
+* #### Resignation
+    * The player must be able to resign any game he or she is playing.
+    * ##### Win 
+        * As a player who won the game, I want to see the results of a completed game so I can know who won.
+    * ##### Lose
+        * As a player who lost the game, I want to see the results of a completed game so I can know who won.
+ * #### King
+    * As a player with a piece in the final row, I want to be forced to king my piece when the piece reaches the row closest to my opponent, so I follow the rules of the game.
+    
+    
+
 ### Roadmap of Enhancements
 > _Provide a list of top-level features in the order you plan to consider them._
 
 * #### AI Opponent
-    * The player must be able to play against a computer opponent
+    * The player must be able to play against a computer opponent.
 * #### Replay Mode
-    * The player must be able to watch replays of their match so they can improve their
+    * The player must be able to watch replays of their match so they can improve their skills.
 
 
 ## Application Domain
 
 This section describes the application domain.
 
-![The WebCheckers Domain Model](domain-model-placeholder.png)
+Below are the entities involved in the Checkers application domain. In every game of Checkers
+there always exists two players who control pieces that occupy squares on the board.
+There is a logical concept of a "game" between these two players that is modeled in the diagram
+for cohesion. 
+
+![The WebCheckers Domain Model](domain_model_team.png)
 
 > _Provide a high-level overview of the domain for this application. You
 > can discuss the more important domain entities and their relationship
 > to each other._
 
+The WebCheckers application consists of several related elements to form the application. 
+The Game is the central element. A game consists of two players (who can be either an AI or Human).
+These players manipulate pieces that can occupy the 64 squares on the board. These pieces can either be
+normal pieces or king pieces. Each player takes turn making their moves. While manipulating the pieces, the moves made
+have to obey the rules of the game which are the standard American rules.
 
 ## Architecture and Design
 
