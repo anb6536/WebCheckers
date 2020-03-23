@@ -24,8 +24,7 @@ This is a Web based Application for the WebChecker Game. Players can log into th
 > _Provide a very brief statement about the project and the most
 > important user group and user goals._
 
-The WebCheckers project is a web based implementation of the Checkers board game in which players are able to sign in and challenge each other to play games of Checkers.
-Players should be able to sign in, select other players to play against and be able to play the game according to the standard rules of Checkers
+Users of the WebCheckers sign in in order to challenge other players to and play games of Checkers.
 
 ### Glossary and Acronyms
 > _Provide a table of terms and acronyms._
@@ -39,9 +38,10 @@ Players should be able to sign in, select other players to play against and be a
 
 This section describes the features of the application.
 
-> _In this section you do not need to be exhaustive and list every
-> story.  Focus on top-level features from the Vision document and
-> maybe Epics and critical Stories._
+> Players must be able to sign-in to the application and play a game against other players. By using drag and drop capabilities,
+> players can move pieces through the board, capturing or jumping over opponents' pieces.
+> If players reach their opponent's end of the board, they will be "kinged", granting that piece the ability to move both forward and backward.
+>
 
 ### Definition of MVP
 > _Provide a simple description of the Minimum Viable Product._
