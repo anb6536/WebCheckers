@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.google.gson.Gson;
+import com.webcheckers.api.CheckTurnApiRoute;
 import com.webcheckers.api.SignInApiRoute;
 import com.webcheckers.api.SignOutRoute;
 import com.webcheckers.appl.PlayerLobby;
@@ -65,6 +66,7 @@ public class WebServer {
   public static final String GAME_URL = "/game";
   public static final String SUBMITTURN_URL = "/submitTurn";
   public static final String VALIDATEMOVE_URL = "/validateMove";
+  public static final String CHECKTURN_URL = "/checkTurn";
   //
   // Attributes
   //
@@ -157,6 +159,7 @@ public class WebServer {
     get(GAME_URL, new GetGameRoute(templateEngine, lobby, gson));
     post(SUBMITTURN_URL, new SubmitTurnApiRoute(gson));
     post(VALIDATEMOVE_URL, new ValidateMoveApiRoute(gson));
+    post(CHECKTURN_URL, new CheckTurnApiRoute(gson, lobby));
     LOG.config("WebServer is initialized.");
   }
 

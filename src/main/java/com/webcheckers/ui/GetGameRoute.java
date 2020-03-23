@@ -90,8 +90,6 @@ public class GetGameRoute implements Route {
         // if the opponent
         if (opponent != null) {
             lobby.addMatch(player, opponent);
-            player.joinedGame();
-            opponent.joinedGame();
             vm.put(RED_PLAYER, player);
             vm.put(WHITE_PLAYER, opponent);
             vm.put(BOARD, boardView);
