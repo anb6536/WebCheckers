@@ -35,9 +35,10 @@ public class GetGameRoute implements Route {
      * 
      * @param templateEngine used to render the page
      * @param lobby          a reference of the player lobby
+     * @param gson           a reference to the GSON object used to serialize information
      */
-    public GetGameRoute(TemplateEngine templateEngine, PlayerLobby lobby, Gson gson) {
-        this.templateEngine = templateEngine;
+    public GetGameRoute(final TemplateEngine templateEngine, PlayerLobby lobby, Gson gson) {
+        this.templateEngine = Objects.requireNonNull(templateEngine, "templateEngine is required");
         this.lobby = lobby;
         this.gson = gson;
         LOG.config("GetGameRoute is Initialized");
