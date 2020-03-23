@@ -10,18 +10,20 @@ import spark.Request;
 import spark.Response;
 import spark.TemplateEngine;
 
-class SubmitTurnApiRoute implements spark.Route {
+public class SubmitTurnApiRoute implements spark.Route {
+    private static final Logger LOG = Logger.getLogger(SubmitTurnApiRoute.class.getName());
     final Gson gson;
     /**
      * The submitturnApiRoute constructor
      */
-    public SubmitTurnApiRoute(final TemplateEngine templateEngine, final Gson gson) {
+    public SubmitTurnApiRoute(final Gson gson) {
         this.gson = Objects.requireNonNull(gson, "gson is required");
     }
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
-        request.contentType();
+        String s = request.contentType();
+        LOG.fine(s);
         return null;
     }
 

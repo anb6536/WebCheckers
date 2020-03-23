@@ -11,6 +11,8 @@ import com.google.gson.Gson;
 import com.webcheckers.api.SignInApiRoute;
 import com.webcheckers.api.SignOutRoute;
 import com.webcheckers.appl.PlayerLobby;
+import com.webcheckers.api.SubmitTurnApiRoute;
+import com.webcheckers.api.ValidateMoveApiRoute;
 
 import spark.TemplateEngine;
 
@@ -61,6 +63,8 @@ public class WebServer {
   public static final String SIGNOUT_URL = "/signout";
   public static final String SIGNIN_URL = "/signin";
   public static final String GAME_URL = "/game";
+  public static final String SUBMITTURN_URL = "/submitTurn";
+  public static final String VALIDATEMOVE_URL = "/validateMove";
   //
   // Attributes
   //
@@ -151,6 +155,8 @@ public class WebServer {
     get(SIGNIN_URL, new SignInRoute(templateEngine));
     post(SIGNIN_URL, new SignInApiRoute(lobby, templateEngine));
     get(GAME_URL, new GetGameRoute(templateEngine, lobby, gson));
+    post(SUBMITTURN_URL, new SubmitTurnApiRoute(gson));
+    post(VALIDATEMOVE_URL, new ValidateMoveApiRoute(gson));
     LOG.config("WebServer is initialized.");
   }
 
