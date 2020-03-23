@@ -150,11 +150,11 @@ public class WebServer {
     post(SIGNOUT_URL, new SignOutRoute(lobby));
     get(SIGNIN_URL, new SignInRoute(templateEngine));
     post(SIGNIN_URL, new SignInApiRoute(lobby, templateEngine));
-    get(GAME_URL, new GetGameRoute(templateEngine, lobby));
+    get(GAME_URL, new GetGameRoute(templateEngine, lobby, gson));
     LOG.config("WebServer is initialized.");
   }
 
-  public PlayerLobby getLobby(){
+  public PlayerLobby getLobby() {
     return this.lobby;
   }
 

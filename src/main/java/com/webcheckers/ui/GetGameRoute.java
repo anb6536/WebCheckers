@@ -9,8 +9,8 @@ import spark.*;
 import java.util.*;
 import java.util.logging.Logger;
 import static com.webcheckers.model.Game.Mode.PLAY;
-import static com.webcheckers.model.Piece.color.RED;
-import static com.webcheckers.model.Piece.color.WHITE;
+import static com.webcheckers.model.Piece.Color.RED;
+import static com.webcheckers.model.Piece.Color.WHITE;
 import static spark.Spark.halt;
 
 public class GetGameRoute implements Route {
@@ -32,19 +32,21 @@ public class GetGameRoute implements Route {
 
     /**
      * instantiates the GetGameRoute
+     * 
      * @param templateEngine used to render the page
-     * @param lobby a reference of the player lobby
+     * @param lobby          a reference of the player lobby
      */
-    public GetGameRoute(TemplateEngine templateEngine, PlayerLobby lobby) {
+    public GetGameRoute(TemplateEngine templateEngine, PlayerLobby lobby, Gson gson) {
         this.templateEngine = templateEngine;
         this.lobby = lobby;
-        this.gson = new Gson();
+        this.gson = gson;
         LOG.config("GetGameRoute is Initialized");
     }
 
     /**
      * handles any request to view /game
-     * @param request the request made to view the page
+     * 
+     * @param request  the request made to view the page
      * @param response our response to that request
      * @return the templateEngines view
      * @throws Exception
@@ -64,8 +66,9 @@ public class GetGameRoute implements Route {
         String opponentName = request.queryParams("opponent");
         Player opponent = lobby.getPlayer(opponentName);
 
-        // if the opponent is in the gmae, return to the home page with an error parameter
-        if ( opponentName!=null && opponent.isInGame() ){
+        // if the opponent is in the gmae, return to the home page with an error
+        // parameter
+        if (opponentName != null && opponent.isInGame()) {
             player.leftGame();
             response.redirect("?error=true");
             halt();
@@ -84,15 +87,14 @@ public class GetGameRoute implements Route {
         BoardView opponentBoard = board.flipBoard(boardView);
 
         // if the opponent
-        if ( opponent != null ){
+        if (opponent != null) {
             lobby.addMatch(player, opponent);
             player.joinedGame();
             opponent.joinedGame();
             vm.put(RED_PLAYER, player);
             vm.put(WHITE_PLAYER, opponent);
             vm.put(BOARD, boardView);
-        }
-        else{
+        } else {
             vm.put(RED_PLAYER, lobby.getOpponent(player));
             vm.put(WHITE_PLAYER, player);
             vm.put(BOARD, opponentBoard);

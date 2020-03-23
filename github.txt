@@ -1,0 +1,61 @@
+commit a5f6be0b07354088d3cb2b9da02e2c712be998e7
+Author: AbuBakr <aggbak@gmail.com>
+Date:   Thu Feb 13 23:35:56 2020 -0500
+
+    Adding AbuBakr (me) to the member list
+
+commit 2a46117ea6f122a93000902578e16de3f5559827
+Author: HugGa <HugGa@users.noreply.github.com>
+Date:   Thu Feb 13 18:25:28 2020 -0500
+
+    Update Readme with my name
+
+commit 441708069e78160401c0656ae9b7981e6cdd83e3
+Author: Aahish Balimane <47157077+anb6536@users.noreply.github.com>
+Date:   Thu Feb 13 17:47:09 2020 -0500
+
+    Delete .README.md.un~
+
+commit 0097f1c6e8d502dc87a9520a1fce346c29a62967
+Author: Aahish Balimane <47157077+anb6536@users.noreply.github.com>
+Date:   Thu Feb 13 17:46:58 2020 -0500
+
+    Delete README.md~
+
+commit d94c847b0b01d67f89ae38654f5b403ff07c3ca2
+Author: amp7368 <47309189+amp7368@users.noreply.github.com>
+Date:   Thu Feb 13 17:45:28 2020 -0500
+
+    added Aaron's name
+
+commit 4ea8481e8a693bcbe2b745c2bcf6fb8607bc3888
+Author: anb6536 <anb6536@rit.edu>
+Date:   Thu Feb 13 17:05:53 2020 -0500
+
+    Added my name to the README.md file
+
+commit cc0a57ed88309083216e0f7aa6c7c6a0cc5705bf
+Author: KennBMartinez <kbmvse@rit.edu>
+Date:   Fri May 31 16:46:59 2019 -0400
+
+    Updates for you to always include disclaimers
+
+commit 58a0d2291cd13129702c22c1d52aa5c44b4f150a
+Author: KennBMartinez <kbmvse@rit.edu>
+Date:   Fri May 31 16:39:27 2019 -0400
+
+    For your benefit.
+    
+    Share if you think something else is needed.
+
+commit ce03d52fe9e6b3b6c9d824d65d9e77777fe1e31e
+Author: KennBMartinez <kbmvse@rit.edu>
+Date:   Fri May 31 16:35:55 2019 -0400
+
+    Initial WEBCHECKERS SEED REPO 2188-2191
+
+commit 7e7b18fcb7e7d1297d8985bf430ed1f27fa92151
+Author: KennBMartinez <kbmvse@rit.edu>
+Date:   Fri May 31 16:32:48 2019 -0400
+
+    Initial commit
