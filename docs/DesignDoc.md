@@ -24,7 +24,8 @@ This is a Web based Application for the WebChecker Game. Players can log into th
 > _Provide a very brief statement about the project and the most
 > important user group and user goals._
 
-Change
+The WebCheckers project is a web based implementation of the Checkers board game in which players are able to sign in and challenge each other to play games of Checkers.
+Players should be able to sign in, select other players to play against and be able to play the game according to the standard rules of Checkers
 
 ### Glossary and Acronyms
 > _Provide a table of terms and acronyms._
