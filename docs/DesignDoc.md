@@ -24,7 +24,7 @@ This is a Web based Application for the WebChecker Game. Players can log into th
 > _Provide a very brief statement about the project and the most
 > important user group and user goals._
 
-Users of the WebCheckers sign in in order to challenge other players to and play games of Checkers.
+Users of the WebCheckers application sign in in order to challenge other players to and play games of Checkers.
 
 ### Glossary and Acronyms
 > _Provide a table of terms and acronyms._
@@ -41,16 +41,24 @@ This section describes the features of the application.
 > Players must be able to sign-in to the application and play a game against other players. By using drag and drop capabilities,
 > players can move pieces through the board, capturing or jumping over opponents' pieces.
 > If players reach their opponent's end of the board, they will be "kinged", granting that piece the ability to move both forward and backward.
->
+> While playing, either player can resign, ending the game and forfeiting the match.
+> Players will also be able to play against a computer opponent and be able to watch replays of their matches.
 
 ### Definition of MVP
-> _Provide a simple description of the Minimum Viable Product._
+> Each player must be able to sign in before playing a game and be able to sign out when finished playing.
+> Two players must be able to play a game of checkers based upon the American rules. Either player may choose to resign at any point,
+> which ends the game.
 
 ### MVP Features
 > _Provide a list of top-level Epics and/or Stories of the MVP._
 
 ### Roadmap of Enhancements
 > _Provide a list of top-level features in the order you plan to consider them._
+
+* #### AI Opponent
+    * The player must be able to play against a computer opponent
+* #### Replay Mode
+    * The player must be able to watch replays of their match so they can improve their
 
 
 ## Application Domain
