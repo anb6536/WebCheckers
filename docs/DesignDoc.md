@@ -24,6 +24,8 @@ This is a Web based Application for the WebChecker Game. Players can log into th
 > _Provide a very brief statement about the project and the most
 > important user group and user goals._
 
+Change
+
 ### Glossary and Acronyms
 > _Provide a table of terms and acronyms._
 
