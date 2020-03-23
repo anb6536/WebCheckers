@@ -92,10 +92,10 @@ This section describes the features of the application.
 
 This section describes the application domain.
 
-Below are the entities involved in the Checkers application domain. In every game of Checkers
+<!-- Below are the entities involved in the Checkers application domain. In every game of Checkers
 there always exists two players who control pieces that occupy squares on the board.
 There is a logical concept of a "game" between these two players that is modeled in the diagram
-for cohesion. 
+for cohesion. --> 
 
 ![The WebCheckers Domain Model](domain_model_team.png)
 
@@ -135,10 +135,19 @@ Details of the components within these tiers are supplied below.
 This section describes the web interface flow; this is how the user views and interacts
 with the WebCheckers application.
 
-![The WebCheckers Web Interface Statechart](web-interface-placeholder.png)
+![The WebCheckers Web Interface Statechart](web-checkers-interface-statechart.png)
 
 > _Provide a summary of the application's user interface.  Describe, from
 > the user's perspective, the flow of the pages in the web application._
+
+A Player starts from having no connection to the Webserver to connecting through the home page.
+Once a user is connected to the home page, they are presented with some welcome information about the application.
+They can either choose to sign in at this point, or exit the application and terminate their connection. If a player chooses
+to sign in, they will be presented with a form page to enter a valid user name. If the username is invalid they will 
+return to this page with an error message telling them the format of a proper username. If the username is valid, they will
+return to the home page being able to select from the other players to challenge a game. Once a player,
+enters a game they will enter the game page which displays the board and pieces. When either player wins or loses, they can go back to the home page and either
+select another game or sign-out. 
 
 
 ### UI Tier
