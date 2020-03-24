@@ -10,6 +10,15 @@ public class Game {
     private Player player1;
     private Player player2;
     private Player currentTurn;
+    private Board playBoard;
+
+    public boolean submitMove(Move move) {
+        return playBoard.makeMove(move);
+    }
+
+    public boolean validateMove(Move move) {
+        return playBoard.validateMove(move);
+    }
 
     public boolean isPlayerTurn(Player player) {
         return currentTurn == player;
@@ -27,10 +36,11 @@ public class Game {
         }
     }
 
-    public Game(Player player1, Player player2) {
+    public Game(Player player1, Player player2, Board board) {
         this.player1 = player1;
         this.player2 = player2;
         this.currentTurn = player1;
+        this.playBoard = board;
     }
 
 }

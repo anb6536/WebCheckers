@@ -26,6 +26,18 @@ public class Space {
         this.piece = null;
     }
 
+    public Space(int cellIdx, Color color) {
+        this.cellIdx = cellIdx;
+        this.color = color;
+        this.piece = null;
+    }
+
+    public Space(int cellIdx, Color color, Piece piece) {
+        this.cellIdx = cellIdx;
+        this.color = color;
+        this.piece = piece;
+    }
+
     /**
      * get the index of the space
      * 

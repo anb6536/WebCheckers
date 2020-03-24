@@ -157,8 +157,8 @@ public class WebServer {
     get(SIGNIN_URL, new SignInRoute(templateEngine));
     post(SIGNIN_URL, new SignInApiRoute(lobby, templateEngine));
     get(GAME_URL, new GetGameRoute(templateEngine, lobby, gson));
-    post(SUBMITTURN_URL, new SubmitTurnApiRoute(gson));
-    post(VALIDATEMOVE_URL, new ValidateMoveApiRoute(gson));
+    post(SUBMITTURN_URL, new SubmitTurnApiRoute(gson, lobby));
+    post(VALIDATEMOVE_URL, new ValidateMoveApiRoute(gson, lobby));
     post(CHECKTURN_URL, new CheckTurnApiRoute(gson, lobby));
     LOG.config("WebServer is initialized.");
   }

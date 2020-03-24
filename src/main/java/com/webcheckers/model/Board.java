@@ -1,14 +1,54 @@
 package com.webcheckers.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.webcheckers.model.Piece.Color.RED;
 import static com.webcheckers.model.Piece.Color.WHITE;
 
-public class Board {
-    public Board() {
+import java.util.ArrayList;
+import java.util.List;
 
+public class Board {
+    private BoardView view;
+
+    public Board(BoardView view) {
+        this.view = view;
+    }
+
+    public Board(List<Row> rows) {
+        this.view = new BoardView(rows);
+    }
+
+    public BoardView getBoardView() {
+        return view;
+    }
+
+    public boolean validateMove(Move move) {
+        // TODO: Actually validate the move
+        return true;
+    }
+
+    public boolean makeMove(Move move) {
+        if (!validateMove(move)) {
+            return false;
+        }
+        setPiece(move.end, view.getSpace(move.start).getPiece());
+        removePiece(move.start);
+        return true;
+    }
+
+    private void setPiece(Position position, Piece piece) {
+        setPiece(position.row, position.column, piece);
+    }
+
+    private void setPiece(int row, int column, Piece piece) {
+        view.getSpace(row, column).setPiece(piece);
+    }
+
+    private void removePiece(Position position) {
+
+    }
+
+    private void removePiece(int row, int column) {
+        setPiece(row, column, null);
     }
 
     /**
@@ -16,7 +56,7 @@ public class Board {
      * 
      * @return the start of a board
      */
-    public BoardView makeBoard() {
+    public static Board makeBoard() {
 
         // create the list of rows
         List<Row> rows = new ArrayList<>();
@@ -66,17 +106,16 @@ public class Board {
             rows.add(row);
         }
         // return the boardview of the board
-        BoardView boardView = new BoardView(rows);
-        return boardView;
+        return new Board(rows);
     }
 
     /**
      *
      * @param boardView the reference of the board filled with spaces
      */
-    public void addPiece(BoardView boardView) {
+    public void addPieces() {
         // get the rows
-        List<Row> rows = boardView.getRows();
+        List<Row> rows = view.getRows();
         int i = 0;
 
         // for every row, add pieces to every proper space
@@ -112,9 +151,9 @@ public class Board {
      *                  way
      * @return the flipped board
      */
-    public BoardView flipBoard(BoardView boardView) {
+    public Board flipBoard() {
         Row[] rows = new Row[8];
-        List<Row> rows1 = boardView.getRows();
+        List<Row> rows1 = view.getRows();
         List<Row> newRow = new ArrayList<>();
 
         // start at the other end of the board
@@ -144,7 +183,6 @@ public class Board {
         }
 
         // return the flipped board
-        BoardView boardView1 = new BoardView(newRow);
-        return boardView1;
+        return new Board(newRow);
     }
 }

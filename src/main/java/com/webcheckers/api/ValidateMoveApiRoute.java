@@ -1,7 +1,8 @@
 package com.webcheckers.api;
 
-import java.net.URL;
 import java.net.URLDecoder;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -10,41 +11,43 @@ import com.webcheckers.appl.PlayerLobby;
 import com.webcheckers.model.Move;
 import com.webcheckers.util.Message;
 
-import org.eclipse.jetty.util.UrlEncoded;
-
 import spark.Request;
 import spark.Response;
-import spark.TemplateEngine;
 
 public class ValidateMoveApiRoute implements spark.Route {
     private static final Logger LOG = Logger.getLogger(ValidateMoveApiRoute.class.getName());
-    final Gson gson;
+    private final Gson gson;
+    private final PlayerLobby lobby;
 
     /**
      * The submitturnApiRoute constructor
      */
-    public ValidateMoveApiRoute(final Gson gson) {
+    public ValidateMoveApiRoute(final Gson gson, final PlayerLobby lobby) {
         this.gson = Objects.requireNonNull(gson, "gson is required");
+        this.lobby = Objects.requireNonNull(lobby, "lobby is required");
         LOG.config("ValidateMoveApiRoute initialized");
     }
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
-        String preScreen = request.body();
-        String postScreen = "";
-        String[] list = preScreen.split("&");
-        for (String str : list) {
-            if (str.matches("actionData=.*")) {
-                postScreen = str.replace("actionData=", "");
-                break;
-            }
+        Map<String, String> urlParameters = new HashMap<String, String>();
+        String[] kvPairs = request.body().split("&");
+        for (String str : kvPairs) {
+            String[] splitted = str.split("=");
+            urlParameters.put(splitted[0], URLDecoder.decode(splitted[1], "UTF-8"));
         }
-
+        String postScreen = urlParameters.get("actionData");
         String s = URLDecoder.decode(postScreen, "UTF-8");
-        Move move = gson.fromJson(s, Move.class);
-        // TODO: implement ACTUAL VALIDATION and return the message that tells us if it's good or not
-        String v = gson.toJson(Message.info("good"));
-        // For this you just return a GSON of message of error or info and you'll get it to work.
+        String gameID = urlParameters.get("gameID");
+        Move move = gson.fromJson(URLDecoder.decode(gameID, "UTF-8"), Move.class);
+        String v = null;
+        if (lobby.getGame(s).validateMove(move)) {
+            v = gson.toJson(Message.info("Your move has been made"));
+        } else {
+            v = gson.toJson(Message.error("Your move is invalid"));
+        }
+        // For this you just return a GSON of message of error or info and you'll get it
+        // to work.
         return v;
     }
 }

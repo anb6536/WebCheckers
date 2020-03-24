@@ -2,6 +2,7 @@ package com.webcheckers.appl;
 
 import java.util.*;
 
+import com.webcheckers.model.Board;
 import com.webcheckers.model.Game;
 import com.webcheckers.model.Player;
 import freemarker.ext.beans.HashAdapter;
@@ -41,13 +42,13 @@ public class PlayerLobby {
      * @param player1 the first player
      * @param player2 the second player
      */
-    public void addMatch(Player player1, Player player2) {
+    public void addMatch(Player player1, Player player2, Board board) {
         // register that these players are opponents
         synchronized (playerSyncObject) {
             synchronized (opponentSyncObject) {
                 opponents.put(player1, player2);
                 gameIds.put(this.id, player1);
-                Game game = new Game(player1, player2);
+                Game game = new Game(player1, player2, board);
                 allGames.put(String.valueOf(this.id), game);
                 this.id++;
                 player1.joinedGame();

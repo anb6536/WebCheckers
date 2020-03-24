@@ -35,7 +35,8 @@ public class GetGameRoute implements Route {
      * 
      * @param templateEngine used to render the page
      * @param lobby          a reference of the player lobby
-     * @param gson           a reference to the GSON object used to serialize information
+     * @param gson           a reference to the GSON object used to serialize
+     *                       information
      */
     public GetGameRoute(final TemplateEngine templateEngine, PlayerLobby lobby, Gson gson) {
         this.templateEngine = Objects.requireNonNull(templateEngine, "templateEngine is required");
@@ -82,21 +83,20 @@ public class GetGameRoute implements Route {
         vm.put(CURRENT_USER, player);
 
         // create the board to give to both players
-        Board board = new Board();
-        BoardView boardView = board.makeBoard();
-        board.addPiece(boardView);
-        BoardView opponentBoard = board.flipBoard(boardView);
+        Board board = Board.makeBoard();
+        board.addPieces();
+        Board opponentBoard = board.flipBoard();
 
         // if the opponent
         if (opponent != null) {
-            lobby.addMatch(player, opponent);
+            lobby.addMatch(player, opponent, board);
             vm.put(RED_PLAYER, player);
             vm.put(WHITE_PLAYER, opponent);
-            vm.put(BOARD, boardView);
+            vm.put(BOARD, board.getBoardView());
         } else {
             vm.put(RED_PLAYER, lobby.getOpponent(player));
             vm.put(WHITE_PLAYER, player);
-            vm.put(BOARD, opponentBoard);
+            vm.put(BOARD, opponentBoard.getBoardView());
         }
 
         // attribute information about this game to the session
