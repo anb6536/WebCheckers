@@ -1,12 +1,10 @@
----
-geometry: margin=1in
----
-# PROJECT Design Documentation
+<!--- geometry: margin=1in --->
+# WebCheckers Design Documentation
 
-> _The following template provides the headings for your Design
+<!--- > _The following template provides the headings for your Design
 > Documentation.  As you edit each section make sure you remove these
 > commentary 'blockquotes'; the lines that start with a > character
-> and appear in the generated PDF in italics._
+> and appear in the generated PDF in italics._ --->
 
 ## Team Information
 * Team name: TEAM-A
@@ -21,8 +19,8 @@ geometry: margin=1in
 This is a Web based Application for the WebChecker Game. Players can log into there account and play the game of WebChecker with anyone who is present in the lobby. The game of WebCheckers is a board game where each player is given 12 pieces of color. The goal of the game is to eliminate all the opponent pieces present on the game board.
 
 ### Purpose
-> _Provide a very brief statement about the project and the most
-> important user group and user goals._
+<!--- > _Provide a very brief statement about the project and the most
+> important user group and user goals._ --->
 
 Users of the WebCheckers application sign in in order to challenge other players to and play games of Checkers.
 
@@ -50,7 +48,7 @@ This section describes the features of the application.
 > which ends the game.
 
 ### MVP Features
-> _Provide a list of top-level Epics and/or Stories of the MVP._
+<!--- > _Provide a list of top-level Epics and/or Stories of the MVP._ --->
 
 * #### Player Sign-in
     * As a player, I want to be able to sign-in so that I can play a game of checkers
@@ -80,7 +78,7 @@ This section describes the features of the application.
     
 
 ### Roadmap of Enhancements
-> _Provide a list of top-level features in the order you plan to consider them._
+<!--- > _Provide a list of top-level features in the order you plan to consider them._ --->
 
 * #### AI Opponent
     * The player must be able to play against a computer opponent.
@@ -99,9 +97,9 @@ for cohesion. -->
 
 ![The WebCheckers Domain Model](domain_model_team.png)
 
-> _Provide a high-level overview of the domain for this application. You
+<!--- > _Provide a high-level overview of the domain for this application. You
 > can discuss the more important domain entities and their relationship
-> to each other._
+> to each other._ --->
 
 The WebCheckers application consists of several related elements to form the application. 
 The Game is the central element. A game consists of two players (who can be either an AI or Human).
@@ -137,8 +135,8 @@ with the WebCheckers application.
 
 ![The WebCheckers Web Interface Statechart](web-checkers-interface-statechart.png)
 
-> _Provide a summary of the application's user interface.  Describe, from
-> the user's perspective, the flow of the pages in the web application._
+<!--- > _Provide a summary of the application's user interface.  Describe, from
+> the user's perspective, the flow of the pages in the web application._ --->
 
 A Player starts from having no connection to the Webserver to connecting through the home page.
 Once a user is connected to the home page, they are presented with some welcome information about the application.
