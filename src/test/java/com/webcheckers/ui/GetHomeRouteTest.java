@@ -1,5 +1,6 @@
 package com.webcheckers.ui;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -111,17 +112,10 @@ public class GetHomeRouteTest {
         when(engine.render(any(ModelAndView.class))).thenAnswer(testHelper.makeAnswer());
         // handle the request
         try {
-            CuT.handle(request, response);
+            assertNull(CuT.handle(request, response));
         } catch (Exception e) {
             fail(e);
         }
-
-        // check that everything is good
-        testHelper.assertViewModelAttribute("title", "Welcome!");
-        testHelper.assertViewModelAttribute("numLoggedIn", 2);
-        testHelper.assertViewModelAttribute("signedIn", true);
-        testHelper.assertViewModelAttribute("opponent", opponent);
-        testHelper.assertViewModelAttribute("currentUser", currentPlayer);
     }
 
     @Test
@@ -129,8 +123,6 @@ public class GetHomeRouteTest {
         Player currentPlayer = new Player(PLAYER_A);
         Player opponent = new Player(PLAYER_B);
         // simulate the other player starting the game
-        currentPlayer.joinedGame();
-        opponent.joinedGame();
         playerLobby.addPlayer(PLAYER_A);
         playerLobby.addPlayer(PLAYER_B);
         playerLobby.addMatch(opponent, currentPlayer, board);

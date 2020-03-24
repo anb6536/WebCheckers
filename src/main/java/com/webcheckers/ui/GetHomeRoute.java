@@ -1,15 +1,16 @@
 package com.webcheckers.ui;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.webcheckers.appl.PlayerLobby;
 import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
 
-import static spark.Spark.halt;
-
-import com.webcheckers.util.OneToOneMap;
 import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
@@ -53,8 +54,6 @@ public class GetHomeRoute implements Route {
    */
   @Override
   public Object handle(Request request, Response response) {
-    Player player = request.session().attribute("UserAttrib");
-
     LOG.finer("GetHomeRoute is invoked.");
     //
     Map<String, Object> vm = new HashMap<>();
