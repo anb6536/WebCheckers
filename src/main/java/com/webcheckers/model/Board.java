@@ -44,7 +44,7 @@ public class Board {
     }
 
     private void removePiece(Position position) {
-
+        removePiece(position.row, position.column);
     }
 
     private void removePiece(int row, int column) {
