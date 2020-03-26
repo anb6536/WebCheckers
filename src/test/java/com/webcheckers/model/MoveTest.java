@@ -10,7 +10,7 @@ public class MoveTest {
         Position position1 = Position.makePosition(1, 0);
         Position position2 = Position.makePosition(1, 3);
         Move move = Move.createMove(position1, position2);
-        Move move2 = Move.createMove(position1, position2);
+        Move move2 = Move.createMove(position2, position1);
         move.reverse();
         assertEquals(move, move2, "Move reversed should equal move2");
     }
