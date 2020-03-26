@@ -9,9 +9,10 @@ public class Move {
     public Position start;
     public Position end;
 
-    // Used for GSON, please don't uses
+    // Used for GSON, please don't use
     public Move() {
-
+        start = new Position();
+        end = new Position();
     }
 
     public Move(Position start, Position end) {
