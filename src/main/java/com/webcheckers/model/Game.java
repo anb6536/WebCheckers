@@ -7,10 +7,24 @@ public class Game {
         PLAY, SPECTATOR, REPLAY
     }
 
+    /**
+     * The initiating player, who is always red
+     */
     private Player player1;
+    /**
+     * The recieving of the challenge player, who is always white
+     */
     private Player player2;
     private Player currentTurn;
     private Board playBoard;
+
+    public Player getRedPlayer() {
+        return player1;
+    }
+
+    public Player getWhitePlayer() {
+        return player2;
+    }
 
     public boolean submitMove(Move move) {
         return playBoard.makeMove(move);
