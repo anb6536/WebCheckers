@@ -9,6 +9,16 @@ public class Move {
     public Position start;
     public Position end;
 
+    // Used for GSON, please don't uses
+    public Move() {
+
+    }
+
+    public Move(Position start, Position end) {
+        this.start = start;
+        this.end = end;
+    }
+
     /**
      * This flips the positions around, used for backing up moves
      */

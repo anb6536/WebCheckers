@@ -9,6 +9,17 @@ public class Position {
     public int row;
     public int column;
 
+    // Used for GSON, please don't use
+    public Position() {
+        row = 0;
+        column = 0;
+    }
+
+    public Position(int row, int column) {
+        this.row = row;
+        this.column = column;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
