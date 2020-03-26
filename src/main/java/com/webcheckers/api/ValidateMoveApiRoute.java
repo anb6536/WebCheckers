@@ -40,14 +40,13 @@ public class ValidateMoveApiRoute implements spark.Route {
         String s = URLDecoder.decode(postScreen, "UTF-8");
         String gameID = urlParameters.get("gameID");
         Move move = gson.fromJson(URLDecoder.decode(gameID, "UTF-8"), Move.class);
-        String v = null;
-        if (lobby.getGame(s).validateMove(move)) {
-            v = gson.toJson(Message.info("Your move has been made"));
-        } else {
-            v = gson.toJson(Message.error("Your move is invalid"));
-        }
+
         // For this you just return a GSON of message of error or info and you'll get it
         // to work.
-        return v;
+        if (lobby.getGame(s).validateMove(move)) {
+            return gson.toJson(Message.info("Your move has been made"));
+        } else {
+            return gson.toJson(Message.error("Your move is invalid"));
+        }
     }
 }
