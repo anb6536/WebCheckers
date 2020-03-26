@@ -9,15 +9,11 @@ public class Move {
     public Position start;
     public Position end;
 
-    // Used for GSON, please don't use
-    public Move() {
-        start = new Position();
-        end = new Position();
-    }
-
-    public Move(Position start, Position end) {
-        this.start = start;
-        this.end = end;
+    public static Move createMove(Position start, Position end) {
+        Move move = new Move();
+        move.start = start;
+        move.end = end;
+        return move;
     }
 
     /**

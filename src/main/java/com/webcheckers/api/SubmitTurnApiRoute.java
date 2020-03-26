@@ -38,9 +38,9 @@ public class SubmitTurnApiRoute implements spark.Route {
         String postScreen = urlParameters.get("actionData");
         String s = URLDecoder.decode(postScreen, "UTF-8");
         String gameID = urlParameters.get("gameID");
-        Move move = gson.fromJson(URLDecoder.decode(gameID, "UTF-8"), Move.class);
-        if (lobby.getGame(s).validateMove(move)) {
-            lobby.getGame(s).submitMove(move);
+        Move move = gson.fromJson(URLDecoder.decode(s, "UTF-8"), Move.class);
+        if (lobby.getGame(gameID).validateMove(move)) {
+            lobby.getGame(gameID).submitMove(move);
             return gson.toJson(Message.info("Your move has been made"));
         } else {
             return gson.toJson(Message.error("Your move is invalid"));

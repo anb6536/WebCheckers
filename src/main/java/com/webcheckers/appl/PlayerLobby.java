@@ -42,7 +42,7 @@ public class PlayerLobby {
      * @param player1 the first player
      * @param player2 the second player
      */
-    public void addMatch(Player player1, Player player2, Board board) {
+    public synchronized void addMatch(Player player1, Player player2, Board board) {
         // register that these players are opponents
         synchronized (opponentSyncObject) {
             opponents.put(player1, player2);

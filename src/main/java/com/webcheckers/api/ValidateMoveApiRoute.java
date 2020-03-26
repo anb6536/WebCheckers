@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import com.google.gson.Gson;
 import com.webcheckers.appl.PlayerLobby;
+import com.webcheckers.model.Game;
 import com.webcheckers.model.Move;
 import com.webcheckers.util.Message;
 
@@ -39,11 +40,12 @@ public class ValidateMoveApiRoute implements spark.Route {
         String postScreen = urlParameters.get("actionData");
         String s = URLDecoder.decode(postScreen, "UTF-8");
         String gameID = urlParameters.get("gameID");
-        Move move = gson.fromJson(URLDecoder.decode(gameID, "UTF-8"), Move.class);
+        Move move = gson.fromJson(URLDecoder.decode(s, "UTF-8"), Move.class);
 
         // For this you just return a GSON of message of error or info and you'll get it
         // to work.
-        if (lobby.getGame(s).validateMove(move)) {
+        Game game = lobby.getGame(gameID);
+        if (game.validateMove(move)) {
             return gson.toJson(Message.info("Your move has been made"));
         } else {
             return gson.toJson(Message.error("Your move is invalid"));

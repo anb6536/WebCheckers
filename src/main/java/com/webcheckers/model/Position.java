@@ -8,18 +8,12 @@ public class Position {
     // C# and properties are not a language defined existence.
     public int row;
     public int column;
-
-    // Used for GSON, please don't use
-    public Position() {
-        row = 0;
-        column = 0;
+    public static Position makePosition(int row, int column) { 
+        Position pos = new Position();
+        pos.row = row;
+        pos.column = column;
+        return pos;
     }
-
-    public Position(int row, int column) {
-        this.row = row;
-        this.column = column;
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;

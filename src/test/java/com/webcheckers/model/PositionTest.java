@@ -9,8 +9,8 @@ public class PositionTest {
     public void equalityTest() {
         int row = 12;
         int column = 123;
-        Position position1 = new Position(row, column);
-        Position position2 = new Position(row, column);
+        Position position1 = Position.makePosition(row, column);
+        Position position2 = Position.makePosition(row, column);
         assertEquals(position1, position2, "Positions 1 and 2 should be equal since they're the same row & column");
     }
 }
