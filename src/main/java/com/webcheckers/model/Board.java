@@ -23,6 +23,7 @@ public class Board {
 
     public boolean validateMove(Move move) {
         // TODO: Actually validate the move
+
         return true;
     }
 

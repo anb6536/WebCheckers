@@ -18,7 +18,7 @@ geometry: margin=1in
 
 ## Executive Summary
 
-This is a Web based Application for the WebChecker Game. Players can log into there account and play the game of WebChecker with anyone who is present in the lobby. The game of WebCheckers is a board game where each player is given 12 pieces of color. The goal of the game is to eliminate all the opponent pieces present on the game board.
+This is a Web based Application for the WebChecker Game. Players can log into their account and play the game of WebChecker with anyone who is present in the lobby. The game of WebCheckers is a board game where each player is given 12 pieces of color. The goal of the game is to eliminate all the opponent pieces present on the game board.
 
 ### Purpose
 > _Provide a very brief statement about the project and the most
