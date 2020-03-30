@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.webcheckers.appl.PlayerLobby;
 import com.webcheckers.model.Game;
 import com.webcheckers.model.Move;
+import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
 
 import spark.Request;
@@ -45,7 +46,11 @@ public class ValidateMoveApiRoute implements spark.Route {
         // For this you just return a GSON of message of error or info and you'll get it
         // to work.
         Game game = lobby.getGame(gameID);
-        if (game.validateMove(move)) {
+        Player currentPlayer = request.session().attribute("UserAttrib");
+        if (currentPlayer == null) {
+            return gson.toJson(Message.error("You need to be logged in to perform this action"));
+        }
+        if (game.validateMove(move, currentPlayer)) {
             return gson.toJson(Message.info("Your move has been made"));
         } else {
             return gson.toJson(Message.error("Your move is invalid"));

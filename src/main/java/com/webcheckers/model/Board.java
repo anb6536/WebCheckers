@@ -21,14 +21,12 @@ public class Board {
         return view;
     }
 
-    public boolean validateMove(Move move) {
-        // TODO: Actually validate the move
-
-        return true;
+    public boolean validateMove(Move move, boolean whiteMove) {
+        return MoveValidator.validateMove(move, view);
     }
 
-    public boolean makeMove(Move move) {
-        if (!validateMove(move)) {
+    public boolean makeMove(Move move, boolean whiteMove) {
+        if (!validateMove(move, whiteMove)) {
             return false;
         }
         setPiece(move.end, view.getSpace(move.start).getPiece());

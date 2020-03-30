@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import com.google.gson.Gson;
 import com.webcheckers.appl.PlayerLobby;
 import com.webcheckers.model.Move;
+import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
 
 import spark.Request;
@@ -39,8 +40,12 @@ public class SubmitTurnApiRoute implements spark.Route {
         String s = URLDecoder.decode(postScreen, "UTF-8");
         String gameID = urlParameters.get("gameID");
         Move move = gson.fromJson(URLDecoder.decode(s, "UTF-8"), Move.class);
-        if (lobby.getGame(gameID).validateMove(move)) {
-            lobby.getGame(gameID).submitMove(move);
+        Player currentPlayer = request.session().attribute("UserAttrib");
+        if (currentPlayer == null) {
+            return gson.toJson(Message.error("You need to be logged in to perform this action"));
+        }
+        if (lobby.getGame(gameID).validateMove(move, currentPlayer)) {
+            lobby.getGame(gameID).submitMove(move, currentPlayer);
             return gson.toJson(Message.info("Your move has been made"));
         } else {
             return gson.toJson(Message.error("Your move is invalid"));

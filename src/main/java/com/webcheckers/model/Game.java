@@ -26,12 +26,12 @@ public class Game {
         return player2;
     }
 
-    public boolean submitMove(Move move) {
-        return playBoard.makeMove(move);
+    public boolean submitMove(Move move, Player movingPlayer) {
+        return playBoard.makeMove(move, player2 == movingPlayer);
     }
 
-    public boolean validateMove(Move move) {
-        return playBoard.validateMove(move);
+    public boolean validateMove(Move move, Player movingPlayer) {
+        return playBoard.validateMove(move, player2 == movingPlayer);
     }
 
     public boolean isPlayerTurn(Player player) {
