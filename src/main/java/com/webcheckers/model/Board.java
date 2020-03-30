@@ -20,7 +20,10 @@ public class Board {
     public BoardView getBoardView() {
         return view;
     }
-
+    public boolean backupMove(MoveInformation moveInformation) {
+        // TODO: Actually backup the move
+        return true;
+    }
     public boolean validateMove(Move move, boolean whiteMove) {
         return MoveValidator.validateMove(move, view);
     }

@@ -1,6 +1,7 @@
 package com.webcheckers.model;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Stack;
 
 public class Game {
     public enum Mode {
@@ -17,7 +18,7 @@ public class Game {
     private Player player2;
     private Player currentTurn;
     private Board playBoard;
-    private List<Move> movesMade;
+    private Stack<MoveInformation> movesMade;
     public Move moveWaitingForSubmission;
 
     public Board getRedBoard() {
@@ -37,8 +38,25 @@ public class Game {
         return player2;
     }
 
+    public boolean backupMove(Player backingUp) {
+        if (movesMade.peek() != null) {
+            MoveInformation moveInfo = movesMade.peek();
+            if (playBoard.backupMove(moveInfo)) {
+                movesMade.pop();
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean submitMove(Player movingPlayer) {
+        Space removedPieceSpace = null;
+        if (playBoard.validateMove(moveWaitingForSubmission, player2 == movingPlayer)) {
+            // TODO: Get the pieces removed via a Board function
+        }
         if (playBoard.makeMove(moveWaitingForSubmission, player2 == movingPlayer)) {
+            // TODO: Actually remove the pieces or have the board remove them
+            moveWaitingForSubmission = null;
             swapPlayerTurn();
             return true;
         }
@@ -74,6 +92,7 @@ public class Game {
         this.player2 = player2;
         this.currentTurn = player1;
         this.playBoard = board;
+        this.movesMade = new Stack<MoveInformation>();
     }
 
 }
