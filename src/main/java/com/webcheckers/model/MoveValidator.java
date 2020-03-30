@@ -56,7 +56,7 @@ public class MoveValidator {
      */
     private static boolean positionIsOnBoard(Position position) {
         boolean positionOnBoard = true;
-        if ( !(position.column >= 0 && position.column < NUM_COLS) ) {
+        if ( !(position.cell >= 0 && position.cell < NUM_COLS) ) {
             LOG.finer("Column position is off board");
             positionOnBoard = false;
         }
@@ -97,7 +97,7 @@ public class MoveValidator {
         Piece current_piece = boardView.getSpace(start_position).getPiece();
         Piece.Type piece_type = current_piece.getType();
 
-        col_offset = (end_position.column - start_position.column);
+        col_offset = (end_position.cell - start_position.cell);
         row_offset = (end_position.row - start_position.row);
         // If both the col offset and the row offset are either 1 or -1 then it is a diagonal move
         if (piece_type == Piece.Type.KING) {
@@ -126,7 +126,7 @@ public class MoveValidator {
         // Get the piece that is making the move
         Piece current_piece = boardView.getSpace(start_position).getPiece();
         Piece.Type piece_type = current_piece.getType();
-        col_offset = (end_position.column - start_position.column);
+        col_offset = (end_position.cell - start_position.cell);
         row_offset = (end_position.row - start_position.row);
 
         // Piece was not moved, not a valid move

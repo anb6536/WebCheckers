@@ -70,42 +70,40 @@ public class GetGameRoute implements Route {
 
         // if the opponent is in the gmae, return to the home page with an error
         // parameter
-        if (opponentName != null && opponent.isInGame()) {
+        if (opponentName != null && opponent.isInGame() && !lobby.isInGameWithPlayer(player, opponent)) {
             player.leftGame();
             response.redirect("?error=true");
             halt();
         }
-        // put stuff in the vm
-        String gameId = String.valueOf(lobby.getId(player));
-        vm.put(VIEW_MODE, PLAY);
-        vm.put(ACTIVE_COLOR, RED);
-        vm.put(GAME_ID, gameId);
-        vm.put(CURRENT_USER, player);
-
-        // create the board to give to both players
-        Board board = Board.makeBoard();
-        board.addPieces();
-        Board opponentBoard = board.flipBoard();
 
         // if the opponent
-        if (opponent != null) {
+        if (opponent != null && !player.isInGame() && !opponent.isInGame()
+                && !lobby.isInGameWithPlayer(player, opponent)) {
+            // Make the board if just creating it.
+            Board board = Board.makeBoard();
+            board.addPieces();
             lobby.addMatch(player, opponent, board);
-            vm.put(GAME_ID, String.valueOf(lobby.getId(player)));
-            vm.put(RED_PLAYER, player);
-            vm.put(WHITE_PLAYER, opponent);
-            vm.put(BOARD, board.getBoardView());
-        } else {
-            vm.put(RED_PLAYER, lobby.getOpponent(player));
-            vm.put(WHITE_PLAYER, player);
-            vm.put(BOARD, opponentBoard.getBoardView());
         }
 
         // attribute information about this game to the session
-        session.attribute(CURRENT_USER, vm.get(CURRENT_USER));
+        String sGameId = String.valueOf(lobby.getId(player));
+        Game actualGame = lobby.getGame(sGameId);
+        vm.put(VIEW_MODE, PLAY); // we currently only support the play viewmode
+        vm.put(ACTIVE_COLOR, actualGame.getCurrentPlayerTurn() == actualGame.getRedPlayer() ? RED : WHITE);
+        vm.put(WHITE_PLAYER, actualGame.getWhitePlayer());
+        vm.put(RED_PLAYER, actualGame.getRedPlayer());
+        vm.put(GAME_ID, sGameId);
+        vm.put(CURRENT_USER, player);
+        if (actualGame.getRedPlayer() == player) {
+            vm.put(BOARD, actualGame.getRedBoard().getBoardView());
+        } else {
+            vm.put(BOARD, actualGame.getWhiteBoard().getBoardView());
+        }
+        session.attribute(CURRENT_USER, player);
         session.attribute(RED_PLAYER, vm.get(RED_PLAYER));
         session.attribute(WHITE_PLAYER, vm.get(WHITE_PLAYER));
         session.attribute(ACTIVE_COLOR, vm.get(ACTIVE_COLOR));
-        session.attribute(GAME_ID, gameId);
+        session.attribute(GAME_ID, sGameId);
 
         // show the game screen
         return templateEngine.render(new ModelAndView(vm, "game.ftl"));

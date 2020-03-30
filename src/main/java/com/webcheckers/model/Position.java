@@ -7,18 +7,18 @@ public class Position {
     // These are public to facilitate easy GSON stuff, unluckily for us, this is not
     // C# and properties are not a language defined existence.
     public int row;
-    public int column;
+    public int cell;
     public static Position makePosition(int row, int column) { 
         Position pos = new Position();
         pos.row = row;
-        pos.column = column;
+        pos.cell = column;
         return pos;
     }
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + column;
+        result = prime * result + cell;
         result = prime * result + row;
         return result;
     }
@@ -32,7 +32,7 @@ public class Position {
         if (getClass() != obj.getClass())
             return false;
         Position other = (Position) obj;
-        if (column != other.column)
+        if (cell != other.cell)
             return false;
         if (row != other.row)
             return false;

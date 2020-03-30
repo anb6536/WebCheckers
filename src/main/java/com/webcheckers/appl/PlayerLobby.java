@@ -55,6 +55,20 @@ public class PlayerLobby {
         }
     }
 
+    public boolean isInGameWithPlayer(Player player1, Player player2) {
+        synchronized (opponentSyncObject) {
+            if (opponents.get(player1) == player2) {
+                return true;
+            }
+            if (opponents.containsKey(player2)) {
+                if (opponents.get(player2) == player1) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
     /**
      * get the game id of a player given a player
      * 

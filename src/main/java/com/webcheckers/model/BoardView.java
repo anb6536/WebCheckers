@@ -17,7 +17,7 @@ public class BoardView {
         this.rows.sort(comparator);
     }
     public Space getSpace(Position position) throws ArrayIndexOutOfBoundsException { 
-        return getSpace(position.row, position.column);
+        return getSpace(position.row, position.cell);
     }
     public Space getSpace(int row, int column) throws ArrayIndexOutOfBoundsException {
         if (row >= rows.size()) {

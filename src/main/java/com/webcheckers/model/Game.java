@@ -1,6 +1,6 @@
 package com.webcheckers.model;
 
-import java.util.Map;
+import java.util.List;
 
 public class Game {
     public enum Mode {
@@ -17,6 +17,17 @@ public class Game {
     private Player player2;
     private Player currentTurn;
     private Board playBoard;
+    private List<Move> movesMade;
+    public Move moveWaitingForSubmission;
+
+    public Board getRedBoard() {
+        return playBoard;
+    }
+
+    public Board getWhiteBoard() {
+        Board whiteBoard = playBoard.flipBoard();
+        return whiteBoard;
+    }
 
     public Player getRedPlayer() {
         return player1;
@@ -26,12 +37,20 @@ public class Game {
         return player2;
     }
 
-    public boolean submitMove(Move move, Player movingPlayer) {
-        return playBoard.makeMove(move, player2 == movingPlayer);
+    public boolean submitMove(Player movingPlayer) {
+        if (playBoard.makeMove(moveWaitingForSubmission, player2 == movingPlayer)) {
+            swapPlayerTurn();
+            return true;
+        }
+        return false;
     }
 
     public boolean validateMove(Move move, Player movingPlayer) {
-        return playBoard.validateMove(move, player2 == movingPlayer);
+        if (playBoard.validateMove(move, player2 == movingPlayer)) {
+            moveWaitingForSubmission = move;
+            return true;
+        }
+        return false;
     }
 
     public boolean isPlayerTurn(Player player) {

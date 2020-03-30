@@ -35,7 +35,7 @@ public class Board {
     }
 
     private void setPiece(Position position, Piece piece) {
-        setPiece(position.row, position.column, piece);
+        setPiece(position.row, position.cell, piece);
     }
 
     private void setPiece(int row, int column, Piece piece) {
@@ -43,7 +43,7 @@ public class Board {
     }
 
     private void removePiece(Position position) {
-        removePiece(position.row, position.column);
+        removePiece(position.row, position.cell);
     }
 
     private void removePiece(int row, int column) {
