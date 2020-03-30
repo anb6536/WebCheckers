@@ -1,7 +1,5 @@
 package com.webcheckers.model;
 
-import javafx.geometry.Pos;
-
 import java.util.Base64;
 import java.util.logging.Logger;
 import java.util.logging.LogManager;

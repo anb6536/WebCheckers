@@ -176,7 +176,7 @@ public class Board {
                 newSpaces.add(spaces[k]);
             }
             // make a new row with the correct index
-            Row newRow1 = new Row(row.getIndex(), newSpaces);
+            Row newRow1 = new Row(i, newSpaces);
             rows[i] = newRow1;
             i--;
         }
