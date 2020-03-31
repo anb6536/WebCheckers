@@ -38,4 +38,12 @@ public class Position {
             return false;
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Position{" +
+                "row=" + row +
+                ", cell=" + cell +
+                '}';
+    }
 }

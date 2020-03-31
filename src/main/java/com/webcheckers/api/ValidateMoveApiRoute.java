@@ -42,7 +42,7 @@ public class ValidateMoveApiRoute implements spark.Route {
         String s = URLDecoder.decode(postScreen, "UTF-8");
         String gameID = urlParameters.get("gameID");
         Move move = gson.fromJson(URLDecoder.decode(s, "UTF-8"), Move.class);
-
+        System.out.println(move);
         // For this you just return a GSON of message of error or info and you'll get it
         // to work.
         Game game = lobby.getGame(gameID);

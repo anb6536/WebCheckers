@@ -169,7 +169,10 @@ public class Board {
 
             // for every space in the original row
             for (Space space : spaces1) {
-                spaces[j] = space;
+                Space newSpace = new Space(j);
+                newSpace.setColor(space.getColor());
+                newSpace.setPiece(space.getPiece());
+                spaces[j] = newSpace;
                 j--;
             }
             for (int k = 0; k < 8; k++) {

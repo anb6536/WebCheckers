@@ -55,4 +55,12 @@ public class Move {
             return false;
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Move{" +
+                "start=" + start +
+                ", end=" + end +
+                '}';
+    }
 }
