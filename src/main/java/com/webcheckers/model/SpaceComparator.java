@@ -2,10 +2,9 @@ package com.webcheckers.model;
 
 import java.util.Comparator;
 
-public class RowComparator implements Comparator<Row> {
-
+public class SpaceComparator implements Comparator<Space> {
     @Override
-    public int compare(Row o1, Row o2) {
+    public int compare(Space o1, Space o2) {
         return o1.compareTo(o2);
     }
 }

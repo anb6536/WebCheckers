@@ -46,4 +46,9 @@ public class Position {
                 ", cell=" + cell +
                 '}';
     }
+
+    public void flip() {
+        row = 7-row;
+        cell =  7-cell;
+    }
 }

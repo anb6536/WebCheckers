@@ -25,10 +25,6 @@ public class BoardView {
         }
         if (rows.get(row).getIndex() != row) {
             rows.sort(comparator);
-            Row rowWanted = rows.stream().filter((i) -> {
-                return i.getIndex() == row;
-            }).findFirst().get();
-            return rowWanted.getSpace(column);
         }
         Row rowWanted = rows.get(row);
         return rowWanted.getSpace(column);

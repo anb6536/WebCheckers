@@ -9,16 +9,16 @@ public class MoveValidator {
     public final static int NUM_ROWS = 8;
     public final static int NUM_COLS = 8;
 
-    public static boolean validateMove(Move playerMove, BoardView boardView) {
+    public static boolean validateMove(Move playerMove, BoardView boardView,boolean isWhiteMove) {
         boolean move_on_board = moveIsOnBoard(playerMove);
         boolean landing_space_available = spaceIsAvailable(boardView, playerMove);
-        boolean is_single_proper_diagonal = moveIsSingleProperDiagonal(boardView, playerMove);
+        boolean is_proper_diagonal = moveIsSingleProperDiagonal(boardView, playerMove,isWhiteMove);
 
         // If the move is not even on the board, return false immediately
         if (!move_on_board) return false;
 
         // Represents single move without jump (Open space and a diagonal movement)
-        if (landing_space_available && is_single_proper_diagonal) {
+        if (landing_space_available && is_proper_diagonal) {
             return true;
         }
 
@@ -26,8 +26,10 @@ public class MoveValidator {
         return false;
     }
 
+
     /**
      * Check if the start and end positions of a Move is on the board
+     *
      * @param playerMove The move to be checked
      * @return true if move is on board, false otherwise
      */
@@ -49,16 +51,17 @@ public class MoveValidator {
 
     /**
      * Checks if a given position occupies a cell on the board, see if it occupies a space on the board
+     *
      * @param position the position to be checked
      * @return true if the position represents a space on board, false otherwise
      */
     private static boolean positionIsOnBoard(Position position) {
         boolean positionOnBoard = true;
-        if ( !(position.cell >= 0 && position.cell < NUM_COLS) ) {
+        if (!(position.cell >= 0 && position.cell < NUM_COLS)) {
             LOG.finer("Column position is off board");
             positionOnBoard = false;
         }
-        if ( !(position.row >= 0 && position.row < NUM_ROWS) ) {
+        if (!(position.row >= 0 && position.row < NUM_ROWS)) {
             LOG.finer("Row position is off board");
             positionOnBoard = false;
         }
@@ -67,8 +70,9 @@ public class MoveValidator {
 
     /**
      * Checks if the ending position is a valid position to land on
+     *
      * @param boardView The boardView for which the move is being made on
-     * @param move The move being checked
+     * @param move      The move being checked
      * @return True if the space is unoccupied, false if otherwise
      */
     private static boolean spaceIsAvailable(BoardView boardView, Move move) {
@@ -81,11 +85,12 @@ public class MoveValidator {
      * Checks if a move is properly diagonal going forward for a regular piece (single step)
      * Checks if properly diagonal forward or backward for a king piece (single step)
      * ( A single diagonal move )
+     *
      * @param boardView The board view that represents the board
-     * @param move The move being checked
+     * @param move      The move being checked
      * @return Checks if the change in position done by the move is diagonal
      */
-    private static boolean moveIsSingleProperDiagonal(BoardView boardView, Move move) {
+    private static boolean moveIsSingleProperDiagonal(BoardView boardView, Move move, boolean isWhiteMove) {
         Position start_position = move.start;
         Position end_position = move.end;
         // Changes in x and y for the position for the move
@@ -97,6 +102,8 @@ public class MoveValidator {
 
         col_offset = (end_position.cell - start_position.cell);
         row_offset = (end_position.row - start_position.row);
+        if (isWhiteMove)
+            row_offset = -row_offset;
         // If both the col offset and the row offset are either 1 or -1 then it is a diagonal move
         if (piece_type == Piece.Type.KING) {
             // Check for diagonal move in any direction
@@ -111,8 +118,9 @@ public class MoveValidator {
      * Checks if the move being made is going properly diagonally forward (Any amount of steps) (any piece)
      * Checks if the move being made is going properly diagonally any direction (Any amount of steps) (king)
      * Will be used to validate jump moves
-     * @param move The move being made
-     * @param boardView  The boardView that represents the board
+     *
+     * @param move      The move being made
+     * @param boardView The boardView that represents the board
      * @return true if going diagonally as
      */
     private static boolean moveIsGeneralProperDiagonal(BoardView boardView, Move move) {
@@ -137,7 +145,7 @@ public class MoveValidator {
             return Math.abs(col_offset) == Math.abs(row_offset);
         } else {
             // Check for diagonal movement that is forward
-            return ( Math.abs(col_offset) == Math.abs(row_offset) ) && row_offset < 0;
+            return (Math.abs(col_offset) == Math.abs(row_offset)) && row_offset < 0;
         }
 
     }

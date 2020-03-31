@@ -20,12 +20,16 @@ public class Board {
     public BoardView getBoardView() {
         return view;
     }
+
     public boolean backupMove(MoveInformation moveInformation) {
         // TODO: Actually backup the move
         return true;
     }
+
     public boolean validateMove(Move move, boolean whiteMove) {
-        return MoveValidator.validateMove(move, view);
+        if (whiteMove)
+            move.flip();
+        return MoveValidator.validateMove(move, view, whiteMove);
     }
 
     public boolean makeMove(Move move, boolean whiteMove) {
@@ -55,7 +59,7 @@ public class Board {
 
     /**
      * create a BoardView with correct starting positions
-     * 
+     *
      * @return the start of a board
      */
     public static Board makeBoard() {
@@ -112,7 +116,6 @@ public class Board {
     }
 
     /**
-     *
      * @param boardView the reference of the board filled with spaces
      */
     public void addPieces() {
@@ -148,7 +151,7 @@ public class Board {
 
     /**
      * flip the board so that the other player has a correct facing board
-     * 
+     *
      * @param boardView the filled out board for a game that is facing the original
      *                  way
      * @return the flipped board
