@@ -1,6 +1,5 @@
 package com.webcheckers.model;
 
-import java.util.Base64;
 import java.util.logging.Logger;
 import java.util.logging.LogManager;
 
@@ -26,10 +25,8 @@ public class MoveValidator {
         // Represents single move without jump (Open space and a diagonal movement)
         if (landing_space_available && is_single_proper_diagonal) {
             return true;
-        }
+        } else return isSingularJumpMove(boardView, playerMove, whiteMoving);
 
-        // Stub, will complete soon
-        return false;
     }
 
     /**
@@ -131,7 +128,7 @@ public class MoveValidator {
      * @param boardView  The boardView that represents the board
      * @return true if going diagonally as
      */
-    private static boolean moveIsGeneralProperDiagonal(BoardView boardView, Move move) {
+    private static boolean moveIsGeneralProperDiagonal(BoardView boardView, Move move, boolean whiteMove) {
         Position start_position = move.start;
         Position end_position = move.end;
         // Changes in x and y for the position for the move
@@ -142,6 +139,13 @@ public class MoveValidator {
         Piece.Type piece_type = current_piece.getType();
         col_offset = (end_position.cell - start_position.cell);
         row_offset = (end_position.row - start_position.row);
+        boolean right_direction;
+        if (whiteMove) {
+            right_direction = row_offset > 0;
+        } else {
+            right_direction = row_offset < 0;
+        }
+
 
         // Piece was not moved, not a valid move
         if (col_offset == 0 && row_offset == 0) {
@@ -153,8 +157,54 @@ public class MoveValidator {
             return Math.abs(col_offset) == Math.abs(row_offset);
         } else {
             // Check for diagonal movement that is forward
-            return ( Math.abs(col_offset) == Math.abs(row_offset) ) && row_offset < 0;
+            return ( Math.abs(col_offset) == Math.abs(row_offset) ) && right_direction;
         }
-
     }
+
+    public static boolean isSingularJumpMove(BoardView boardView, Move move, boolean whiteMove) {
+        // Impose restrictions on motion (handles difference between King and Single)
+        boolean right_motion = moveIsGeneralProperDiagonal(boardView, move, whiteMove);
+
+        // The vertical and horizontal distance are valid
+        boolean right_distance;
+        boolean onBoard = moveIsOnBoard(move);
+        boolean landing_space_available = spaceIsAvailable(boardView, move);
+        // If it is not moving in the right direction automatically return false
+        if (!right_motion)  return false;
+        if (!onBoard) return false;
+        if (!landing_space_available) return false;
+
+        // Get change in row and column
+        int row_offset = move.end.row - move.start.row;
+        int col_offset = move.end.cell - move.start.cell;
+        right_distance = (Math.abs(row_offset) == 2 && Math.abs(col_offset) == 2);
+        // If you moved more or less than 2 spaces then it cannot be a valid jump
+        if (!right_distance) return false;
+        // Get the piece to see if King or Single
+        Piece current_piece = boardView.getSpace(move.start).getPiece();
+        Position position_remove = null;
+        Position midpoint = move.getMidpoint();
+        // If there is no piece at the midpoint there is nothing
+        Piece middle_piece = boardView.getSpace(midpoint).getPiece();
+        if (middle_piece == null) return false;
+
+        // Confirming that a piece jumps over opponent piece
+        if (whiteMove) {
+             if (middle_piece.getColor() == Piece.Color.RED) {
+                 position_remove = midpoint;
+                 return true;
+             } else {
+                 return false;
+             }
+        } else {
+            if (middle_piece.getColor() == Piece.Color.WHITE) {
+                position_remove = midpoint;
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+
 }

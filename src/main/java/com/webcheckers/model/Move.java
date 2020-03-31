@@ -1,5 +1,6 @@
 package com.webcheckers.model;
 
+
 /**
  * Class that defines a move, copies the definition found in move.js
  */
@@ -64,8 +65,25 @@ public class Move {
                 '}';
     }
 
+    /**
+     * Translates the coordinates from WHITE Player's perspective to RED player's perspective
+     * @return  The move in term of RED's perspective of the board
+     */
     public Move invertMove() {
         return createMove(this.start.invertPosition(), this.end.invertPosition());
     }
+
+    /**
+     * Gets the midpoint between the start of a move and the end of a move
+     * Used to check for the a piece to jump over with a single jump
+     * @return A new position with the midpoint as its value
+     */
+    public Position getMidpoint() {
+        return  Position.makePosition(
+                (start.row + end.row) / 2,
+                (start.cell + end.cell) / 2
+        );
+    }
+
 
 }

@@ -39,8 +39,12 @@ public class Position {
         return true;
     }
 
-
+    /**
+     * Translate position from WHITE's perspective to RED's perspective
+     * @return
+     */
     public Position invertPosition() {
+        // 7 is the right/bottom index
         return makePosition(7-this.row, 7-this.cell);
     }
 
