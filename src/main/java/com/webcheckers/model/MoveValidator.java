@@ -30,8 +30,13 @@ public class MoveValidator {
         // Represents single move without jump (Open space and a diagonal movement)
         if (landing_space_available && is_single_proper_diagonal) {
             return true;
-        } else return isSingularJumpMove(boardView, playerMove, whiteMoving);
+        } else if (isSingularJumpMove(boardView, playerMove, whiteMoving)) {
+            return true;
+        } else if (isMultipleJumpMove(boardView, playerMove, whiteMoving)) {
+            return true;
+        }
 
+        return false;
     }
 
     /**
@@ -229,4 +234,69 @@ public class MoveValidator {
     public static ArrayList<MoveInformation> getCaptureMoves() {
         return captureMoves;
     }
+
+    public static boolean isMultipleJumpMove(BoardView boardView, Move move, boolean whiteMove) {
+        // Impose restrictions on motion (handles difference between King and Single)
+        boolean right_motion = moveIsGeneralProperDiagonal(boardView, move, whiteMove);
+        ArrayList<MoveInformation> captureMovesMade = new ArrayList<>();
+        // The vertical and horizontal distance are valid
+        boolean right_distance;
+        boolean onBoard = moveIsOnBoard(move);
+        boolean landing_space_available = spaceIsAvailable(boardView, move);
+        // If it is not moving in the right direction automatically return false
+        if (!right_motion)  return false;
+        if (!onBoard) return false;
+        if (!landing_space_available) return false;
+        int row_offset = move.end.row - move.start.row;
+        int col_offset = move.end.cell - move.start.cell;
+
+        // Make sure the total distance is greater than 2
+        // If it was equal to two, it would just be a single jump move
+        // If it was less than two, it would be a simple move
+        right_distance = (Math.abs(row_offset ) > 2 && Math.abs(col_offset) > 2);
+        if (!right_distance) return false;
+
+        // Quick sgn(row_offset) and sgn(col_offset) for iterating
+        // Kinda like unit vectors pointing from move.start to move.end
+        int row_inc = row_offset/Math.abs(row_offset);
+        int col_inc = col_offset/Math.abs(col_offset);
+
+        // Iterate along the "vectors" looking for a repeating pattern of [enemy_piece, blank_space]
+        int cur_row = move.start.row + row_inc; // Start on the first space along that path
+        int cur_col = move.start.cell + col_inc; // Start on the first space along that path
+        Piece.Color colorToCapture = Piece.Color.WHITE;
+        if (whiteMove) colorToCapture = Piece.Color.RED;
+        // Index to cycle for the pattern
+        int cycleIndex = 0;
+        // Declare array with move information to capt
+        ArrayList<MoveInformation> mjCaptureMoves = new ArrayList<>();
+        while (cur_row != move.end.row && cur_col != move.end.cell) {
+            Piece cur_piece = boardView.getSpace(cur_row, cur_col).getPiece();
+
+            // Keep iterating until we reach the end
+            // Break if conditions violated
+            if (cycleIndex == 0) {
+                if (cur_piece == null) return false;
+                if (cur_piece.getColor() != colorToCapture) return false;
+                MoveInformation moveInformation = new MoveInformation(move, cur_piece, Position.makePosition(cur_row, cur_col));
+                mjCaptureMoves.add(moveInformation);
+            } else if (cycleIndex == 1) {
+                // After hopping over an enemy piece there should be a space to land on
+                if (cur_piece != null) return false;
+            }
+
+            cur_row += row_inc;
+            cur_col += col_inc;
+            cycleIndex = (cycleIndex + 1) % 2;
+        }
+        // Return true if we reach the end
+        // Return the MoveInformation with all the removed pieces with in the move
+        captureMoves = new ArrayList<>(mjCaptureMoves);
+        return true;
+    }
+
+
+
+
+
 }
