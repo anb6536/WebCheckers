@@ -13,7 +13,7 @@ public class Row implements Comparable<Row> {
     /**
      * create a row with an index of which row it is and a premade list of spaces
      * and pieces on it
-     * 
+     *
      * @param index  the index of the ro w
      * @param spaces the premade spaces
      */
@@ -24,7 +24,7 @@ public class Row implements Comparable<Row> {
 
     /**
      * simple getter
-     * 
+     *
      * @return the index of the row
      */
     public int getIndex() {
@@ -33,7 +33,7 @@ public class Row implements Comparable<Row> {
 
     /**
      * simple getter
-     * 
+     *
      * @return the list of spaces in the row
      */
     public List<Space> getSpaces() {
@@ -42,7 +42,7 @@ public class Row implements Comparable<Row> {
 
     /**
      * get an iterator to iterate through the spaces on the board
-     * 
+     *
      * @return the iterator
      */
     public Iterator<Space> iterator() {
@@ -60,5 +60,23 @@ public class Row implements Comparable<Row> {
     @Override
     public int compareTo(Row other) {
         return Integer.compare(this.index, other.index);
+    }
+
+    public boolean hasRedPieces() {
+        for (Space space : spaces) {
+            Piece piece = space.getPiece();
+            if (piece != null && piece.getColor() == Piece.Color.RED)
+                return true;
+        }
+        return false;
+    }
+
+    public boolean hasWhitePieces() {
+        for (Space space : spaces) {
+            Piece piece = space.getPiece();
+            if (piece != null && piece.getColor() == Piece.Color.WHITE)
+                return true;
+        }
+        return false;
     }
 }

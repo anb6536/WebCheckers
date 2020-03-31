@@ -9,10 +9,10 @@ public class MoveValidator {
     public final static int NUM_ROWS = 8;
     public final static int NUM_COLS = 8;
 
-    public static boolean validateMove(Move playerMove, BoardView boardView,boolean isWhiteMove) {
+    public static boolean validateMove(Move playerMove, BoardView boardView, boolean isWhiteMove) {
         boolean move_on_board = moveIsOnBoard(playerMove);
         boolean landing_space_available = spaceIsAvailable(boardView, playerMove);
-        boolean is_proper_diagonal = moveIsSingleProperDiagonal(boardView, playerMove,isWhiteMove);
+        boolean is_proper_diagonal = moveIsSingleProperDiagonal(boardView, playerMove, isWhiteMove);
 
         // If the move is not even on the board, return false immediately
         if (!move_on_board) return false;

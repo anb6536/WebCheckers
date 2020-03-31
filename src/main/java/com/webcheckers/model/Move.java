@@ -64,8 +64,7 @@ public class Move {
                 '}';
     }
 
-    public void flip() {
-        start.flip();
-        end.flip();
+    public Move flip() {
+        return createMove(start.flip(),end.flip());
     }
 }

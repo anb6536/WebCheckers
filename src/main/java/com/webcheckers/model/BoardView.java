@@ -16,9 +16,11 @@ public class BoardView {
         this.rows = rows;
         this.rows.sort(comparator);
     }
-    public Space getSpace(Position position) throws ArrayIndexOutOfBoundsException { 
+
+    public Space getSpace(Position position) throws ArrayIndexOutOfBoundsException {
         return getSpace(position.row, position.cell);
     }
+
     public Space getSpace(int row, int column) throws ArrayIndexOutOfBoundsException {
         if (row >= rows.size()) {
             throw new ArrayIndexOutOfBoundsException("Row index out of bounds");
@@ -32,7 +34,7 @@ public class BoardView {
 
     /**
      * simple getter
-     * 
+     *
      * @return the reference to the rows
      */
     public List<Row> getRows() {
@@ -41,7 +43,7 @@ public class BoardView {
 
     /**
      * iterator so that we can iterate through the rows of the board
-     * 
+     *
      * @return an iterator through the rows
      */
     public Iterator<Row> iterator() {
@@ -52,5 +54,20 @@ public class BoardView {
         ArrayList<Row> rowList = new ArrayList<Row>();
         rowList.addAll(rows);
         return new BoardView(rowList);
+    }
+
+    public boolean hasRedPieces() {
+        for (Row row : rows) {
+            if (row.hasRedPieces())
+                return true;
+        }
+        return false;
+    }
+    public boolean hasWhitePieces() {
+        for (Row row : rows) {
+            if (row.hasWhitePieces())
+                return true;
+        }
+        return false;
     }
 }

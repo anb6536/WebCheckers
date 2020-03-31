@@ -8,6 +8,7 @@ import spark.*;
 
 import java.util.*;
 import java.util.logging.Logger;
+
 import static com.webcheckers.model.Game.Mode.PLAY;
 import static com.webcheckers.model.Piece.Color.RED;
 import static com.webcheckers.model.Piece.Color.WHITE;
@@ -32,7 +33,7 @@ public class GetGameRoute implements Route {
 
     /**
      * instantiates the GetGameRoute
-     * 
+     *
      * @param templateEngine used to render the page
      * @param lobby          a reference of the player lobby
      * @param gson           a reference to the GSON object used to serialize
@@ -47,7 +48,7 @@ public class GetGameRoute implements Route {
 
     /**
      * handles any request to view /game
-     * 
+     *
      * @param request  the request made to view the page
      * @param response our response to that request
      * @return the templateEngines view
@@ -88,6 +89,16 @@ public class GetGameRoute implements Route {
         // attribute information about this game to the session
         String sGameId = String.valueOf(lobby.getId(player));
         Game actualGame = lobby.getGame(sGameId);
+
+        // if the game is over, quit
+        if (actualGame.isDone()) {
+            player.leftGame();
+            response.redirect(String.format("?done=%s", sGameId));
+            halt();
+        }
+        // get a fresh version of the game because somehow that matters
+//        actualGame = lobby.getGame(sGameId);
+
         vm.put(VIEW_MODE, PLAY); // we currently only support the play viewmode
         vm.put(ACTIVE_COLOR, actualGame.getCurrentPlayerTurn() == actualGame.getRedPlayer() ? RED : WHITE);
         vm.put(WHITE_PLAYER, actualGame.getWhitePlayer());

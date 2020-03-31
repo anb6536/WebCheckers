@@ -27,14 +27,18 @@ public class Board {
     }
 
     public boolean validateMove(Move move, boolean whiteMove) {
-        if (whiteMove)
-            move.flip();
+        if (whiteMove) {
+            move = move.flip();
+        }
         return MoveValidator.validateMove(move, view, whiteMove);
     }
 
     public boolean makeMove(Move move, boolean whiteMove) {
         if (!validateMove(move, whiteMove)) {
             return false;
+        }
+        if (whiteMove) {
+            move = move.flip();
         }
         setPiece(move.end, view.getSpace(move.start).getPiece());
         removePiece(move.start);
@@ -115,9 +119,6 @@ public class Board {
         return new Board(rows);
     }
 
-    /**
-     * @param boardView the reference of the board filled with spaces
-     */
     public void addPieces() {
         // get the rows
         List<Row> rows = view.getRows();
@@ -152,8 +153,6 @@ public class Board {
     /**
      * flip the board so that the other player has a correct facing board
      *
-     * @param boardView the filled out board for a game that is facing the original
-     *                  way
      * @return the flipped board
      */
     public Board flipBoard() {
@@ -192,5 +191,14 @@ public class Board {
 
         // return the flipped board
         return new Board(newRow);
+    }
+
+    public boolean hasRedPieces() {
+        return view.hasRedPieces();
+    }
+
+    public boolean hasWhitePieces() {
+        return view.hasWhitePieces();
+
     }
 }
