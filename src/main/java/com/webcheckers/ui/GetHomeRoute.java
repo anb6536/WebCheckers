@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.webcheckers.appl.PlayerLobby;
+import com.webcheckers.model.Game;
 import com.webcheckers.model.Player;
 import com.webcheckers.util.Message;
 
@@ -61,7 +62,6 @@ public class GetHomeRoute implements Route {
 
     // display a user message in the Home page
     vm.put("message", WELCOME_MSG);
-
     // Getting and displaying number of logged in users
     int numLoggedIn = playerLobby.getNumLoggedInPlayers();
     vm.put("numLoggedIn", numLoggedIn);
@@ -92,6 +92,15 @@ public class GetHomeRoute implements Route {
       }
       vm.put("readyPlayers", playerList);
 
+      // if we finished a game, say who won
+      String finishedGameString= request.session().attribute("finishedGame");
+      if (finishedGameString != null){
+        Game game = playerLobby.getGame(finishedGameString);
+        if (game !=null){
+          String whoWon = game.getYouWon(currentPlayer);
+          vm.put("finishedGame",whoWon);
+        }
+      }
       // if the current player is in a game and we aren't already there
       if (currentPlayer != null && currentPlayer.isInGame()) {
         response.redirect(WebServer.GAME_URL);

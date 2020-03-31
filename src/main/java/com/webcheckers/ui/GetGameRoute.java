@@ -77,7 +77,7 @@ public class GetGameRoute implements Route {
             halt();
         }
 
-        // if the opponent
+        // if we should start a game
         if (opponent != null && !player.isInGame() && !opponent.isInGame()
                 && !lobby.isInGameWithPlayer(player, opponent)) {
             // Make the board if just creating it.
@@ -85,20 +85,24 @@ public class GetGameRoute implements Route {
             board.addPieces();
             lobby.addMatch(player, opponent, board);
         }
-
-        // attribute information about this game to the session
         String sGameId = String.valueOf(lobby.getId(player));
         Game actualGame = lobby.getGame(sGameId);
-
         // if the game is over, quit
-        if (actualGame.isDone()) {
+        if (actualGame != null && actualGame.isDone()) {
+            opponent = lobby.getPlayer(actualGame.getRedPlayer().getName());
+            if (opponent == null) {
+                opponent = lobby.getPlayer(actualGame.getWhitePlayer().getName());
+
+            }
             player.leftGame();
-            response.redirect(String.format("?done=%s", sGameId));
+            lobby.removeMatch(player, opponent);
+            session.attribute("finishedGame", sGameId);
+            response.redirect("");
             halt();
         }
-        // get a fresh version of the game because somehow that matters
-//        actualGame = lobby.getGame(sGameId);
 
+
+        // attribute information about this game to the session
         vm.put(VIEW_MODE, PLAY); // we currently only support the play viewmode
         vm.put(ACTIVE_COLOR, actualGame.getCurrentPlayerTurn() == actualGame.getRedPlayer() ? RED : WHITE);
         vm.put(WHITE_PLAYER, actualGame.getWhitePlayer());

@@ -5,6 +5,7 @@ import java.util.Stack;
 
 public class Game {
 
+
     public enum Mode {
         PLAY, SPECTATOR, REPLAY
     }
@@ -28,7 +29,7 @@ public class Game {
     public Move moveWaitingForSubmission;
 
     private WhoWon gameWinner;
-    boolean gameAlreadyDone;
+    private boolean gameAlreadyDone;
 
     public Board getRedBoard() {
         return playBoard;
@@ -86,6 +87,36 @@ public class Game {
         return false;
     }
 
+    public void resign(Player currentPlayer) {
+        gameAlreadyDone = true;
+        if (currentPlayer.equals(player1)) {
+            // player is red
+            gameWinner = WhoWon.WHITE;
+        } else {
+            gameWinner = WhoWon.RED;
+        }
+    }
+
+    public String getYouWon(Player currentPlayer) {
+        if (gameWinner == WhoWon.NOBODY)
+            return " nobody won.";
+        if (player1.equals(currentPlayer)) {
+            // player is red
+            if (gameWinner == WhoWon.RED) {
+                return " you won!";
+            } else {
+                return " you lost..";
+            }
+        } else {
+            // player is white
+            if (gameWinner == WhoWon.WHITE) {
+                return " you won!";
+            } else {
+                return " you lost..";
+            }
+        }
+
+    }
 
     public boolean submitMove(Player movingPlayer) {
         Space removedPieceSpace = null;
