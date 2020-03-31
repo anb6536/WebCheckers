@@ -39,6 +39,11 @@ public class Position {
         return true;
     }
 
+
+    public Position invertPosition() {
+        return makePosition(7-this.row, 7-this.cell);
+    }
+
     @Override
     public String toString() {
         return "Position{" +

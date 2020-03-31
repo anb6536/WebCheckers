@@ -25,13 +25,15 @@ public class Board {
         return true;
     }
     public boolean validateMove(Move move, boolean whiteMove) {
-        return MoveValidator.validateMove(move, view);
+        return MoveValidator.validateMove(move, view, whiteMove);
     }
 
     public boolean makeMove(Move move, boolean whiteMove) {
         if (!validateMove(move, whiteMove)) {
             return false;
         }
+        // Manually invert the move so it goes to right place on board
+        if (whiteMove) { move = move.invertMove(); }
         setPiece(move.end, view.getSpace(move.start).getPiece());
         removePiece(move.start);
         return true;

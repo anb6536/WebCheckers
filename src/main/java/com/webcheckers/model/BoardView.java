@@ -1,5 +1,6 @@
 package com.webcheckers.model;
 
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -57,4 +58,21 @@ public class BoardView {
         rowList.addAll(rows);
         return new BoardView(rowList);
     }
+
+    @Override
+    public String toString() {
+        String buildString = "";
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                Space space = getSpace(x,y);
+                Piece piece = space.getPiece();
+                if (piece == null) { buildString += "*"; continue;}
+                if (piece.getColor() == Piece.Color.WHITE) { buildString += "W"; }
+                else if (piece.getColor() == Piece.Color.RED)  { buildString += "R"; }
+            }
+            buildString += "\n";
+        }
+        return buildString;
+    }
+
 }

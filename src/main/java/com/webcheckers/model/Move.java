@@ -63,4 +63,9 @@ public class Move {
                 ", end=" + end +
                 '}';
     }
+
+    public Move invertMove() {
+        return createMove(this.start.invertPosition(), this.end.invertPosition());
+    }
+
 }

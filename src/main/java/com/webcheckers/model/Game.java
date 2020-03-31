@@ -87,6 +87,21 @@ public class Game {
         }
     }
 
+    /**
+     * Gets the color of the player currently playing
+     * @return RED if player1 (the red player), WHITE if player2 (the white player)
+     */
+    public Piece.Color getCurrentPlayingColor() {
+        // Player1 is RED player
+        if (currentTurn == player1) {
+            System.out.println("Red player playing");
+            return Piece.Color.RED;
+        } else {
+            System.out.println("White player playing");
+            return Piece.Color.WHITE;
+        }
+    }
+
     public Game(Player player1, Player player2, Board board) {
         this.player1 = player1;
         this.player2 = player2;

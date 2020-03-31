@@ -9,11 +9,17 @@ public class MoveValidator {
     public final static int NUM_ROWS = 8;
     public final static int NUM_COLS = 8;
 
-    public static boolean validateMove(Move playerMove, BoardView boardView) {
+    public static boolean validateMove(Move playerMove, BoardView boardView, boolean whiteMoving) {
+        if (whiteMoving) {
+            LOG.severe("White moving");
+            playerMove = playerMove.invertMove();
+        } else {
+            LOG.severe("Red moving");
+        }
+        LOG.severe("\n"+ boardView.toString());
         boolean move_on_board = moveIsOnBoard(playerMove);
         boolean landing_space_available = spaceIsAvailable(boardView, playerMove);
-        boolean is_single_proper_diagonal = moveIsSingleProperDiagonal(boardView, playerMove);
-
+        boolean is_single_proper_diagonal = moveIsSingleProperDiagonal(boardView, playerMove, whiteMoving);
         // If the move is not even on the board, return false immediately
         if (!move_on_board) return false;
 
@@ -85,14 +91,24 @@ public class MoveValidator {
      * @param move The move being checked
      * @return Checks if the change in position done by the move is diagonal
      */
-    private static boolean moveIsSingleProperDiagonal(BoardView boardView, Move move) {
+    private static boolean moveIsSingleProperDiagonal(BoardView boardView, Move move, boolean whiteMove) {
         Position start_position = move.start;
         Position end_position = move.end;
+        // Default vertical direction
+        int vert_direction = -1;
+        if (whiteMove) {
+            // Allow white pieces to move down in the board
+            vert_direction = 1;
+        }
         // Changes in x and y for the position for the move
         int col_offset = 0;
         int row_offset = 0;
         // Get the piece that is making the move
         Piece current_piece = boardView.getSpace(start_position).getPiece();
+        if (current_piece == null) {
+            LOG.severe("Null piece was somehow moved from:" + move.start + " to " + move.end);
+            return false;
+        }
         Piece.Type piece_type = current_piece.getType();
 
         col_offset = (end_position.cell - start_position.cell);
@@ -103,7 +119,7 @@ public class MoveValidator {
             return Math.abs(col_offset) == 1 && Math.abs(row_offset) == 1;
         } else {
             // Check for diagonal move forward (upwards)
-            return Math.abs(col_offset) == 1 && row_offset == -1;
+            return Math.abs(col_offset) == 1 && row_offset == vert_direction;
         }
     }
 
