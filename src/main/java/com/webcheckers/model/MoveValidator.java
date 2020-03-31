@@ -1,5 +1,6 @@
 package com.webcheckers.model;
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.logging.LogManager;
 
@@ -7,8 +8,12 @@ public class MoveValidator {
     private static final Logger LOG = Logger.getLogger(MoveValidator.class.getName());
     public final static int NUM_ROWS = 8;
     public final static int NUM_COLS = 8;
-
+    // Move information that can be accessed upon validation (initialized as empty)
+    // This gets updated to the most recent moves that involves the capturing of a piece
+    private static ArrayList<MoveInformation> captureMoves = new ArrayList<>();
     public static boolean validateMove(Move playerMove, BoardView boardView, boolean whiteMoving) {
+        // Make it empty every time we validate a move
+        captureMoves = new ArrayList<>();
         if (whiteMoving) {
             LOG.severe("White moving");
             playerMove = playerMove.invertMove();
@@ -166,12 +171,13 @@ public class MoveValidator {
      * @param boardView The boardView that represents the board
      * @param move The move that can be made
      * @param whiteMove
+     *
      * @return
      */
     public static boolean isSingularJumpMove(BoardView boardView, Move move, boolean whiteMove) {
         // Impose restrictions on motion (handles difference between King and Single)
         boolean right_motion = moveIsGeneralProperDiagonal(boardView, move, whiteMove);
-
+        ArrayList<MoveInformation> captureMovesMade = new ArrayList<>();
         // The vertical and horizontal distance are valid
         boolean right_distance;
         boolean onBoard = moveIsOnBoard(move);
@@ -189,7 +195,6 @@ public class MoveValidator {
         if (!right_distance) return false;
         // Get the piece to see if King or Single
         Piece current_piece = boardView.getSpace(move.start).getPiece();
-        Position position_remove = null;
         Position midpoint = move.getMidpoint();
         // If there is no piece at the midpoint there is nothing
         Piece middle_piece = boardView.getSpace(midpoint).getPiece();
@@ -198,14 +203,18 @@ public class MoveValidator {
         // Confirming that a piece jumps over opponent piece
         if (whiteMove) {
              if (middle_piece.getColor() == Piece.Color.RED) {
-                 position_remove = midpoint;
+                 // Position that will be removed
+                 MoveInformation captureMove = new MoveInformation(move, middle_piece, midpoint);
+                 captureMoves.add(captureMove);
                  return true;
              } else {
                  return false;
              }
         } else {
             if (middle_piece.getColor() == Piece.Color.WHITE) {
-                position_remove = midpoint;
+                // Position that will be removed
+                MoveInformation captureMove = new MoveInformation(move, middle_piece, midpoint);
+                captureMoves.add(captureMove);
                 return true;
             } else {
                 return false;
@@ -213,5 +222,11 @@ public class MoveValidator {
         }
     }
 
-
+    /**
+     * Get the capture moves made by the most recent move
+     * @return the most recent moves made by capture move
+     */
+    public static ArrayList<MoveInformation> getCaptureMoves() {
+        return captureMoves;
+    }
 }

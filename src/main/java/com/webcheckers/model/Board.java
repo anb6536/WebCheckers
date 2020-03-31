@@ -36,6 +36,10 @@ public class Board {
         if (whiteMove) { move = move.invertMove(); }
         setPiece(move.end, view.getSpace(move.start).getPiece());
         removePiece(move.start);
+        for (MoveInformation moveInfo : MoveValidator.getCaptureMoves()) {
+            removePiece(moveInfo.removedPosition);
+        }
+
         return true;
     }
 
