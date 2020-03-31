@@ -161,6 +161,13 @@ public class MoveValidator {
         }
     }
 
+    /**
+     * Detects if a move represents a singular jump move
+     * @param boardView The boardView that represents the board
+     * @param move The move that can be made
+     * @param whiteMove
+     * @return
+     */
     public static boolean isSingularJumpMove(BoardView boardView, Move move, boolean whiteMove) {
         // Impose restrictions on motion (handles difference between King and Single)
         boolean right_motion = moveIsGeneralProperDiagonal(boardView, move, whiteMove);
