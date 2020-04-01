@@ -64,11 +64,12 @@ public class PlayerLobby {
     public synchronized void removeMatch(Player player1, Player player2) {
         // register that these players are opponents
         synchronized (opponentSyncObject) {
-            if (opponents.get(player1) == player2) {
+
+            if (opponents.get(player1) != null && opponents.get(player1).equals(player2)) {
                 opponents.remove(player1);
             }
             if (opponents.containsKey(player2)) {
-                if (opponents.get(player2) == player1) {
+                if (opponents.get(player2).equals(player1)) {
                     opponents.remove(player2);
                 }
             }
@@ -77,7 +78,7 @@ public class PlayerLobby {
 
     public boolean isInGameWithPlayer(Player player1, Player player2) {
         synchronized (opponentSyncObject) {
-            if (opponents.get(player1) == player2) {
+            if (opponents.get(player1) != null && opponents.get(player1).equals(player2)) {
                 return true;
             }
             if (opponents.containsKey(player2)) {
@@ -99,9 +100,9 @@ public class PlayerLobby {
         Set<Integer> keySet = gameIds.keySet();
         int gameId = 0;
         for (int i : keySet) {
-            if (gameIds.get(i) == player || gameIds.get(i) == getOpponent(player)) {
+            if ((gameIds.get(i) != null && gameIds.get(i).equals(player)) || gameIds.get(i).equals(getOpponent(player))) {
                 //get the most recent game
-                if(i>gameId)
+                if (i > gameId)
                     gameId = i;
             }
         }
