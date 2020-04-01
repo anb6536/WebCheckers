@@ -1,6 +1,5 @@
 package com.webcheckers.model;
 
-import java.util.ArrayList;
 import java.util.Stack;
 
 public class Game {
@@ -19,7 +18,8 @@ public class Game {
     private Player currentTurn;
     private Board playBoard;
     private Stack<MoveInformation> movesMade;
-    public Move moveWaitingForSubmission;
+    private Move moveWaitingForSubmission;
+    private Player moveMaker;
 
     public Board getRedBoard() {
         return playBoard;
@@ -38,25 +38,35 @@ public class Game {
         return player2;
     }
 
-    public boolean backupMove(Player backingUp) {
-        if (movesMade.peek() != null) {
-            MoveInformation moveInfo = movesMade.peek();
-            if (playBoard.backupMove(moveInfo)) {
-                movesMade.pop();
-                return true;
-            }
+    public boolean backupMove(Player playerTrying) {
+        if (playerTrying.equals(moveMaker) && moveWaitingForSubmission != null) {
+            moveWaitingForSubmission = null;
+            moveMaker = null;
+            return true;
         }
         return false;
     }
 
     public boolean submitMove(Player movingPlayer) {
-        Space removedPieceSpace = null;
+        MoveInformation info = null;
+        // TODO playBoard should return a pair of <boolean, MoveInformation>
+        // TODO check the pair, if it's true here then it's fine and in the if statement
+        // set the info to the info returned
+        // The pair should be set here so that we can test the boolean in the if
+        // statement
         if (playBoard.validateMove(moveWaitingForSubmission, player2 == movingPlayer)) {
-            // TODO: Get the pieces removed via a Board function
+            // INFO GETS SET TO THE RETURN VALUE IN HERE
+            // CHANGE THE TEST TO TEST THE BOOLEAN PORTION OF THE PAIR
+            movesMade.push(info);
+        } else {
+            return false;
         }
         if (playBoard.makeMove(moveWaitingForSubmission, player2 == movingPlayer)) {
             // TODO: Actually remove the pieces or have the board remove them
             moveWaitingForSubmission = null;
+            moveMaker = null;
+            // TODO: If the piece moved made a jump move, and it has jump moves remaining,
+            // then it should not swap the player turn
             swapPlayerTurn();
             return true;
         }
@@ -64,8 +74,12 @@ public class Game {
     }
 
     public boolean validateMove(Move move, Player movingPlayer) {
+        if (!movingPlayer.equals(currentTurn)) {
+            return false;
+        }
         if (playBoard.validateMove(move, player2 == movingPlayer)) {
             moveWaitingForSubmission = move;
+            moveMaker = movingPlayer;
             return true;
         }
         return false;
@@ -89,6 +103,7 @@ public class Game {
 
     /**
      * Gets the color of the player currently playing
+     * 
      * @return RED if player1 (the red player), WHITE if player2 (the white player)
      */
     public Piece.Color getCurrentPlayingColor() {
