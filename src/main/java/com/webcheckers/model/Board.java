@@ -20,25 +20,21 @@ public class Board {
     public BoardView getBoardView() {
         return view;
     }
-
-    public boolean backupMove(MoveInformation moveInformation) {
-        // TODO: Actually backup the move
-        return true;
-    }
-
-    public boolean validateMove(Move move, boolean whiteMove) {
+    public Pair<Boolean, MoveInformation> validateMove(Move move, boolean whiteMove) {
         return MoveValidator.validateMove(move, view, whiteMove);
     }
 
     public boolean makeMove(Move move, boolean whiteMove) {
-        if (!validateMove(move, whiteMove)) {
+        Pair<Boolean, MoveInformation> validationInfo = validateMove(move, whiteMove);
+        MoveInformation moveInfo = validationInfo.getValue();
+        if (!validationInfo.getKey()) {
             return false;
         }
         // Manually invert the move so it goes to right place on board
         if (whiteMove) { move = move.invertMove(); }
         setPiece(move.end, view.getSpace(move.start).getPiece());
         removePiece(move.start);
-        for (MoveInformation moveInfo : MoveValidator.getCaptureMoves()) {
+        if (moveInfo.isJumpMove()) {
             removePiece(moveInfo.removedPosition);
         }
 
