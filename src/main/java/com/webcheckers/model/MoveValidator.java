@@ -1,5 +1,7 @@
 package com.webcheckers.model;
 
+
+
 import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.logging.LogManager;
@@ -11,9 +13,8 @@ public class MoveValidator {
     // Move information that can be accessed upon validation (initialized as empty)
     // This gets updated to the most recent moves that involves the capturing of a piece
     private static ArrayList<MoveInformation> captureMoves = new ArrayList<>();
-    public static boolean validateMove(Move playerMove, BoardView boardView, boolean whiteMoving) {
+    public static Pair<Boolean, MoveInformation> validateMove(Move playerMove, BoardView boardView, boolean whiteMoving) {
         // Make it empty every time we validate a move
-        captureMoves = new ArrayList<>();
         if (whiteMoving) {
             LOG.severe("White moving");
             playerMove = playerMove.invertMove();
@@ -24,20 +25,40 @@ public class MoveValidator {
         boolean move_on_board = moveIsOnBoard(playerMove);
         boolean landing_space_available = spaceIsAvailable(boardView, playerMove);
         boolean is_single_proper_diagonal = moveIsSingleProperDiagonal(boardView, playerMove, whiteMoving);
+        /* Pair to represent invalidMove */
+        Pair<Boolean, MoveInformation> failPair = new Pair<>(false, null);
         // If the move is not even on the board, return false immediately
-        if (!move_on_board) return false;
+        if (!move_on_board) return failPair;
 
+        MoveInformation simpleMoveInfo = null;
         // Represents single move without jump (Open space and a diagonal movement)
-        if (landing_space_available && is_single_proper_diagonal) {
-            return true;
-        } else if (isSingularJumpMove(boardView, playerMove, whiteMoving)) {
-            return true;
-        } else if (isMultipleJumpMove(boardView, playerMove, whiteMoving)) {
-            return true;
+        if (isSimpleMove(boardView, playerMove, whiteMoving)) {
+            // Move info with nothing removed
+            simpleMoveInfo = new MoveInformation(playerMove);
+            return new Pair<>(true, simpleMoveInfo);
+        }
+        Pair<Boolean, MoveInformation> singleJumpPair = isSingularJumpMove(boardView, playerMove, whiteMoving);
+        if (singleJumpPair.getKey()) {
+            return singleJumpPair ;
         }
 
-        return false;
+        return failPair;
     }
+
+    /**
+     * Helper function to determine if a board is a simple move
+     * @param boardView The view of the board
+     * @param move The move being checked
+     * @param whiteMove Whether or not the white player is move
+     * @return True if the move counts as a simple move, false otherwise
+     */
+    public static boolean isSimpleMove(BoardView boardView, Move move, boolean whiteMove) {
+        boolean move_on_board = moveIsOnBoard(move);
+        boolean landing_space_available = spaceIsAvailable(boardView, move);
+        boolean is_single_proper_diagonal = moveIsSingleProperDiagonal(boardView, move, whiteMove);
+        return (move_on_board && landing_space_available && is_single_proper_diagonal);
+    }
+
 
     /**
      * Check if the start and end positions of a Move is on the board
@@ -86,6 +107,7 @@ public class MoveValidator {
      */
     private static boolean spaceIsAvailable(BoardView boardView, Move move) {
         Position end_position = move.end;
+        if (!moveIsOnBoard(move)) return false;
         Space moveSpace = boardView.getSpace(end_position);
         return moveSpace.isValid();
     }
@@ -146,6 +168,10 @@ public class MoveValidator {
         int row_offset = 0;
         // Get the piece that is making the move
         Piece current_piece = boardView.getSpace(start_position).getPiece();
+        if (current_piece == null) {
+            LOG.severe("Player illegally tried to move twice in once turn");
+            return false;
+        }
         Piece.Type piece_type = current_piece.getType();
         col_offset = (end_position.cell - start_position.cell);
         row_offset = (end_position.row - start_position.row);
@@ -179,50 +205,50 @@ public class MoveValidator {
      *
      * @return
      */
-    public static boolean isSingularJumpMove(BoardView boardView, Move move, boolean whiteMove) {
+    public static Pair<Boolean, MoveInformation> isSingularJumpMove(BoardView boardView, Move move, boolean whiteMove) {
         // Impose restrictions on motion (handles difference between King and Single)
         boolean right_motion = moveIsGeneralProperDiagonal(boardView, move, whiteMove);
-        ArrayList<MoveInformation> captureMovesMade = new ArrayList<>();
         // The vertical and horizontal distance are valid
         boolean right_distance;
         boolean onBoard = moveIsOnBoard(move);
         boolean landing_space_available = spaceIsAvailable(boardView, move);
+
+        Pair<Boolean, MoveInformation> failPair = new Pair<>(false, null);
+        // Move to be returned along with a boolean
+        MoveInformation captureMove = null;
         // If it is not moving in the right direction automatically return false
-        if (!right_motion)  return false;
-        if (!onBoard) return false;
-        if (!landing_space_available) return false;
+        if (!right_motion)  return failPair;
+        if (!onBoard) return failPair;
+        if (!landing_space_available) return failPair;
 
         // Get change in row and column
         int row_offset = move.end.row - move.start.row;
         int col_offset = move.end.cell - move.start.cell;
         right_distance = (Math.abs(row_offset) == 2 && Math.abs(col_offset) == 2);
         // If you moved more or less than 2 spaces then it cannot be a valid jump
-        if (!right_distance) return false;
+        if (!right_distance) return failPair;
         // Get the piece to see if King or Single
         Piece current_piece = boardView.getSpace(move.start).getPiece();
         Position midpoint = move.getMidpoint();
         // If there is no piece at the midpoint there is nothing
         Piece middle_piece = boardView.getSpace(midpoint).getPiece();
-        if (middle_piece == null) return false;
-
+        if (middle_piece == null) return failPair;
         // Confirming that a piece jumps over opponent piece
         if (whiteMove) {
              if (middle_piece.getColor() == Piece.Color.RED) {
                  // Position that will be removed
-                 MoveInformation captureMove = new MoveInformation(move, middle_piece, midpoint);
-                 captureMoves.add(captureMove);
-                 return true;
+                 captureMove = new MoveInformation(move, middle_piece, midpoint);
+                 return new Pair<>(true, captureMove);
              } else {
-                 return false;
+                 return failPair;
              }
         } else {
             if (middle_piece.getColor() == Piece.Color.WHITE) {
                 // Position that will be removed
-                MoveInformation captureMove = new MoveInformation(move, middle_piece, midpoint);
-                captureMoves.add(captureMove);
-                return true;
+                captureMove = new MoveInformation(move, middle_piece, midpoint);
+                return new Pair<>(true, captureMove);
             } else {
-                return false;
+                return failPair;
             }
         }
     }
@@ -235,6 +261,7 @@ public class MoveValidator {
         return captureMoves;
     }
 
+    // Not used
     public static boolean isMultipleJumpMove(BoardView boardView, Move move, boolean whiteMove) {
         // Impose restrictions on motion (handles difference between King and Single)
         boolean right_motion = moveIsGeneralProperDiagonal(boardView, move, whiteMove);
@@ -295,8 +322,60 @@ public class MoveValidator {
         return true;
     }
 
+    /**
+     * Check for if there are any simple moves in the game
+     * @param boardView The boardview that represents the board
+     * @param current_position The current position of the board
+     * @return Return true if there are available moves, false if there are none
+     */
+    public boolean hasPossibleSimpleMoves(BoardView boardView, Position current_position) {
+        Piece current_piece = boardView.getSpace(current_position).getPiece();
+        // Don't waste time looking for moves if there is no piece here and make it known
+        if (current_piece == null) {
+            LOG.severe("Checked an empty space for moves");
+            return false;
+        }
 
+        // See if this is a white move
+        boolean whiteMove = (current_piece.getColor() == Piece.Color.WHITE);
+        // Search for a maximum of one space around any move
+        for (int row_offset = -1; row_offset <= 1; row_offset++) {
+            for (int col_offset = -1; col_offset <= 1; col_offset++) {
+                // Create moves and validate if they are single jump moves
+                Position artificial_ending_position = Position.makePosition(current_position.row, current_position.cell);
+                Move move_to_check = Move.createMove(current_position, artificial_ending_position);
+                if (!moveIsOnBoard(move_to_check)) { continue; }
+                boolean is_valid_simple_move = isSimpleMove(boardView, move_to_check, whiteMove);
 
+                if (is_valid_simple_move) return true;
+            }
+        }
+        return false;
+    }
 
-
+    public static boolean hasPossibleSingleJumpMoves(BoardView boardView, Position current_position) {
+        Piece current_piece = boardView.getSpace(current_position).getPiece();
+        // Don't waste time looking for moves if there is no piece here and make it known
+        if (current_piece == null) {
+            LOG.severe("Checked an empty space for moves");
+            return false;
+        }
+        boolean whiteMove = (current_piece.getColor() == Piece.Color.WHITE);
+        // Search for a maximum of one space around any move
+        for (int row_offset = -2; row_offset <= 2; row_offset++) {
+            for (int col_offset = -2; col_offset <= 2; col_offset++) {
+                // Create moves and validate if they are single jump moves
+                Position artificial_ending_position = Position.makePosition(current_position.row + row_offset, current_position.cell + col_offset);
+                Move move_to_check = Move.createMove(current_position, artificial_ending_position);
+                Pair<Boolean, MoveInformation> jumpPair = isSingularJumpMove(boardView, move_to_check, whiteMove);
+                // If you have a jump move return true
+                if (jumpPair.getKey()) {
+                    LOG.severe(" CURRENT PIECE HAS JUMP MOVE");
+                    return true;
+                }
+            }
+        }
+        // Return false if we fail to inside
+        return false;
+    }
 }

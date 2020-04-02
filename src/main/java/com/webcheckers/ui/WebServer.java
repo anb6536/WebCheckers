@@ -8,12 +8,8 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.google.gson.Gson;
-import com.webcheckers.api.CheckTurnApiRoute;
-import com.webcheckers.api.SignInApiRoute;
-import com.webcheckers.api.SignOutRoute;
+import com.webcheckers.api.*;
 import com.webcheckers.appl.PlayerLobby;
-import com.webcheckers.api.SubmitTurnApiRoute;
-import com.webcheckers.api.ValidateMoveApiRoute;
 
 import spark.TemplateEngine;
 
@@ -67,6 +63,7 @@ public class WebServer {
   public static final String SUBMITTURN_URL = "/submitTurn";
   public static final String VALIDATEMOVE_URL = "/validateMove";
   public static final String CHECKTURN_URL = "/checkTurn";
+  public static final String BACKUP_URL = "/backupMove";
   //
   // Attributes
   //
@@ -160,6 +157,7 @@ public class WebServer {
     post(SUBMITTURN_URL, new SubmitTurnApiRoute(gson, lobby));
     post(VALIDATEMOVE_URL, new ValidateMoveApiRoute(gson, lobby));
     post(CHECKTURN_URL, new CheckTurnApiRoute(gson, lobby));
+    post(BACKUP_URL, new BackupMoveApiRoute(lobby, gson));
     LOG.config("WebServer is initialized.");
   }
 

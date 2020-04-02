@@ -1,5 +1,6 @@
 package com.webcheckers.model;
 
+
 import java.util.Stack;
 
 public class Game {
@@ -49,12 +50,13 @@ public class Game {
 
     public boolean submitMove(Player movingPlayer) {
         MoveInformation info = null;
-        // TODO playBoard should return a pair of <boolean, MoveInformation>
-        // TODO check the pair, if it's true here then it's fine and in the if statement
         // set the info to the info returned
         // The pair should be set here so that we can test the boolean in the if
         // statement
-        if (playBoard.validateMove(moveWaitingForSubmission, player2 == movingPlayer)) {
+
+        Pair<Boolean, MoveInformation> validationInfo = playBoard.validateMove(moveWaitingForSubmission, player2 == movingPlayer);
+        info = validationInfo.getValue();
+        if (validationInfo.getKey()) {
             // INFO GETS SET TO THE RETURN VALUE IN HERE
             // CHANGE THE TEST TO TEST THE BOOLEAN PORTION OF THE PAIR
             movesMade.push(info);
@@ -67,7 +69,10 @@ public class Game {
             moveMaker = null;
             // TODO: If the piece moved made a jump move, and it has jump moves remaining,
             // then it should not swap the player turn
-            swapPlayerTurn();
+            boolean more_jump_moves = MoveValidator.hasPossibleSingleJumpMoves(playBoard.getBoardView(), info.getMove().end);
+            if (!info.isJumpMove() || !more_jump_moves) {
+                swapPlayerTurn();
+            }
             return true;
         }
         return false;
@@ -77,7 +82,7 @@ public class Game {
         if (!movingPlayer.equals(currentTurn)) {
             return false;
         }
-        if (playBoard.validateMove(move, player2 == movingPlayer)) {
+        if (playBoard.validateMove(move, player2 == movingPlayer).getKey()) {
             moveWaitingForSubmission = move;
             moveMaker = movingPlayer;
             return true;
