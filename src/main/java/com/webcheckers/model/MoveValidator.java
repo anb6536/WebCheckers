@@ -10,6 +10,8 @@ public class MoveValidator {
     private static final Logger LOG = Logger.getLogger(MoveValidator.class.getName());
     public final static int NUM_ROWS = 8;
     public final static int NUM_COLS = 8;
+    // Variable to enforce a jump
+    public final static boolean FORCE_JUMP = true;
     // Move information that can be accessed upon validation (initialized as empty)
     // This gets updated to the most recent moves that involves the capturing of a piece
     private static ArrayList<MoveInformation> captureMoves = new ArrayList<>();
@@ -33,6 +35,12 @@ public class MoveValidator {
         MoveInformation simpleMoveInfo = null;
         // Represents single move without jump (Open space and a diagonal movement)
         if (isSimpleMove(boardView, playerMove, whiteMoving)) {
+            // Force a jump if the FORCE Flag is on and cause this to be invalid
+            if (FORCE_JUMP && anyJumpMoves(boardView, whiteMoving)) {
+                return failPair;
+            }
+
+
             // Move info with nothing removed
             simpleMoveInfo = new MoveInformation(playerMove);
             return new Pair<>(true, simpleMoveInfo);
@@ -376,6 +384,27 @@ public class MoveValidator {
             }
         }
         // Return false if we fail to inside
+        return false;
+    }
+
+    public static boolean anyJumpMoves(BoardView boardView, boolean whiteMove) {
+        Piece.Color color_to_check = (whiteMove) ? Piece.Color.WHITE : Piece.Color.RED;
+        for (int row = 0; row < NUM_ROWS; row++) {
+            for (int col = 0; col < NUM_COLS; col++) {
+                Position current_position = Position.makePosition(row, col);
+                Piece current_piece = boardView.getSpace(current_position).getPiece();
+                // If the current piece is null don't even bother checking and move on to next piece
+                if (current_piece == null) {
+                    continue;
+                }
+                // If not the color we're interested for then skip that piece
+                if (current_piece.getColor() != color_to_check) {
+                    continue;
+                }
+                boolean piece_has_jump_moves = hasPossibleSingleJumpMoves(boardView, current_position);
+                if (piece_has_jump_moves) return true;
+            }
+        }
         return false;
     }
 }
