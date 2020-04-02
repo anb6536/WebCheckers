@@ -361,6 +361,12 @@ public class MoveValidator {
         return false;
     }
 
+    /**
+     * Sees if there are any single jump moves for a given piece
+     * @param boardView The boardview representing the board
+     * @param current_position The current position (row and cell)
+     * @return True, if there is an available single jump move for the piece at this position
+     */
     public static boolean hasPossibleSingleJumpMoves(BoardView boardView, Position current_position) {
         Piece current_piece = boardView.getSpace(current_position).getPiece();
         // Don't waste time looking for moves if there is no piece here and make it known
@@ -387,6 +393,12 @@ public class MoveValidator {
         return false;
     }
 
+    /**
+     * Checks if there are any jump moves for a given color
+     * @param boardView The board view representing the board
+     * @param whiteMove Whether or not if we are checking the white pieces
+     * @return True if there is a jump move for a piece of that color
+     */
     public static boolean anyJumpMoves(BoardView boardView, boolean whiteMove) {
         Piece.Color color_to_check = (whiteMove) ? Piece.Color.WHITE : Piece.Color.RED;
         for (int row = 0; row < NUM_ROWS; row++) {
