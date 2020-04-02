@@ -8,6 +8,7 @@ import spark.*;
 
 import java.util.*;
 import java.util.logging.Logger;
+
 import static com.webcheckers.model.Game.Mode.PLAY;
 import static com.webcheckers.model.Piece.Color.RED;
 import static com.webcheckers.model.Piece.Color.WHITE;
@@ -32,7 +33,7 @@ public class GetGameRoute implements Route {
 
     /**
      * instantiates the GetGameRoute
-     * 
+     *
      * @param templateEngine used to render the page
      * @param lobby          a reference of the player lobby
      * @param gson           a reference to the GSON object used to serialize
@@ -47,7 +48,7 @@ public class GetGameRoute implements Route {
 
     /**
      * handles any request to view /game
-     * 
+     *
      * @param request  the request made to view the page
      * @param response our response to that request
      * @return the templateEngines view
@@ -76,7 +77,7 @@ public class GetGameRoute implements Route {
             halt();
         }
 
-        // if the opponent
+        // if we should start a game
         if (opponent != null && !player.isInGame() && !opponent.isInGame()
                 && !lobby.isInGameWithPlayer(player, opponent)) {
             // Make the board if just creating it.
@@ -84,10 +85,24 @@ public class GetGameRoute implements Route {
             board.addPieces();
             lobby.addMatch(player, opponent, board);
         }
-
-        // attribute information about this game to the session
         String sGameId = String.valueOf(lobby.getId(player));
         Game actualGame = lobby.getGame(sGameId);
+        // if the game is over, quit
+        if (actualGame != null && actualGame.isDone()) {
+            opponent = lobby.getPlayer(actualGame.getRedPlayer().getName());
+            if (opponent == null) {
+                opponent = lobby.getPlayer(actualGame.getWhitePlayer().getName());
+
+            }
+            player.leftGame();
+            lobby.removeMatch(player, opponent);
+            session.attribute("finishedGame", sGameId);
+            response.redirect("");
+            halt();
+        }
+
+
+        // attribute information about this game to the session
         vm.put(VIEW_MODE, PLAY); // we currently only support the play viewmode
         vm.put(ACTIVE_COLOR, actualGame.getCurrentPlayerTurn() == actualGame.getRedPlayer() ? RED : WHITE);
         vm.put(WHITE_PLAYER, actualGame.getWhitePlayer());

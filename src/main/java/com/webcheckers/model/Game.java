@@ -4,8 +4,14 @@ package com.webcheckers.model;
 import java.util.Stack;
 
 public class Game {
+
+
     public enum Mode {
         PLAY, SPECTATOR, REPLAY
+    }
+
+    public enum WhoWon {
+        NOBODY, RED, WHITE
     }
 
     /**
@@ -16,11 +22,15 @@ public class Game {
      * The recieving of the challenge player, who is always white
      */
     private Player player2;
+
     private Player currentTurn;
     private Board playBoard;
     private Stack<MoveInformation> movesMade;
     private Move moveWaitingForSubmission;
     private Player moveMaker;
+
+    private WhoWon gameWinner;
+    private boolean gameAlreadyDone;
 
     public Board getRedBoard() {
         return playBoard;
@@ -46,6 +56,65 @@ public class Game {
             return true;
         }
         return false;
+    }
+
+    /**
+     * check if the game has finished (if it has, say so to ourself)
+     *
+     * @return if the game has finished
+     */
+    public boolean isDone() {
+        if (gameAlreadyDone)
+            return true;
+        boolean hasRedPieces = playBoard.hasRedPieces();
+        boolean hasWhitePieces = playBoard.hasWhitePieces();
+        if (hasRedPieces && !hasWhitePieces) {
+            gameAlreadyDone = true;
+            gameWinner = WhoWon.RED;
+            return true;
+        }
+        if (hasWhitePieces && !hasRedPieces) {
+            gameAlreadyDone = true;
+            gameWinner = WhoWon.WHITE;
+            return true;
+        }
+        if (!hasRedPieces) { // because has WhitePieces must be true at this point
+            gameAlreadyDone = true;
+            gameWinner = WhoWon.NOBODY;
+            return true;
+        }
+        return false;
+    }
+
+    public void resign(Player currentPlayer) {
+        gameAlreadyDone = true;
+        if (currentPlayer.equals(player1)) {
+            // player is red
+            gameWinner = WhoWon.WHITE;
+        } else {
+            gameWinner = WhoWon.RED;
+        }
+    }
+
+    public String getYouWon(Player currentPlayer) {
+        if (gameWinner == WhoWon.NOBODY)
+            return " nobody won.";
+        if (player1.equals(currentPlayer)) {
+            // player is red
+            if (gameWinner == WhoWon.RED) {
+                return " you won!";
+            } else {
+                return " you lost..";
+            }
+        } else {
+            // player is white
+            if (gameWinner == WhoWon.WHITE) {
+                return " you won!";
+            } else {
+                return " you lost..";
+            }
+        }
+
     }
 
     public boolean submitMove(Player movingPlayer) {
@@ -128,6 +197,8 @@ public class Game {
         this.currentTurn = player1;
         this.playBoard = board;
         this.movesMade = new Stack<MoveInformation>();
+        this.gameWinner = WhoWon.NOBODY;
+        this.gameAlreadyDone = false;
     }
 
 }

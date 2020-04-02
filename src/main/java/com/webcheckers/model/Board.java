@@ -59,7 +59,7 @@ public class Board {
 
     /**
      * create a BoardView with correct starting positions
-     * 
+     *
      * @return the start of a board
      */
     public static Board makeBoard() {
@@ -115,10 +115,6 @@ public class Board {
         return new Board(rows);
     }
 
-    /**
-     *
-     * @param boardView the reference of the board filled with spaces
-     */
     public void addPieces() {
         // get the rows
         List<Row> rows = view.getRows();
@@ -152,9 +148,7 @@ public class Board {
 
     /**
      * flip the board so that the other player has a correct facing board
-     * 
-     * @param boardView the filled out board for a game that is facing the original
-     *                  way
+     *
      * @return the flipped board
      */
     public Board flipBoard() {
@@ -193,5 +187,14 @@ public class Board {
 
         // return the flipped board
         return new Board(newRow);
+    }
+
+    public boolean hasRedPieces() {
+        return view.hasRedPieces();
+    }
+
+    public boolean hasWhitePieces() {
+        return view.hasWhitePieces();
+
     }
 }

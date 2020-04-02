@@ -1,34 +1,28 @@
 package com.webcheckers.api;
 
+import com.google.gson.Gson;
+import com.webcheckers.appl.PlayerLobby;
+import com.webcheckers.model.Game;
+import com.webcheckers.model.Player;
+import com.webcheckers.util.Message;
+import spark.ModelAndView;
+import spark.Request;
+import spark.Response;
+import spark.Route;
+
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Logger;
 
-import com.google.gson.Gson;
-import com.webcheckers.appl.PlayerLobby;
-import com.webcheckers.model.Game;
-import com.webcheckers.model.Move;
-import com.webcheckers.model.Player;
-import com.webcheckers.util.Message;
+public class ResignApiRoute implements Route {
+    private PlayerLobby lobby;
+    private Gson gson;
 
-import spark.Request;
-import spark.Response;
-
-import static spark.Spark.halt;
-
-public class SubmitTurnApiRoute implements spark.Route {
-    private static final Logger LOG = Logger.getLogger(SubmitTurnApiRoute.class.getName());
-    private final Gson gson;
-    private final PlayerLobby lobby;
-
-    /**
-     * The submitturnApiRoute constructor
-     */
-    public SubmitTurnApiRoute(final Gson gson, final PlayerLobby lobby) {
+    public ResignApiRoute(Gson gson, PlayerLobby lobby) {
         this.gson = Objects.requireNonNull(gson, "gson is required");
         this.lobby = Objects.requireNonNull(lobby, "lobby is required");
+
     }
 
     @Override
@@ -44,13 +38,9 @@ public class SubmitTurnApiRoute implements spark.Route {
         if (currentPlayer == null) {
             return gson.toJson(Message.error("You need to be logged in to perform this action"));
         }
-        Game thisGame = lobby.getGame(gameID);
+        lobby.getGame(gameID).resign(currentPlayer);
 
-        if (thisGame.submitMove(currentPlayer)) {
-            return gson.toJson(Message.info("Your move has been made"));
-        } else {
-            return gson.toJson(Message.error("Your move is invalid"));
-        }
+
+        return gson.toJson(Message.info("You have resigned and lost!"));
     }
-
 }

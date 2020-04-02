@@ -64,6 +64,8 @@ public class WebServer {
   public static final String VALIDATEMOVE_URL = "/validateMove";
   public static final String CHECKTURN_URL = "/checkTurn";
   public static final String BACKUP_URL = "/backupMove";
+  public static final String RESIGN_URL = "/resignGame";
+  
   //
   // Attributes
   //
@@ -158,11 +160,11 @@ public class WebServer {
     post(VALIDATEMOVE_URL, new ValidateMoveApiRoute(gson, lobby));
     post(CHECKTURN_URL, new CheckTurnApiRoute(gson, lobby));
     post(BACKUP_URL, new BackupMoveApiRoute(lobby, gson));
+    post(RESIGN_URL, new ResignApiRoute(gson, lobby));
     LOG.config("WebServer is initialized.");
   }
 
   public PlayerLobby getLobby() {
     return this.lobby;
   }
-
 }
