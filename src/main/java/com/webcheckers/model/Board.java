@@ -27,9 +27,6 @@ public class Board {
     }
 
     public boolean validateMove(Move move, boolean whiteMove) {
-        if (whiteMove) {
-            move = move.flip();
-        }
         return MoveValidator.validateMove(move, view, whiteMove);
     }
 
@@ -37,11 +34,14 @@ public class Board {
         if (!validateMove(move, whiteMove)) {
             return false;
         }
-        if (whiteMove) {
-            move = move.flip();
-        }
+        // Manually invert the move so it goes to right place on board
+        if (whiteMove) { move = move.invertMove(); }
         setPiece(move.end, view.getSpace(move.start).getPiece());
         removePiece(move.start);
+        for (MoveInformation moveInfo : MoveValidator.getCaptureMoves()) {
+            removePiece(moveInfo.removedPosition);
+        }
+
         return true;
     }
 

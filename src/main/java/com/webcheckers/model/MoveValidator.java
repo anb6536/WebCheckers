@@ -1,6 +1,6 @@
 package com.webcheckers.model;
 
-import java.util.Base64;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 import java.util.logging.LogManager;
 
@@ -8,21 +8,34 @@ public class MoveValidator {
     private static final Logger LOG = Logger.getLogger(MoveValidator.class.getName());
     public final static int NUM_ROWS = 8;
     public final static int NUM_COLS = 8;
-
-    public static boolean validateMove(Move playerMove, BoardView boardView, boolean isWhiteMove) {
+    // Move information that can be accessed upon validation (initialized as empty)
+    // This gets updated to the most recent moves that involves the capturing of a piece
+    private static ArrayList<MoveInformation> captureMoves = new ArrayList<>();
+    public static boolean validateMove(Move playerMove, BoardView boardView, boolean whiteMoving) {
+        // Make it empty every time we validate a move
+        captureMoves = new ArrayList<>();
+        if (whiteMoving) {
+            LOG.severe("White moving");
+            playerMove = playerMove.invertMove();
+        } else {
+            LOG.severe("Red moving");
+        }
+        LOG.severe("\n"+ boardView.toString());
         boolean move_on_board = moveIsOnBoard(playerMove);
         boolean landing_space_available = spaceIsAvailable(boardView, playerMove);
-        boolean is_proper_diagonal = moveIsSingleProperDiagonal(boardView, playerMove, isWhiteMove);
-
+        boolean is_single_proper_diagonal = moveIsSingleProperDiagonal(boardView, playerMove, whiteMoving);
         // If the move is not even on the board, return false immediately
         if (!move_on_board) return false;
 
         // Represents single move without jump (Open space and a diagonal movement)
-        if (landing_space_available && is_proper_diagonal) {
+        if (landing_space_available && is_single_proper_diagonal) {
+            return true;
+        } else if (isSingularJumpMove(boardView, playerMove, whiteMoving)) {
+            return true;
+        } else if (isMultipleJumpMove(boardView, playerMove, whiteMoving)) {
             return true;
         }
 
-        // Stub, will complete soon
         return false;
     }
 
@@ -57,11 +70,11 @@ public class MoveValidator {
      */
     private static boolean positionIsOnBoard(Position position) {
         boolean positionOnBoard = true;
-        if (!(position.cell >= 0 && position.cell < NUM_COLS)) {
+        if ( !(position.cell >= 0 && position.cell < NUM_COLS) ) {
             LOG.finer("Column position is off board");
             positionOnBoard = false;
         }
-        if (!(position.row >= 0 && position.row < NUM_ROWS)) {
+        if ( !(position.row >= 0 && position.row < NUM_ROWS) ) {
             LOG.finer("Row position is off board");
             positionOnBoard = false;
         }
@@ -90,27 +103,35 @@ public class MoveValidator {
      * @param move      The move being checked
      * @return Checks if the change in position done by the move is diagonal
      */
-    private static boolean moveIsSingleProperDiagonal(BoardView boardView, Move move, boolean isWhiteMove) {
+    private static boolean moveIsSingleProperDiagonal(BoardView boardView, Move move, boolean whiteMove) {
         Position start_position = move.start;
         Position end_position = move.end;
+        // Default vertical direction
+        int vert_direction = -1;
+        if (whiteMove) {
+            // Allow white pieces to move down in the board
+            vert_direction = 1;
+        }
         // Changes in x and y for the position for the move
         int col_offset = 0;
         int row_offset = 0;
         // Get the piece that is making the move
         Piece current_piece = boardView.getSpace(start_position).getPiece();
+        if (current_piece == null) {
+            LOG.severe("Null piece was somehow moved from:" + move.start + " to " + move.end);
+            return false;
+        }
         Piece.Type piece_type = current_piece.getType();
 
         col_offset = (end_position.cell - start_position.cell);
         row_offset = (end_position.row - start_position.row);
-        if (isWhiteMove)
-            row_offset = -row_offset;
         // If both the col offset and the row offset are either 1 or -1 then it is a diagonal move
         if (piece_type == Piece.Type.KING) {
             // Check for diagonal move in any direction
             return Math.abs(col_offset) == 1 && Math.abs(row_offset) == 1;
         } else {
             // Check for diagonal move forward (upwards)
-            return Math.abs(col_offset) == 1 && row_offset == -1;
+            return Math.abs(col_offset) == 1 && row_offset == vert_direction;
         }
     }
 
@@ -123,7 +144,7 @@ public class MoveValidator {
      * @param boardView The boardView that represents the board
      * @return true if going diagonally as
      */
-    private static boolean moveIsGeneralProperDiagonal(BoardView boardView, Move move) {
+    private static boolean moveIsGeneralProperDiagonal(BoardView boardView, Move move, boolean whiteMove) {
         Position start_position = move.start;
         Position end_position = move.end;
         // Changes in x and y for the position for the move
@@ -134,6 +155,13 @@ public class MoveValidator {
         Piece.Type piece_type = current_piece.getType();
         col_offset = (end_position.cell - start_position.cell);
         row_offset = (end_position.row - start_position.row);
+        boolean right_direction;
+        if (whiteMove) {
+            right_direction = row_offset > 0;
+        } else {
+            right_direction = row_offset < 0;
+        }
+
 
         // Piece was not moved, not a valid move
         if (col_offset == 0 && row_offset == 0) {
@@ -145,8 +173,136 @@ public class MoveValidator {
             return Math.abs(col_offset) == Math.abs(row_offset);
         } else {
             // Check for diagonal movement that is forward
-            return (Math.abs(col_offset) == Math.abs(row_offset)) && row_offset < 0;
+            return ( Math.abs(col_offset) == Math.abs(row_offset) ) && right_direction;
         }
-
     }
+
+    /**
+     * Detects if a move represents a singular jump move
+     * @param boardView The boardView that represents the board
+     * @param move The move that can be made
+     * @param whiteMove
+     *
+     * @return
+     */
+    public static boolean isSingularJumpMove(BoardView boardView, Move move, boolean whiteMove) {
+        // Impose restrictions on motion (handles difference between King and Single)
+        boolean right_motion = moveIsGeneralProperDiagonal(boardView, move, whiteMove);
+        ArrayList<MoveInformation> captureMovesMade = new ArrayList<>();
+        // The vertical and horizontal distance are valid
+        boolean right_distance;
+        boolean onBoard = moveIsOnBoard(move);
+        boolean landing_space_available = spaceIsAvailable(boardView, move);
+        // If it is not moving in the right direction automatically return false
+        if (!right_motion)  return false;
+        if (!onBoard) return false;
+        if (!landing_space_available) return false;
+
+        // Get change in row and column
+        int row_offset = move.end.row - move.start.row;
+        int col_offset = move.end.cell - move.start.cell;
+        right_distance = (Math.abs(row_offset) == 2 && Math.abs(col_offset) == 2);
+        // If you moved more or less than 2 spaces then it cannot be a valid jump
+        if (!right_distance) return false;
+        // Get the piece to see if King or Single
+        Piece current_piece = boardView.getSpace(move.start).getPiece();
+        Position midpoint = move.getMidpoint();
+        // If there is no piece at the midpoint there is nothing
+        Piece middle_piece = boardView.getSpace(midpoint).getPiece();
+        if (middle_piece == null) return false;
+
+        // Confirming that a piece jumps over opponent piece
+        if (whiteMove) {
+             if (middle_piece.getColor() == Piece.Color.RED) {
+                 // Position that will be removed
+                 MoveInformation captureMove = new MoveInformation(move, middle_piece, midpoint);
+                 captureMoves.add(captureMove);
+                 return true;
+             } else {
+                 return false;
+             }
+        } else {
+            if (middle_piece.getColor() == Piece.Color.WHITE) {
+                // Position that will be removed
+                MoveInformation captureMove = new MoveInformation(move, middle_piece, midpoint);
+                captureMoves.add(captureMove);
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    /**
+     * Get the capture moves made by the most recent move
+     * @return the most recent moves made by capture move
+     */
+    public static ArrayList<MoveInformation> getCaptureMoves() {
+        return captureMoves;
+    }
+
+    public static boolean isMultipleJumpMove(BoardView boardView, Move move, boolean whiteMove) {
+        // Impose restrictions on motion (handles difference between King and Single)
+        boolean right_motion = moveIsGeneralProperDiagonal(boardView, move, whiteMove);
+        ArrayList<MoveInformation> captureMovesMade = new ArrayList<>();
+        // The vertical and horizontal distance are valid
+        boolean right_distance;
+        boolean onBoard = moveIsOnBoard(move);
+        boolean landing_space_available = spaceIsAvailable(boardView, move);
+        // If it is not moving in the right direction automatically return false
+        if (!right_motion)  return false;
+        if (!onBoard) return false;
+        if (!landing_space_available) return false;
+        int row_offset = move.end.row - move.start.row;
+        int col_offset = move.end.cell - move.start.cell;
+
+        // Make sure the total distance is greater than 2
+        // If it was equal to two, it would just be a single jump move
+        // If it was less than two, it would be a simple move
+        right_distance = (Math.abs(row_offset ) > 2 && Math.abs(col_offset) > 2);
+        if (!right_distance) return false;
+
+        // Quick sgn(row_offset) and sgn(col_offset) for iterating
+        // Kinda like unit vectors pointing from move.start to move.end
+        int row_inc = row_offset/Math.abs(row_offset);
+        int col_inc = col_offset/Math.abs(col_offset);
+
+        // Iterate along the "vectors" looking for a repeating pattern of [enemy_piece, blank_space]
+        int cur_row = move.start.row + row_inc; // Start on the first space along that path
+        int cur_col = move.start.cell + col_inc; // Start on the first space along that path
+        Piece.Color colorToCapture = Piece.Color.WHITE;
+        if (whiteMove) colorToCapture = Piece.Color.RED;
+        // Index to cycle for the pattern
+        int cycleIndex = 0;
+        // Declare array with move information to capt
+        ArrayList<MoveInformation> mjCaptureMoves = new ArrayList<>();
+        while (cur_row != move.end.row && cur_col != move.end.cell) {
+            Piece cur_piece = boardView.getSpace(cur_row, cur_col).getPiece();
+
+            // Keep iterating until we reach the end
+            // Break if conditions violated
+            if (cycleIndex == 0) {
+                if (cur_piece == null) return false;
+                if (cur_piece.getColor() != colorToCapture) return false;
+                MoveInformation moveInformation = new MoveInformation(move, cur_piece, Position.makePosition(cur_row, cur_col));
+                mjCaptureMoves.add(moveInformation);
+            } else if (cycleIndex == 1) {
+                // After hopping over an enemy piece there should be a space to land on
+                if (cur_piece != null) return false;
+            }
+
+            cur_row += row_inc;
+            cur_col += col_inc;
+            cycleIndex = (cycleIndex + 1) % 2;
+        }
+        // Return true if we reach the end
+        // Return the MoveInformation with all the removed pieces with in the move
+        captureMoves = new ArrayList<>(mjCaptureMoves);
+        return true;
+    }
+
+
+
+
+
 }
