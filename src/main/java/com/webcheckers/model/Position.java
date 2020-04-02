@@ -55,8 +55,4 @@ public class Position {
                 ", cell=" + cell +
                 '}';
     }
-
-    public Position flip() {
-        return makePosition(7-row,7-cell);
-    }
 }

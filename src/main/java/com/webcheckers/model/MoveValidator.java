@@ -2,7 +2,6 @@ package com.webcheckers.model;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;
-import java.util.logging.LogManager;
 
 public class MoveValidator {
     private static final Logger LOG = Logger.getLogger(MoveValidator.class.getName());
