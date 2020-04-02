@@ -8,8 +8,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.google.gson.Gson;
-import com.webcheckers.api.SignInApiRoute;
-import com.webcheckers.api.SignOutRoute;
+import com.webcheckers.api.*;
 import com.webcheckers.appl.PlayerLobby;
 
 import spark.TemplateEngine;
@@ -61,6 +60,12 @@ public class WebServer {
   public static final String SIGNOUT_URL = "/signout";
   public static final String SIGNIN_URL = "/signin";
   public static final String GAME_URL = "/game";
+  public static final String SUBMITTURN_URL = "/submitTurn";
+  public static final String VALIDATEMOVE_URL = "/validateMove";
+  public static final String CHECKTURN_URL = "/checkTurn";
+  public static final String BACKUP_URL = "/backupMove";
+  public static final String RESIGN_URL = "/resignGame";
+  
   //
   // Attributes
   //
@@ -151,11 +156,15 @@ public class WebServer {
     get(SIGNIN_URL, new SignInRoute(templateEngine));
     post(SIGNIN_URL, new SignInApiRoute(lobby, templateEngine));
     get(GAME_URL, new GetGameRoute(templateEngine, lobby, gson));
+    post(SUBMITTURN_URL, new SubmitTurnApiRoute(gson, lobby));
+    post(VALIDATEMOVE_URL, new ValidateMoveApiRoute(gson, lobby));
+    post(CHECKTURN_URL, new CheckTurnApiRoute(gson, lobby));
+    post(BACKUP_URL, new BackupMoveApiRoute(lobby, gson));
+    post(RESIGN_URL, new ResignApiRoute(gson, lobby));
     LOG.config("WebServer is initialized.");
   }
 
   public PlayerLobby getLobby() {
     return this.lobby;
   }
-
 }

@@ -1,22 +1,68 @@
 package com.webcheckers.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.webcheckers.model.Piece.Color.RED;
 import static com.webcheckers.model.Piece.Color.WHITE;
 
-public class Board {
-    public Board() {
+import java.util.ArrayList;
+import java.util.List;
 
+public class Board {
+    private BoardView view;
+
+    public Board(BoardView view) {
+        this.view = view;
+    }
+
+    public Board(List<Row> rows) {
+        this.view = new BoardView(rows);
+    }
+
+    public BoardView getBoardView() {
+        return view;
+    }
+    public Pair<Boolean, MoveInformation> validateMove(Move move, boolean whiteMove) {
+        return MoveValidator.validateMove(move, view, whiteMove);
+    }
+
+    public boolean makeMove(Move move, boolean whiteMove) {
+        Pair<Boolean, MoveInformation> validationInfo = validateMove(move, whiteMove);
+        MoveInformation moveInfo = validationInfo.getValue();
+        if (!validationInfo.getKey()) {
+            return false;
+        }
+        // Manually invert the move so it goes to right place on board
+        if (whiteMove) { move = move.invertMove(); }
+        setPiece(move.end, view.getSpace(move.start).getPiece());
+        removePiece(move.start);
+        if (moveInfo.isJumpMove()) {
+            removePiece(moveInfo.removedPosition);
+        }
+
+        return true;
+    }
+
+    private void setPiece(Position position, Piece piece) {
+        setPiece(position.row, position.cell, piece);
+    }
+
+    private void setPiece(int row, int column, Piece piece) {
+        view.getSpace(row, column).setPiece(piece);
+    }
+
+    private void removePiece(Position position) {
+        removePiece(position.row, position.cell);
+    }
+
+    private void removePiece(int row, int column) {
+        setPiece(row, column, null);
     }
 
     /**
      * create a BoardView with correct starting positions
-     * 
+     *
      * @return the start of a board
      */
-    public BoardView makeBoard() {
+    public static Board makeBoard() {
 
         // create the list of rows
         List<Row> rows = new ArrayList<>();
@@ -66,17 +112,12 @@ public class Board {
             rows.add(row);
         }
         // return the boardview of the board
-        BoardView boardView = new BoardView(rows);
-        return boardView;
+        return new Board(rows);
     }
 
-    /**
-     *
-     * @param boardView the reference of the board filled with spaces
-     */
-    public void addPiece(BoardView boardView) {
+    public void addPieces() {
         // get the rows
-        List<Row> rows = boardView.getRows();
+        List<Row> rows = view.getRows();
         int i = 0;
 
         // for every row, add pieces to every proper space
@@ -107,14 +148,12 @@ public class Board {
 
     /**
      * flip the board so that the other player has a correct facing board
-     * 
-     * @param boardView the filled out board for a game that is facing the original
-     *                  way
+     *
      * @return the flipped board
      */
-    public BoardView flipBoard(BoardView boardView) {
+    public Board flipBoard() {
         Row[] rows = new Row[8];
-        List<Row> rows1 = boardView.getRows();
+        List<Row> rows1 = view.getRows();
         List<Row> newRow = new ArrayList<>();
 
         // start at the other end of the board
@@ -128,14 +167,17 @@ public class Board {
 
             // for every space in the original row
             for (Space space : spaces1) {
-                spaces[j] = space;
+                Space newSpace = new Space(j);
+                newSpace.setColor(space.getColor());
+                newSpace.setPiece(space.getPiece());
+                spaces[j] = newSpace;
                 j--;
             }
             for (int k = 0; k < 8; k++) {
                 newSpaces.add(spaces[k]);
             }
             // make a new row with the correct index
-            Row newRow1 = new Row(row.getIndex(), newSpaces);
+            Row newRow1 = new Row(i, newSpaces);
             rows[i] = newRow1;
             i--;
         }
@@ -144,7 +186,15 @@ public class Board {
         }
 
         // return the flipped board
-        BoardView boardView1 = new BoardView(newRow);
-        return boardView1;
+        return new Board(newRow);
+    }
+
+    public boolean hasRedPieces() {
+        return view.hasRedPieces();
+    }
+
+    public boolean hasWhitePieces() {
+        return view.hasWhitePieces();
+
     }
 }

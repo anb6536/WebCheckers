@@ -28,7 +28,7 @@ public class Piece {
      */
     public Piece(Color color) {
         this.color = color;
-        this.type = type.SINGLE;
+        this.type = Type.SINGLE;
     }
 
     /**

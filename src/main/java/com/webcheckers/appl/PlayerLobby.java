@@ -2,6 +2,7 @@ package com.webcheckers.appl;
 
 import java.util.*;
 
+import com.webcheckers.model.Board;
 import com.webcheckers.model.Game;
 import com.webcheckers.model.Player;
 import freemarker.ext.beans.HashAdapter;
@@ -37,38 +38,80 @@ public class PlayerLobby {
 
     /**
      * register a game with 2 players
-     * 
+     *
      * @param player1 the first player
      * @param player2 the second player
      */
-    public void addMatch(Player player1, Player player2) {
+    public synchronized void addMatch(Player player1, Player player2, Board board) {
         // register that these players are opponents
-        opponents.put(player1, player2);
-        gameIds.put(this.id, player1);
-        Game game = new Game(player1, player2);
-        allGames.put(String.valueOf(this.id), game);
-        this.id++;
+        synchronized (opponentSyncObject) {
+            opponents.put(player1, player2);
+            gameIds.put(this.id, player1);
+            Game game = new Game(player1, player2, board);
+            allGames.put(String.valueOf(this.id), game);
+            this.id++;
+            player1.joinedGame();
+            player2.joinedGame();
+        }
+    }
+
+    /**
+     * register a game with 2 players
+     *
+     * @param player1 the first player
+     * @param player2 the second player
+     */
+    public synchronized void removeMatch(Player player1, Player player2) {
+        // register that these players are opponents
+        synchronized (opponentSyncObject) {
+
+            if (opponents.get(player1) != null && opponents.get(player1).equals(player2)) {
+                opponents.remove(player1);
+            }
+            if (opponents.containsKey(player2)) {
+                if (opponents.get(player2).equals(player1)) {
+                    opponents.remove(player2);
+                }
+            }
+        }
+    }
+
+    public boolean isInGameWithPlayer(Player player1, Player player2) {
+        synchronized (opponentSyncObject) {
+            if (opponents.get(player1) != null && opponents.get(player1).equals(player2)) {
+                return true;
+            }
+            if (opponents.containsKey(player2)) {
+                if (opponents.get(player2) == player1) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     /**
      * get the game id of a player given a player
-     * 
+     *
      * @param player the player we are checking if is in a game
      * @return 0 if player is not in a game || the id of the game the player is in
      */
     public int getId(Player player) {
         Set<Integer> keySet = gameIds.keySet();
+        int gameId = 0;
         for (int i : keySet) {
-            if (gameIds.get(i) == player || gameIds.get(i) == getOpponent(player)) {
-                return i;
+            if ((gameIds.get(i) != null && gameIds.get(i).equals(player)) || gameIds.get(i).equals(getOpponent(player))) {
+                //get the most recent game
+                if (i > gameId)
+                    gameId = i;
             }
         }
-        return 0;
+        return gameId;
     }
 
     /**
      * get the game given an id
-     * 
+     *
      * @param gameId the id of the game
      * @return the game corresponding to the unique id
      */
@@ -78,7 +121,7 @@ public class PlayerLobby {
 
     /**
      * get the opponent Player object of player
-     * 
+     *
      * @param player the player whom we are checking has an opponent
      * @return null if the player has no opponent || the opponent player
      */
@@ -104,10 +147,10 @@ public class PlayerLobby {
 
     /**
      * get the player object corresponding to the unique username
-     * 
+     *
      * @param username the username of the player
      * @return null if the username does not have a corresponding player || the
-     *         player object
+     * player object
      */
     public Player getPlayer(String username) {
         synchronized (playerSyncObject) {
@@ -125,10 +168,10 @@ public class PlayerLobby {
 
     /**
      * add a player to the list of players
-     * 
+     *
      * @param name the username of the player
      * @return null if the username exists || the player object created for that
-     *         username
+     * username
      */
     public Player addPlayer(String name) {
         synchronized (playerSyncObject) {
@@ -147,7 +190,7 @@ public class PlayerLobby {
 
     /**
      * remove the player from the list of players
-     * 
+     *
      * @param player the player to remove from the list
      */
     public void removePlayer(Player player) {
@@ -162,7 +205,7 @@ public class PlayerLobby {
 
     /**
      * Gets a list of player objects that are logged in
-     * 
+     *
      * @return the list
      */
     public List<Player> getLoggedInPlayers() {
@@ -171,7 +214,7 @@ public class PlayerLobby {
 
     /**
      * get the number of logged in players
-     * 
+     *
      * @return size of the list of players logged in
      */
     public int getNumLoggedInPlayers() {

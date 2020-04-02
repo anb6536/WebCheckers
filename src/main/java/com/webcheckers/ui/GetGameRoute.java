@@ -8,6 +8,7 @@ import spark.*;
 
 import java.util.*;
 import java.util.logging.Logger;
+
 import static com.webcheckers.model.Game.Mode.PLAY;
 import static com.webcheckers.model.Piece.Color.RED;
 import static com.webcheckers.model.Piece.Color.WHITE;
@@ -32,12 +33,14 @@ public class GetGameRoute implements Route {
 
     /**
      * instantiates the GetGameRoute
-     * 
+     *
      * @param templateEngine used to render the page
      * @param lobby          a reference of the player lobby
+     * @param gson           a reference to the GSON object used to serialize
+     *                       information
      */
-    public GetGameRoute(TemplateEngine templateEngine, PlayerLobby lobby, Gson gson) {
-        this.templateEngine = templateEngine;
+    public GetGameRoute(final TemplateEngine templateEngine, PlayerLobby lobby, Gson gson) {
+        this.templateEngine = Objects.requireNonNull(templateEngine, "templateEngine is required");
         this.lobby = lobby;
         this.gson = gson;
         LOG.config("GetGameRoute is Initialized");
@@ -45,7 +48,7 @@ public class GetGameRoute implements Route {
 
     /**
      * handles any request to view /game
-     * 
+     *
      * @param request  the request made to view the page
      * @param response our response to that request
      * @return the templateEngines view
@@ -68,44 +71,54 @@ public class GetGameRoute implements Route {
 
         // if the opponent is in the gmae, return to the home page with an error
         // parameter
-        if (opponentName != null && opponent.isInGame()) {
+        if (opponentName != null && opponent.isInGame() && !lobby.isInGameWithPlayer(player, opponent)) {
             player.leftGame();
             response.redirect("?error=true");
             halt();
         }
-        // put stuff in the vm
-        String gameId = String.valueOf(lobby.getId(player));
-        vm.put(VIEW_MODE, PLAY);
-        vm.put(ACTIVE_COLOR, RED);
-        vm.put(GAME_ID, gameId);
-        vm.put(CURRENT_USER, player);
 
-        // create the board to give to both players
-        Board board = new Board();
-        BoardView boardView = board.makeBoard();
-        board.addPiece(boardView);
-        BoardView opponentBoard = board.flipBoard(boardView);
+        // if we should start a game
+        if (opponent != null && !player.isInGame() && !opponent.isInGame()
+                && !lobby.isInGameWithPlayer(player, opponent)) {
+            // Make the board if just creating it.
+            Board board = Board.makeBoard();
+            board.addPieces();
+            lobby.addMatch(player, opponent, board);
+        }
+        String sGameId = String.valueOf(lobby.getId(player));
+        Game actualGame = lobby.getGame(sGameId);
+        // if the game is over, quit
+        if (actualGame != null && actualGame.isDone()) {
+            opponent = lobby.getPlayer(actualGame.getRedPlayer().getName());
+            if (opponent == null) {
+                opponent = lobby.getPlayer(actualGame.getWhitePlayer().getName());
 
-        // if the opponent
-        if (opponent != null) {
-            lobby.addMatch(player, opponent);
-            player.joinedGame();
-            opponent.joinedGame();
-            vm.put(RED_PLAYER, player);
-            vm.put(WHITE_PLAYER, opponent);
-            vm.put(BOARD, boardView);
-        } else {
-            vm.put(RED_PLAYER, lobby.getOpponent(player));
-            vm.put(WHITE_PLAYER, player);
-            vm.put(BOARD, opponentBoard);
+            }
+            player.leftGame();
+            lobby.removeMatch(player, opponent);
+            session.attribute("finishedGame", sGameId);
+            response.redirect("");
+            halt();
         }
 
+
         // attribute information about this game to the session
-        session.attribute(CURRENT_USER, vm.get(CURRENT_USER));
+        vm.put(VIEW_MODE, PLAY); // we currently only support the play viewmode
+        vm.put(ACTIVE_COLOR, actualGame.getCurrentPlayerTurn() == actualGame.getRedPlayer() ? RED : WHITE);
+        vm.put(WHITE_PLAYER, actualGame.getWhitePlayer());
+        vm.put(RED_PLAYER, actualGame.getRedPlayer());
+        vm.put(GAME_ID, sGameId);
+        vm.put(CURRENT_USER, player);
+        if (actualGame.getRedPlayer() == player) {
+            vm.put(BOARD, actualGame.getRedBoard().getBoardView());
+        } else {
+            vm.put(BOARD, actualGame.getWhiteBoard().getBoardView());
+        }
+        session.attribute(CURRENT_USER, player);
         session.attribute(RED_PLAYER, vm.get(RED_PLAYER));
         session.attribute(WHITE_PLAYER, vm.get(WHITE_PLAYER));
         session.attribute(ACTIVE_COLOR, vm.get(ACTIVE_COLOR));
-        session.attribute(GAME_ID, gameId);
+        session.attribute(GAME_ID, sGameId);
 
         // show the game screen
         return templateEngine.render(new ModelAndView(vm, "game.ftl"));

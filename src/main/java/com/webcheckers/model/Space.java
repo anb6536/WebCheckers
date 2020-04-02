@@ -3,8 +3,7 @@ package com.webcheckers.model;
 /**
  * a space with an index, a color, and the piece that may or may not be on it
  */
-public class Space {
-
+public class Space implements Comparable<Space>{
     /**
      * the color the space
      */
@@ -24,6 +23,18 @@ public class Space {
     public Space(int cellIdx) {
         this.cellIdx = cellIdx;
         this.piece = null;
+    }
+
+    public Space(int cellIdx, Color color) {
+        this.cellIdx = cellIdx;
+        this.color = color;
+        this.piece = null;
+    }
+
+    public Space(int cellIdx, Color color, Piece piece) {
+        this.cellIdx = cellIdx;
+        this.color = color;
+        this.piece = piece;
     }
 
     /**
@@ -90,5 +101,10 @@ public class Space {
      */
     public Piece getPiece() {
         return this.piece;
+    }
+
+    @Override
+    public int compareTo(Space other) {
+        return Integer.compare(this.cellIdx, other.cellIdx);
     }
 }
