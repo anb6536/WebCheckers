@@ -11,6 +11,7 @@ import com.webcheckers.appl.PlayerLobby;
 import com.webcheckers.model.Game;
 import com.webcheckers.model.Move;
 import com.webcheckers.model.Player;
+import com.webcheckers.util.Deserialzer;
 import com.webcheckers.util.Message;
 
 import spark.Request;
@@ -32,12 +33,7 @@ public class ValidateMoveApiRoute implements spark.Route {
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
-        Map<String, String> urlParameters = new HashMap<String, String>();
-        String[] kvPairs = request.body().split("&");
-        for (String str : kvPairs) {
-            String[] splitted = str.split("=");
-            urlParameters.put(splitted[0], URLDecoder.decode(splitted[1], "UTF-8"));
-        }
+        Map<String, String> urlParameters = Deserialzer.deserialize(request.body());
         String postScreen = urlParameters.get("actionData");
         String s = URLDecoder.decode(postScreen, "UTF-8");
         String gameID = urlParameters.get("gameID");
@@ -49,6 +45,9 @@ public class ValidateMoveApiRoute implements spark.Route {
         Player currentPlayer = request.session().attribute("UserAttrib");
         if (currentPlayer == null) {
             return gson.toJson(Message.error("You need to be logged in to perform this action"));
+        }
+        if (!game.playerIsInGame(currentPlayer)) {
+            return gson.toJson(Message.error("You must be a member of the game to perform this action."));
         }
         if (game.validateMove(move, currentPlayer)) {
             return gson.toJson(Message.info("Your move has been made"));

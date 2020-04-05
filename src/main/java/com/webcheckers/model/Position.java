@@ -8,12 +8,21 @@ public class Position {
     // C# and properties are not a language defined existence.
     public int row;
     public int cell;
-    public static Position makePosition(int row, int column) { 
+
+    /**
+     * Creates a Position because GSon doesn't like custom constructors for some
+     * reason
+     * 
+     * @param row    A row that the position represents
+     * @param column a coloumn that the position represents
+     */
+    public static Position makePosition(int row, int column) {
         Position pos = new Position();
         pos.row = row;
         pos.cell = column;
         return pos;
     }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -41,18 +50,16 @@ public class Position {
 
     /**
      * Translate position from WHITE's perspective to RED's perspective
-     * @return
+     * 
+     * @return a position inverted from this positions position
      */
     public Position invertPosition() {
         // 7 is the right/bottom index
-        return makePosition(7-this.row, 7-this.cell);
+        return makePosition(7 - this.row, 7 - this.cell);
     }
 
     @Override
     public String toString() {
-        return "Position{" +
-                "row=" + row +
-                ", cell=" + cell +
-                '}';
+        return "Position{" + "row=" + row + ", cell=" + cell + '}';
     }
 }

@@ -1,10 +1,10 @@
 package com.webcheckers.model;
 
-
 import java.util.Stack;
 
-public class Game {
+import com.webcheckers.util.Pair;
 
+public class Game {
 
     public enum Mode {
         PLAY, SPECTATOR, REPLAY
@@ -47,6 +47,10 @@ public class Game {
 
     public Player getWhitePlayer() {
         return player2;
+    }
+
+    public boolean playerIsInGame(Player player) {
+        return player.equals(player1) || player.equals(player2);
     }
 
     public boolean backupMove(Player playerTrying) {
@@ -123,7 +127,8 @@ public class Game {
         // The pair should be set here so that we can test the boolean in the if
         // statement
 
-        Pair<Boolean, MoveInformation> validationInfo = playBoard.validateMove(moveWaitingForSubmission, player2 == movingPlayer);
+        Pair<Boolean, MoveInformation> validationInfo = playBoard.validateMove(moveWaitingForSubmission,
+                player2 == movingPlayer);
         info = validationInfo.getValue();
         if (validationInfo.getKey()) {
             // INFO GETS SET TO THE RETURN VALUE IN HERE
@@ -132,13 +137,12 @@ public class Game {
         } else {
             return false;
         }
-        if (playBoard.makeMove(moveWaitingForSubmission, player2 == movingPlayer)) {
-            // TODO: Actually remove the pieces or have the board remove them
+        if (playBoard.makeMove(moveWaitingForSubmission, player2.equals(movingPlayer))) {
             moveWaitingForSubmission = null;
             moveMaker = null;
-            // TODO: If the piece moved made a jump move, and it has jump moves remaining,
             // then it should not swap the player turn
-            boolean more_jump_moves = MoveValidator.hasPossibleSingleJumpMoves(playBoard.getBoardView(), info.getMove().end);
+            boolean more_jump_moves = MoveValidator.hasPossibleSingleJumpMoves(playBoard.getBoardView(),
+                    info.getMove().end);
             if (!info.isJumpMove() || !more_jump_moves) {
                 swapPlayerTurn();
             }
@@ -151,7 +155,7 @@ public class Game {
         if (!movingPlayer.equals(currentTurn)) {
             return false;
         }
-        if (playBoard.validateMove(move, player2 == movingPlayer).getKey()) {
+        if (playBoard.validateMove(move, player2.equals(movingPlayer)).getKey()) {
             moveWaitingForSubmission = move;
             moveMaker = movingPlayer;
             return true;

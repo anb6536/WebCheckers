@@ -2,6 +2,7 @@ package com.webcheckers.api;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import com.webcheckers.appl.PlayerLobby;
 import com.webcheckers.model.Player;
@@ -18,8 +19,8 @@ public class SignInApiRoute implements Route {
     private TemplateEngine engine;
 
     public SignInApiRoute(PlayerLobby lobby, TemplateEngine engine) {
-        this.lobby = lobby;
-        this.engine = engine;
+        this.lobby = Objects.requireNonNull(lobby, "The lobby is required");
+        this.engine = Objects.requireNonNull(engine, "The template engine is required");
     }
 
     @Override

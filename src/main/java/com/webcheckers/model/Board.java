@@ -6,24 +6,58 @@ import static com.webcheckers.model.Piece.Color.WHITE;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.webcheckers.util.Pair;
+
 public class Board {
     private BoardView view;
 
+    /**
+     * Creates a board from a view
+     * 
+     * @param view A boardview for the internal board
+     */
     public Board(BoardView view) {
         this.view = view;
     }
 
+    /**
+     * Creates a board from a list of rows
+     * 
+     * @param rows The rows used in the BoardView
+     */
     public Board(List<Row> rows) {
         this.view = new BoardView(rows);
     }
 
+    /**
+     * Gets the view associated with this board
+     * 
+     * @return A BoardView representing this board
+     */
     public BoardView getBoardView() {
         return view;
     }
+
+    /**
+     * Validates a move given
+     * 
+     * @param move      The move to validate
+     * @param whiteMove True if the white player is moving
+     * @return A pair<Boolean, MoveInformation> representing if this move was
+     *         validated successfully and if it was, what move was made.
+     */
     public Pair<Boolean, MoveInformation> validateMove(Move move, boolean whiteMove) {
         return MoveValidator.validateMove(move, view, whiteMove);
     }
 
+    /**
+     * Actually makes a move given
+     * 
+     * @param move      The move to make
+     * @param whiteMove True if the moving player is White, if it is it flips the
+     *                  move to properly make it
+     * @return true if the move was successfully made
+     */
     public boolean makeMove(Move move, boolean whiteMove) {
         Pair<Boolean, MoveInformation> validationInfo = validateMove(move, whiteMove);
         MoveInformation moveInfo = validationInfo.getValue();
@@ -31,7 +65,9 @@ public class Board {
             return false;
         }
         // Manually invert the move so it goes to right place on board
-        if (whiteMove) { move = move.invertMove(); }
+        if (whiteMove) {
+            move = move.invertMove();
+        }
         setPiece(move.end, view.getSpace(move.start).getPiece());
         removePiece(move.start);
         if (moveInfo.isJumpMove()) {
@@ -41,10 +77,23 @@ public class Board {
         return true;
     }
 
+    /**
+     * Sets a position to have a piece
+     * 
+     * @param position the position of the piece to set
+     * @param piece    the piece to set
+     */
     private void setPiece(Position position, Piece piece) {
         setPiece(position.row, position.cell, piece);
     }
 
+    /**
+     * Sets a location to have a piece
+     * 
+     * @param row    the row of the piece
+     * @param column the column of the piece
+     * @param piece  the piece you want to set
+     */
     private void setPiece(int row, int column, Piece piece) {
         view.getSpace(row, column).setPiece(piece);
     }
@@ -53,6 +102,13 @@ public class Board {
         removePiece(position.row, position.cell);
     }
 
+    /**
+     * 
+     * Remove a piece at a row and column
+     * 
+     * @param row    the row of the piece to remove
+     * @param column the column of the piece to remove
+     */
     private void removePiece(int row, int column) {
         setPiece(row, column, null);
     }
@@ -115,6 +171,9 @@ public class Board {
         return new Board(rows);
     }
 
+    /**
+     * Adds the default pieces to their starting locations
+     */
     public void addPieces() {
         // get the rows
         List<Row> rows = view.getRows();
@@ -189,10 +248,20 @@ public class Board {
         return new Board(newRow);
     }
 
+    /**
+     * Determines if this board has any red pieces
+     * 
+     * @return true if it has red pieces
+     */
     public boolean hasRedPieces() {
         return view.hasRedPieces();
     }
 
+    /**
+     * Determines if this board has any white pieces
+     * 
+     * @return true if it has any white pieces
+     */
     public boolean hasWhitePieces() {
         return view.hasWhitePieces();
 

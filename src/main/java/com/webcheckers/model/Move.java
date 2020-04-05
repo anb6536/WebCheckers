@@ -1,6 +1,5 @@
 package com.webcheckers.model;
 
-
 /**
  * Class that defines a move, copies the definition found in move.js
  */
@@ -10,6 +9,14 @@ public class Move {
     public Position start;
     public Position end;
 
+    /**
+     * Creates a move with the given values, used because custom constructors break
+     * GSon
+     * 
+     * @param start The original position of the piece
+     * @param end   The location where the move ends
+     * @return a new Move representing the movement of a single piece
+     */
     public static Move createMove(Position start, Position end) {
         Move move = new Move();
         move.start = start;
@@ -59,31 +66,27 @@ public class Move {
 
     @Override
     public String toString() {
-        return "Move{" +
-                "start=" + start +
-                ", end=" + end +
-                '}';
+        return "Move{" + "start=" + start + ", end=" + end + '}';
     }
 
     /**
-     * Translates the coordinates from WHITE Player's perspective to RED player's perspective
-     * @return  The move in term of RED's perspective of the board
+     * Translates the coordinates from WHITE Player's perspective to RED player's
+     * perspective
+     * 
+     * @return The move in term of RED's perspective of the board
      */
     public Move invertMove() {
         return createMove(this.start.invertPosition(), this.end.invertPosition());
     }
 
     /**
-     * Gets the midpoint between the start of a move and the end of a move
-     * Used to check for the a piece to jump over with a single jump
+     * Gets the midpoint between the start of a move and the end of a move Used to
+     * check for the a piece to jump over with a single jump
+     * 
      * @return A new position with the midpoint as its value
      */
     public Position getMidpoint() {
-        return  Position.makePosition(
-                (start.row + end.row) / 2,
-                (start.cell + end.cell) / 2
-        );
+        return Position.makePosition((start.row + end.row) / 2, (start.cell + end.cell) / 2);
     }
-
 
 }

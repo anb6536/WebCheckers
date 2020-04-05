@@ -1,5 +1,6 @@
 package com.webcheckers.api;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.webcheckers.appl.PlayerLobby;
@@ -12,7 +13,7 @@ public class SignOutRoute implements spark.Route {
     private PlayerLobby lobby;
 
     public SignOutRoute(PlayerLobby lobby) {
-        this.lobby = lobby;
+        this.lobby = Objects.requireNonNull(lobby, "lobby is required");
         LOG.config("SignOutRoute is initialized.");
     }
 
