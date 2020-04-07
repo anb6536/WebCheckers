@@ -37,7 +37,9 @@ public class SubmitTurnApiRoute implements spark.Route {
             return gson.toJson(Message.error("You need to be logged in to perform this action"));
         }
         Game thisGame = lobby.getGame(gameID);
-
+        if (!thisGame.playerIsInGame(currentPlayer)) {
+            return gson.toJson(Message.error("You must be a member of the game to perform this action."));
+        }
         if (thisGame.submitMove(currentPlayer)) {
             return gson.toJson(Message.info("Your move has been made"));
         } else {
