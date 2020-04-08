@@ -5,6 +5,8 @@ package com.webcheckers.model;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import com.webcheckers.util.Pair;
+
 public class MoveValidator {
     private static final Logger LOG = Logger.getLogger(MoveValidator.class.getName());
     public final static int NUM_ROWS = 8;

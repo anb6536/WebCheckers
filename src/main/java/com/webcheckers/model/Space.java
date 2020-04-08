@@ -3,7 +3,7 @@ package com.webcheckers.model;
 /**
  * a space with an index, a color, and the piece that may or may not be on it
  */
-public class Space implements Comparable<Space>{
+public class Space implements Comparable<Space> {
     /**
      * the color the space
      */
@@ -103,6 +103,11 @@ public class Space implements Comparable<Space>{
         return this.piece;
     }
 
+    /**
+     * A comparator that exists just to have rows be correct when iterating
+     * 
+     * @param other the other space to compare to
+     */
     @Override
     public int compareTo(Space other) {
         return Integer.compare(this.cellIdx, other.cellIdx);

@@ -2,6 +2,9 @@ package com.webcheckers.model;
 
 import java.util.Comparator;
 
+/**
+ * This class solely exists for sorting inside lists
+ */
 public class RowComparator implements Comparator<Row> {
 
     @Override

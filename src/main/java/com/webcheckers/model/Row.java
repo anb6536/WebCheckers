@@ -49,8 +49,16 @@ public class Row implements Comparable<Row> {
         return this.spaces.iterator();
     }
 
+    /**
+     * Gets the space that a column represents
+     * 
+     * @param column the integer value of the column
+     * @exception ArrayIndexOutOfBoundsException if the column is greater than or
+     *                                           less than the space count
+     * @return the Space that this column points to
+     */
     public Space getSpace(int column) {
-        if (column >= spaces.size()) {
+        if (column >= spaces.size() || column < 0) {
             throw new ArrayIndexOutOfBoundsException("Column out of bounds");
         }
         return spaces.get(column);
@@ -62,6 +70,11 @@ public class Row implements Comparable<Row> {
         return Integer.compare(this.index, other.index);
     }
 
+    /**
+     * Determines if any red pieces are on the board
+     * 
+     * @return true if there are any red pieces left
+     */
     public boolean hasRedPieces() {
         for (Space space : spaces) {
             Piece piece = space.getPiece();
@@ -71,6 +84,11 @@ public class Row implements Comparable<Row> {
         return false;
     }
 
+    /**
+     * Determines if any white pieces are on the board
+     * 
+     * @return true if there are white pieces left
+     */
     public boolean hasWhitePieces() {
         for (Space space : spaces) {
             Piece piece = space.getPiece();
