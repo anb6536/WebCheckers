@@ -6,6 +6,10 @@ import com.webcheckers.util.Pair;
 
 public class Game {
 
+    private static final String NOBODY_WON_MESSAGE = " nobody won.";
+    private static final String YOU_WON_MESSAGE = " you won!";
+    private static final String YOU_LOST_MESSAGE = " you lost..";
+
     public enum Mode {
         PLAY, SPECTATOR, REPLAY
     }
@@ -17,11 +21,11 @@ public class Game {
     /**
      * The initiating player, who is always red
      */
-    private Player player1;
+    private Player redPlayer;
     /**
      * The recieving of the challenge player, who is always white
      */
-    private Player player2;
+    private Player whitePlayer;
 
     private Player currentTurn;
     private Board playBoard;
@@ -42,15 +46,15 @@ public class Game {
     }
 
     public Player getRedPlayer() {
-        return player1;
+        return redPlayer;
     }
 
     public Player getWhitePlayer() {
-        return player2;
+        return whitePlayer;
     }
 
     public boolean playerIsInGame(Player player) {
-        return player.equals(player1) || player.equals(player2);
+        return player != null && (player.equals(redPlayer) || player.equals(whitePlayer));
     }
 
     public boolean backupMove(Player playerTrying) {
@@ -92,7 +96,7 @@ public class Game {
 
     public void resign(Player currentPlayer) {
         gameAlreadyDone = true;
-        if (currentPlayer.equals(player1)) {
+        if (currentPlayer.equals(redPlayer)) {
             // player is red
             gameWinner = WhoWon.WHITE;
         } else {
@@ -102,20 +106,20 @@ public class Game {
 
     public String getYouWon(Player currentPlayer) {
         if (gameWinner == WhoWon.NOBODY)
-            return " nobody won.";
-        if (player1.equals(currentPlayer)) {
+            return NOBODY_WON_MESSAGE;
+        if (redPlayer.equals(currentPlayer)) {
             // player is red
             if (gameWinner == WhoWon.RED) {
-                return " you won!";
+                return YOU_WON_MESSAGE;
             } else {
-                return " you lost..";
+                return YOU_LOST_MESSAGE;
             }
         } else {
             // player is white
             if (gameWinner == WhoWon.WHITE) {
-                return " you won!";
+                return YOU_WON_MESSAGE;
             } else {
-                return " you lost..";
+                return YOU_LOST_MESSAGE;
             }
         }
 
@@ -130,7 +134,7 @@ public class Game {
             return false;
         }
         Pair<Boolean, MoveInformation> validationInfo = playBoard.validateMove(moveWaitingForSubmission,
-                player2 == movingPlayer);
+                whitePlayer == movingPlayer);
         info = validationInfo.getValue();
         if (validationInfo.getKey()) {
             // INFO GETS SET TO THE RETURN VALUE IN HERE
@@ -139,7 +143,7 @@ public class Game {
         } else {
             return false;
         }
-        if (playBoard.makeMove(moveWaitingForSubmission, player2.equals(movingPlayer))) {
+        if (playBoard.makeMove(moveWaitingForSubmission, whitePlayer.equals(movingPlayer))) {
             moveWaitingForSubmission = null;
             moveMaker = null;
             // then it should not swap the player turn
@@ -160,7 +164,7 @@ public class Game {
         if (!movingPlayer.equals(currentTurn)) {
             return false;
         }
-        if (playBoard.validateMove(move, player2.equals(movingPlayer)).getKey()) {
+        if (playBoard.validateMove(move, whitePlayer.equals(movingPlayer)).getKey()) {
             moveWaitingForSubmission = move;
             moveMaker = movingPlayer;
             return true;
@@ -177,21 +181,21 @@ public class Game {
     }
 
     public void swapPlayerTurn() {
-        if (currentTurn == player1) {
-            currentTurn = player2;
+        if (currentTurn == redPlayer) {
+            currentTurn = whitePlayer;
         } else {
-            currentTurn = player1;
+            currentTurn = redPlayer;
         }
     }
 
     /**
      * Gets the color of the player currently playing
-     * 
+     *
      * @return RED if player1 (the red player), WHITE if player2 (the white player)
      */
     public Piece.Color getCurrentPlayingColor() {
         // Player1 is RED player
-        if (currentTurn == player1) {
+        if (currentTurn == redPlayer) {
             System.out.println("Red player playing");
             return Piece.Color.RED;
         } else {
@@ -200,10 +204,10 @@ public class Game {
         }
     }
 
-    public Game(Player player1, Player player2, Board board) {
-        this.player1 = player1;
-        this.player2 = player2;
-        this.currentTurn = player1;
+    public Game(Player redPlayer, Player whitePlayer, Board board) {
+        this.redPlayer = redPlayer;
+        this.whitePlayer = whitePlayer;
+        this.currentTurn = redPlayer;
         this.playBoard = board;
         this.movesMade = new Stack<MoveInformation>();
         this.gameWinner = WhoWon.NOBODY;
