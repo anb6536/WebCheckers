@@ -126,7 +126,9 @@ public class Game {
         // set the info to the info returned
         // The pair should be set here so that we can test the boolean in the if
         // statement
-
+        if (moveWaitingForSubmission == null) {
+            return false;
+        }
         Pair<Boolean, MoveInformation> validationInfo = playBoard.validateMove(moveWaitingForSubmission,
                 player2 == movingPlayer);
         info = validationInfo.getValue();
@@ -152,6 +154,9 @@ public class Game {
     }
 
     public boolean validateMove(Move move, Player movingPlayer) {
+        if (move == null) {
+            return false;
+        }
         if (!movingPlayer.equals(currentTurn)) {
             return false;
         }
