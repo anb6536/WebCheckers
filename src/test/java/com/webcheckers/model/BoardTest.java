@@ -27,8 +27,8 @@ public class BoardTest {
 
     @Test
     void flipBoardTest(){
-        for( int i=0 ; i<7 ; i++ ){
-            for( int j=0 ; j<7 ; j++ ){
+        for( int i=0 ; i<8 ; i++ ){
+            for( int j=0 ; j<8 ; j++ ){
                 Space space1 = board.getBoardView().getSpace(i, j);
                 Space space2 = flipped.getBoardView().getSpace(7-i, 7-j);
                 if ( space1.getPiece() != null && space2.getPiece() != null ) {
