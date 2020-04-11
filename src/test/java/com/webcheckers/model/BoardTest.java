@@ -40,4 +40,52 @@ public class BoardTest {
         }
     }
 
+    @Test
+    void validateMoveTest(){
+
+        //Testing Red move
+        int redRow = 5;
+        int newRedRow = 4;
+        int redCol = 0;
+        int newRedCol = 1;
+        Position redStart = Position.makePosition(redRow, redCol);
+        Position redEnd = Position.makePosition(newRedRow, newRedCol);
+        Move redMove = Move.createMove(redStart, redEnd);
+        Assertions.assertTrue(board.validateMove(redMove, false).getKey());
+
+        //Testing White move
+        int whiteRow = 5;
+        int newWhiteRow = 4;
+        int whiteCol = 0;
+        int newWhiteCol = 1;
+        Position whiteStart = Position.makePosition(whiteRow, whiteCol);
+        Position whiteEnd = Position.makePosition(newWhiteRow, newWhiteCol);
+        Move whiteMove = Move.createMove(whiteStart, whiteEnd);
+        Assertions.assertTrue(board.validateMove(whiteMove, true).getKey());
+    }
+
+    @Test
+    void makeMoveTest(){
+
+        //Testing Red move
+        int redRow = 5;
+        int newRedRow = 4;
+        int redCol = 0;
+        int newRedCol = 1;
+        Position redStart = Position.makePosition(redRow, redCol);
+        Position redEnd = Position.makePosition(newRedRow, newRedCol);
+        Move redMove = Move.createMove(redStart, redEnd);
+        Assertions.assertTrue(board.makeMove(redMove, false));
+
+        //Testing White move
+        int whiteRow = 5;
+        int newWhiteRow = 4;
+        int whiteCol = 0;
+        int newWhiteCol = 1;
+        Position whiteStart = Position.makePosition(whiteRow, whiteCol);
+        Position whiteEnd = Position.makePosition(newWhiteRow, newWhiteCol);
+        Move whiteMove = Move.createMove(whiteStart, whiteEnd);
+        Assertions.assertTrue(board.makeMove(whiteMove, true));
+    }
+
 }
