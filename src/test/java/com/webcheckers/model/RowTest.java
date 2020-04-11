@@ -24,11 +24,21 @@ public class RowTest {
     }
 
     @Test
-    void getSpacesTest(){
+    void getSpaceTest(){
         for ( int i=0 ; i<7 ; i++ ){
             Row row = rows.get(i);
             for ( int j=0 ; j<7 ; j++ ){
                 Assertions.assertEquals(row.getSpace(j), boardView.getSpace(i, j));
+            }
+        }
+    }
+
+    @Test
+    void getSpacesTest(){
+        for ( int i=0 ; i<7 ; i++ ){
+            List<Space> spaces = rows.get(i).getSpaces();
+            for ( int j=0 ; j<7 ; j++ ){
+                Assertions.assertEquals(spaces.get(j), boardView.getSpace(i, j));
             }
         }
     }
