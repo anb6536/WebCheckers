@@ -52,9 +52,13 @@ public class MoveInformationTest {
 
         MoveInformation info1 = new MoveInformation(move);
         MoveInformation info2 = new MoveInformation(move, piece, removed);
+        MoveInformation info3 = new MoveInformation(move, null, removed);
+        MoveInformation info4 = new MoveInformation(move, piece, null);
 
         Assertions.assertTrue(info2.isJumpMove());
         Assertions.assertFalse(info1.isJumpMove());
+        Assertions.assertFalse(info3.isJumpMove());
+        Assertions.assertFalse(info4.isJumpMove());
 
     }
 }

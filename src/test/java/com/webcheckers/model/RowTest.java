@@ -27,6 +27,18 @@ public class RowTest {
 
     @Test
     void getSpaceTest(){
+        try{
+            Space space = rows.get(0).getSpace(-1);
+        } catch (Exception e) {
+            Assertions.assertTrue(e.getMessage().equals("Column out of bounds"));
+        }
+
+        try{
+            Space space = rows.get(0).getSpace(10);
+        } catch (Exception e) {
+            Assertions.assertTrue(e.getMessage().equals("Column out of bounds"));
+        }
+
         for ( int i=0 ; i<8 ; i++ ){
             Row row = rows.get(i);
             for ( int j=0 ; j<8 ; j++ ){
@@ -62,6 +74,10 @@ public class RowTest {
     void hasWhitePieceTest(){
         for ( int i=0; i<3; i++ ){
             Assertions.assertTrue(rows.get(i).hasWhitePieces());
+        }
+
+        for ( int j=5; j<8; j++ ){
+            Assertions.assertFalse(rows.get(j).hasWhitePieces());
         }
 
         BoardView newBoardView = Board.makeBoard().getBoardView();
