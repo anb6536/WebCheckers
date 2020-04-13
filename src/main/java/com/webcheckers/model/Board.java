@@ -37,6 +37,9 @@ public class Board {
         if (moveInfo.isJumpMove()) {
             removePiece(moveInfo.removedPosition);
         }
+        if (moveInfo.isKingable(whiteMove)){
+            makeKing(view.getSpace(move.end).getPiece());
+        }
 
         return true;
     }
@@ -55,6 +58,10 @@ public class Board {
 
     private void removePiece(int row, int column) {
         setPiece(row, column, null);
+    }
+
+    private void makeKing(Piece piece){
+        piece.KingMe();
     }
 
     /**
