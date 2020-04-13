@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Base64;
+import java.util.List;
+
 public class BoardViewTest {
     private BoardView boardView;
 
@@ -29,6 +32,12 @@ public class BoardViewTest {
         Assertions.assertEquals(space2.getColor(), Space.Color.DARK);
         Assertions.assertEquals(space2.getPiece().getColor(), Piece.Color.WHITE );
         Assertions.assertEquals(space2.getPiece().getType(), Piece.Type.SINGLE );
+
+        try{
+            Space space = boardView.getSpace(10, 0);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            Assertions.assertTrue(e.getMessage().equals("Row index out of bounds"));
+        }
     }
 
     @Test
