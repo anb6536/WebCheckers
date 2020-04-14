@@ -207,7 +207,6 @@ public class Game {
 
     public Game(Player redPlayer, Player whitePlayer, Board board) {
         this.redPlayer = redPlayer;
-        this.redPlayer = redPlayer;
         this.whitePlayer = whitePlayer;
         this.currentTurn = redPlayer;
         this.playBoard = board;
