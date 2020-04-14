@@ -135,7 +135,7 @@ public class Game {
             return false;
         }
         Pair<Boolean, MoveInformation> validationInfo = playBoard.validateMove(moveWaitingForSubmission,
-                whitePlayer == movingPlayer);
+                whitePlayer.equals(movingPlayer));
         info = validationInfo.getValue();
         if (validationInfo.getKey()) {
             // INFO GETS SET TO THE RETURN VALUE IN HERE
@@ -174,7 +174,7 @@ public class Game {
     }
 
     public boolean isPlayerTurn(Player player) {
-        return currentTurn == player;
+        return currentTurn.equals(player);
     }
 
     public Player getCurrentPlayerTurn() {
@@ -182,7 +182,7 @@ public class Game {
     }
 
     public void swapPlayerTurn() {
-        if (currentTurn == redPlayer) {
+        if (currentTurn.equals(redPlayer)) {
             currentTurn = whitePlayer;
         } else {
             currentTurn = redPlayer;
@@ -196,7 +196,7 @@ public class Game {
      */
     public Piece.Color getCurrentPlayingColor() {
         // Player1 is RED player
-        if (currentTurn == redPlayer) {
+        if (currentTurn.equals(redPlayer)) {
             System.out.println("Red player playing");
             return Piece.Color.RED;
         } else {
