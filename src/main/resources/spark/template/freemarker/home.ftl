@@ -38,12 +38,22 @@
     </div>
     </#if>
     <#if currentUser??>
+        <h3>Players Online</h3>
         <ol>
             <#list readyPlayers as readyPlayer>
                 <li>
                     <form action = "/game" method="GET">
                         <input type="submit" name="opponent" value="${readyPlayer.getName()}">
                     </form>
+                </li>
+            </#list>
+        </ol>
+
+        <h3>Active Matches</h3>
+        <ol>
+            <#list opponents as player1, player2>
+                <li>
+                    ${player1.getName()} vs ${player2.getName()}
                 </li>
             </#list>
         </ol>

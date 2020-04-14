@@ -118,6 +118,7 @@ public class GetHomeRoute implements Route {
       // the should not be signed in
       vm.put("signedIn", false);// Get the list of players to render
     }
+    vm.put("opponents", playerLobby.getOpponents());
     // render the View
     return templateEngine.render(new ModelAndView(vm, "home.ftl"));
   }

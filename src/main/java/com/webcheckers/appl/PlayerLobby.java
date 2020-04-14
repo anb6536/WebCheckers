@@ -156,6 +156,11 @@ public class PlayerLobby {
         }
     }
 
+
+    public Map<Player, Player> getOpponents(){
+        return this.opponents;
+    }
+
     /**
      * get the player object corresponding to the unique username
      *
