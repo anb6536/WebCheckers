@@ -6,9 +6,9 @@ import com.webcheckers.util.Pair;
 
 public class Game {
 
-    private static final String NOBODY_WON_MESSAGE = " nobody won.";
-    private static final String YOU_WON_MESSAGE = " you won!";
-    private static final String YOU_LOST_MESSAGE = " you lost..";
+    private static final String NOBODY_WON_MESSAGE = "No pieces can move. Nobody won.";
+    private static final String NORMAL_FINISH_MESSAGE = "%s has captured all pieces";
+    private static final String RESIGNED_MESSAGE = "%s has resigned.";
 
     public enum Mode {
         PLAY, SPECTATOR, REPLAY
@@ -33,6 +33,7 @@ public class Game {
     private Move moveWaitingForSubmission;
     private Player moveMaker;
 
+    private boolean isResigned;
     private WhoWon gameWinner;
     private boolean gameAlreadyDone;
 
@@ -96,6 +97,7 @@ public class Game {
 
     public void resign(Player currentPlayer) {
         gameAlreadyDone = true;
+        isResigned = true;
         if (currentPlayer.equals(redPlayer)) {
             // player is red
             gameWinner = WhoWon.WHITE;
@@ -107,21 +109,20 @@ public class Game {
     public String getYouWon(Player currentPlayer) {
         if (gameWinner == WhoWon.NOBODY)
             return NOBODY_WON_MESSAGE;
-        if (redPlayer.equals(currentPlayer)) {
-            // player is red
-            if (gameWinner == WhoWon.RED) {
-                return YOU_WON_MESSAGE;
+        if (isResigned) {
+            if (gameWinner == WhoWon.WHITE) {
+                return String.format(RESIGNED_MESSAGE, redPlayer.getName());
             } else {
-                return YOU_LOST_MESSAGE;
+                return String.format(RESIGNED_MESSAGE, whitePlayer.getName());
             }
         } else {
-            // player is white
             if (gameWinner == WhoWon.WHITE) {
-                return YOU_WON_MESSAGE;
+                return String.format(NORMAL_FINISH_MESSAGE, whitePlayer.getName());
             } else {
-                return YOU_LOST_MESSAGE;
+                return String.format(NORMAL_FINISH_MESSAGE, redPlayer.getName());
             }
         }
+
 
     }
 
@@ -206,12 +207,14 @@ public class Game {
 
     public Game(Player redPlayer, Player whitePlayer, Board board) {
         this.redPlayer = redPlayer;
+        this.redPlayer = redPlayer;
         this.whitePlayer = whitePlayer;
         this.currentTurn = redPlayer;
         this.playBoard = board;
         this.movesMade = new Stack<MoveInformation>();
         this.gameWinner = WhoWon.NOBODY;
         this.gameAlreadyDone = false;
+        this.isResigned = false;
     }
 
 }

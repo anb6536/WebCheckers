@@ -3,7 +3,6 @@ package com.webcheckers.ui;
 import com.google.gson.Gson;
 import com.webcheckers.appl.PlayerLobby;
 import com.webcheckers.model.*;
-import com.webcheckers.util.Message;
 import spark.*;
 
 import java.util.*;
@@ -25,11 +24,13 @@ public class GetGameRoute implements Route {
     public static final String CURRENT_USER = "currentUser";
     private static final String GAME_ID = "gameID";
     private static final String VIEW_MODE = "viewMode";
-    private static final String MODE_OPTIONS = "modeOptions";
+    private static final String MODE_OPTIONS = "modeOptionsAsJSON";
     private static final String RED_PLAYER = "redPlayer";
     private static final String WHITE_PLAYER = "whitePlayer";
     private static final String ACTIVE_COLOR = "activeColor";
     private static final String BOARD = "board";
+    private static final String IS_GAME_OVER = "isGameOver";
+    private static final String GAME_OVER_MESSAGE = "gameOverMessage";
 
     /**
      * instantiates the GetGameRoute
@@ -87,20 +88,12 @@ public class GetGameRoute implements Route {
         }
         String sGameId = String.valueOf(lobby.getId(player));
         Game actualGame = lobby.getGame(sGameId);
-        // if the game is over, quit
-        if (actualGame != null && actualGame.isDone()) {
-            opponent = lobby.getPlayer(actualGame.getRedPlayer().getName());
-            if (opponent == null) {
-                opponent = lobby.getPlayer(actualGame.getWhitePlayer().getName());
 
-            }
-            player.leftGame();
-            lobby.removeMatch(player, opponent);
-            session.attribute("finishedGame", sGameId);
+        if (actualGame == null) {
+            LOG.severe("Actual game is null in GetGameRoute");
             response.redirect("");
             halt();
         }
-
 
         // attribute information about this game to the session
         vm.put(VIEW_MODE, PLAY); // we currently only support the play viewmode
@@ -109,6 +102,11 @@ public class GetGameRoute implements Route {
         vm.put(RED_PLAYER, actualGame.getRedPlayer());
         vm.put(GAME_ID, sGameId);
         vm.put(CURRENT_USER, player);
+        Map<String, Object> modeOptions = new HashMap<>();
+        modeOptions.put(IS_GAME_OVER, false);
+        modeOptions.put(GAME_OVER_MESSAGE, "");
+
+
         if (actualGame.getRedPlayer() == player) {
             vm.put(BOARD, actualGame.getRedBoard().getBoardView());
         } else {
@@ -120,6 +118,32 @@ public class GetGameRoute implements Route {
         session.attribute(ACTIVE_COLOR, vm.get(ACTIVE_COLOR));
         session.attribute(GAME_ID, sGameId);
 
+
+        session.attribute(IS_GAME_OVER, vm.get(IS_GAME_OVER));
+        session.attribute(GAME_OVER_MESSAGE, vm.get(GAME_OVER_MESSAGE));
+
+        // if the game is over, quit
+        if (actualGame.isDone()) {
+            opponent = lobby.getPlayer(actualGame.getRedPlayer().getName());
+            if (opponent == null) {
+                opponent = lobby.getPlayer(actualGame.getWhitePlayer().getName());
+
+            }
+            player.leftGame();
+            lobby.removeMatch(player, opponent);
+            modeOptions.put(IS_GAME_OVER, true);
+            session.attribute(IS_GAME_OVER, vm.get(IS_GAME_OVER));
+            // if we finished a game, say who won
+            Game game = lobby.getGame(sGameId);
+            if (game != null) {
+                String whoWon = game.getYouWon(player);
+                modeOptions.put(GAME_OVER_MESSAGE, whoWon);
+            }
+            vm.put(MODE_OPTIONS, gson.toJson(modeOptions));
+            return templateEngine.render(new ModelAndView(vm, "game.ftl"));
+
+        }
+        vm.put(MODE_OPTIONS, gson.toJson(modeOptions));
         // show the game screen
         return templateEngine.render(new ModelAndView(vm, "game.ftl"));
     }
