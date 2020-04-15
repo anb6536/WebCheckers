@@ -46,13 +46,29 @@ public class SpectateTurnApiRoute implements Route {
         // this is probably a spectator game
         // if we are spectating a game
         // show the game screen
+        Map<String, Object> modeOptions = new HashMap<>();
+        modeOptions.put(GetGameRoute.IS_GAME_OVER, false);
+        modeOptions.put(GetGameRoute.GAME_OVER_MESSAGE, "");
 
         Game actualGame = lobby.getGame(gameIdString);
         if (actualGame == null) {
             System.err.println("The acutal game was null in the spectator session");
             return gson.toJson(Message.error("To spectate, you must specify who you're spectating"));
         }
+        // if the game is over, put game over message there
+        if (actualGame.isDone()) {
+            modeOptions.put(GetGameRoute.IS_GAME_OVER, true);
+            session.attribute(GetGameRoute.IS_GAME_OVER, vm.get(GetGameRoute.IS_GAME_OVER));
+            // if we finished a game, say who won
+            Game game = lobby.getGame(gameIdString);
+            if (game != null) {
+                String whoWon = game.getYouWon(player);
+                modeOptions.put(GetGameRoute.GAME_OVER_MESSAGE, whoWon);
+            }
+            vm.put(GetGameRoute.MODE_OPTIONS, gson.toJson(modeOptions));
+            return templateEngine.render(new ModelAndView(vm, "game.ftl"));
 
+        }
         return gson.toJson(Message.info("true"));
     }
 }

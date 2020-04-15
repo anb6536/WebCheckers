@@ -22,19 +22,19 @@ public class GetGameRoute implements Route {
     private PlayerLobby lobby;
     private Gson gson;
 
-    private static final String TITLE = "title";
+    public static final String TITLE = "title";
     public static final String CURRENT_USER = "currentUser";
     public static final String GAME_ID = "gameID";
     public static final String VIEW_MODE = "viewMode";
-    private static final String MODE_OPTIONS = "modeOptionsAsJSON";
+    public static final String MODE_OPTIONS = "modeOptionsAsJSON";
     public static final String RED_PLAYER = "redPlayer";
     public static final String WHITE_PLAYER = "whitePlayer";
     public static final String ACTIVE_COLOR = "activeColor";
     public static final String BOARD = "board";
     public static final String SPECTATING = "isSpectating";
     public static final String SPECTATING_GAME_ID = "spectatingGameId";
-    private static final String IS_GAME_OVER = "isGameOver";
-    private static final String GAME_OVER_MESSAGE = "gameOverMessage";
+    public static final String IS_GAME_OVER = "isGameOver";
+    public static final String GAME_OVER_MESSAGE = "gameOverMessage";
 
     /**
      * instantiates the GetGameRoute
@@ -159,7 +159,7 @@ public class GetGameRoute implements Route {
         session.attribute(IS_GAME_OVER, vm.get(IS_GAME_OVER));
         session.attribute(GAME_OVER_MESSAGE, vm.get(GAME_OVER_MESSAGE));
 
-        // if the game is over, quit
+        // if the game is over, put game over message there
         if (actualGame.isDone()) {
             opponent = lobby.getPlayer(actualGame.getRedPlayer().getName());
             if (opponent == null) {
