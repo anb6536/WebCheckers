@@ -28,7 +28,7 @@ public class CheckTurnApiRoute implements spark.Route {
         Player currentPlayer = request.session().attribute("UserAttrib");
         Game currentGame = lobby.getGame(urlParameters.get("gameID"));
 
-        if (currentGame.isPlayerTurn(currentPlayer)) {
+        if ( currentGame!=null&& currentGame.isPlayerTurn(currentPlayer)) {
             return gson.toJson(Message.info("true"));
         } else {
             return gson.toJson(Message.info("false"));
