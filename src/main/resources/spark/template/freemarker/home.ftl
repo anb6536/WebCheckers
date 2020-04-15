@@ -30,13 +30,6 @@
         </p>
 
     </div>
-    <#if finishedGame??>
-    <div>
-            <p>
-            You recently finished a game and ${finishedGame}
-            </p>
-    </div>
-    </#if>
     <#if currentUser??>
         <h3>Players Online</h3>
         <ol>
