@@ -123,10 +123,12 @@ public class GetGameRoute implements Route {
             if (opponent == null) {
                 opponent = lobby.getPlayer(actualGame.getWhitePlayer().getName());
 
-        if (actualGame == null) {
-            LOG.severe("Actual game is null in GetGameRoute");
-            response.redirect("");
-            halt();
+                if (actualGame == null) {
+                    LOG.severe("Actual game is null in GetGameRoute");
+                    response.redirect("");
+                    halt();
+                }
+            }
         }
 
 
@@ -137,7 +139,6 @@ public class GetGameRoute implements Route {
         vm.put(RED_PLAYER, actualGame.getRedPlayer());
         vm.put(GAME_ID, sGameId);
         vm.put(CURRENT_USER, player);
-        if (actualGame.getRedPlayer().equals(player)) {
         Map<String, Object> modeOptions = new HashMap<>();
         modeOptions.put(IS_GAME_OVER, false);
         modeOptions.put(GAME_OVER_MESSAGE, "");
