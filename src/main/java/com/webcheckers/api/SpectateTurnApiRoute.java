@@ -53,7 +53,6 @@ public class SpectateTurnApiRoute implements Route {
             return gson.toJson(Message.error("To spectate, you must specify who you're spectating"));
         }
 
-        return gson.toJson(Message.info("You are still spectating"));
-
+        return gson.toJson(Message.info("true"));
     }
 }
