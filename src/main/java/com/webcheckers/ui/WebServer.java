@@ -65,7 +65,8 @@ public class WebServer {
     public static final String CHECKTURN_URL = "/checkTurn";
     public static final String BACKUP_URL = "/backupMove";
     public static final String RESIGN_URL = "/resignGame";
-    public static final String SPECTATE_MENU = "/spectate";
+    public static final String SPECTATE_API = "/spectate";
+    public static final String SPECTATE_CHECK_TURN = "/spectator/checkTurn";
 
     //
     // Attributes
@@ -160,7 +161,8 @@ public class WebServer {
         post(CHECKTURN_URL, new CheckTurnApiRoute(gson, lobby));
         post(BACKUP_URL, new BackupMoveApiRoute(lobby, gson));
         post(RESIGN_URL, new ResignApiRoute(gson, lobby));
-        post(SPECTATE_MENU, new SpectateApiRoute(gson, lobby));
+        post(SPECTATE_API, new SpectateApiRoute(gson, lobby));
+        post(SPECTATE_CHECK_TURN, new SpectateTurnApiRoute(gson, lobby,templateEngine));
         LOG.config("WebServer is initialized.");
     }
 

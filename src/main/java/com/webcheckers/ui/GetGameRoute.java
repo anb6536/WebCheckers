@@ -22,16 +22,17 @@ public class GetGameRoute implements Route {
     private PlayerLobby lobby;
     private Gson gson;
 
-    private static final String TITLE = "title";
+    public static final String TITLE = "title";
     public static final String CURRENT_USER = "currentUser";
-    private static final String GAME_ID = "gameID";
-    private static final String VIEW_MODE = "viewMode";
+    public static final String GAME_ID = "gameID";
+    public static final String VIEW_MODE = "viewMode";
     private static final String MODE_OPTIONS = "modeOptions";
-    private static final String RED_PLAYER = "redPlayer";
-    private static final String WHITE_PLAYER = "whitePlayer";
-    private static final String ACTIVE_COLOR = "activeColor";
-    private static final String BOARD = "board";
+    public static final String RED_PLAYER = "redPlayer";
+    public static final String WHITE_PLAYER = "whitePlayer";
+    public static final String ACTIVE_COLOR = "activeColor";
+    public static final String BOARD = "board";
     public static final String SPECTATING = "isSpectating";
+    public static final String SPECTATING_GAME_ID = "spectatingGameId";
 
     /**
      * instantiates the GetGameRoute
@@ -69,12 +70,10 @@ public class GetGameRoute implements Route {
         // get data about the request
         Player player = session.attribute("UserAttrib");
         String opponentName = request.queryParams("opponent");
-        if (opponentName == null && session.attribute(SPECTATING)!=null && session.attribute(SPECTATING).equals(true)) {
-            String gameIdString = request.queryParams("gameId");
+        if (opponentName == null && session.attribute(SPECTATING) != null && session.attribute(SPECTATING).equals(true)) {
+            String gameIdString = session.attribute(SPECTATING_GAME_ID);
             if (gameIdString == null) {
                 // idk how the user got here
-                response.redirect("?error=true");
-                return null;
             }
             // this is probably a spectator game
             // if we are spectating a game
@@ -83,8 +82,7 @@ public class GetGameRoute implements Route {
             // show the game screen
 
             Game actualGame = lobby.getGame(gameIdString);
-            if(actualGame==null){
-                response.redirect("?error=true");
+            if (actualGame == null) {
                 return null;
             }
             vm.put(ACTIVE_COLOR, actualGame.getCurrentPlayerTurn().equals(actualGame.getRedPlayer()) ? RED : WHITE);
@@ -94,10 +92,8 @@ public class GetGameRoute implements Route {
             vm.put(CURRENT_USER, player);
             vm.put(BOARD, actualGame.getRedBoard().getBoardView());
 
+            session.attribute(GetGameRoute.SPECTATING_GAME_ID, gameIdString);
             return templateEngine.render(new ModelAndView(vm, "game.ftl"));
-
-
-
         }
         Player opponent = lobby.getPlayer(opponentName);
 

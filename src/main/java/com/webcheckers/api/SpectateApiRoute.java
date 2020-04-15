@@ -25,7 +25,6 @@ public class SpectateApiRoute implements Route {
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
-        request.session().attribute(GetGameRoute.SPECTATING, true);
 
         Map<String, String> body = Deserialzer.deserialize(request.body());
         if (!body.containsKey("spectate")) {
@@ -52,12 +51,13 @@ public class SpectateApiRoute implements Route {
         String redPlayerString = redPlayer.getName();
         String whitePlayerString = whitePlayer.getName();
 
-        // redirect them according to whether this is a valid game
+        // redirect them according to whether this is a valid combination of players
         if (redPlayerString.equals(player1String)) {
             if (whitePlayerString.equals(player2String)) {
                 // this is good. redirect them! :D
-                System.out.println("redirecting!");
-                response.redirect(WebServer.GAME_URL + "?gameId=1"); //todo make this not 1
+                request.session().attribute(GetGameRoute.SPECTATING, true);
+                request.session().attribute(GetGameRoute.SPECTATING_GAME_ID, String.valueOf(gameId));
+                response.redirect(WebServer.GAME_URL);
                 return gson.toJson(Message.info("you are now spectating"));
             } else {
                 // something went wrong. don't redirect
@@ -66,8 +66,9 @@ public class SpectateApiRoute implements Route {
         } else {
             if (whitePlayerString.equals(player1String) && redPlayerString.equals(player2String)) {
                 // this is good. redirect them! :D
-                System.out.println("redirecting!");
-                response.redirect(WebServer.GAME_URL + "?gameId=1"); //todo make this not 1
+                request.session().attribute(GetGameRoute.SPECTATING, true);
+                request.session().attribute(GetGameRoute.SPECTATING_GAME_ID, String.valueOf(gameId));
+                response.redirect(WebServer.GAME_URL);
                 return gson.toJson(Message.info("you are now spectating"));
             } else {
                 // something went wrong. don't redirect
