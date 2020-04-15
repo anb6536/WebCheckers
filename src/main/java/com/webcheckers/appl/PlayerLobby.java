@@ -1,10 +1,6 @@
 package com.webcheckers.appl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import com.webcheckers.model.Board;
 import com.webcheckers.model.Game;
@@ -81,7 +77,7 @@ public class PlayerLobby {
 
     /**
      * Determines if a player is in a game with another player
-     * 
+     *
      * @param player1 Any player to test
      * @param player2 Any other player to test
      * @return True if a player is in game with another player
@@ -157,7 +153,7 @@ public class PlayerLobby {
     }
 
 
-    public Map<Player, Player> getOpponents(){
+    public Map<Player, Player> getOpponents() {
         return this.opponents;
     }
 
@@ -166,7 +162,7 @@ public class PlayerLobby {
      *
      * @param username the username of the player
      * @return null if the username does not have a corresponding player || the
-     *         player object
+     * player object
      */
     public Player getPlayer(String username) {
         synchronized (playerSyncObject) {
@@ -187,7 +183,7 @@ public class PlayerLobby {
      *
      * @param name the username of the player
      * @return null if the username exists || the player object created for that
-     *         username
+     * username
      */
     public Player addPlayer(String name) {
         synchronized (playerSyncObject) {

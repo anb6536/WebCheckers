@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import static com.webcheckers.model.Game.Mode.PLAY;
+import static com.webcheckers.model.Game.Mode.SPECTATOR;
 import static com.webcheckers.model.Piece.Color.RED;
 import static com.webcheckers.model.Piece.Color.WHITE;
 import static spark.Spark.halt;
@@ -30,6 +31,7 @@ public class GetGameRoute implements Route {
     private static final String WHITE_PLAYER = "whitePlayer";
     private static final String ACTIVE_COLOR = "activeColor";
     private static final String BOARD = "board";
+    public static final String SPECTATING = "isSpectating";
 
     /**
      * instantiates the GetGameRoute
@@ -67,6 +69,36 @@ public class GetGameRoute implements Route {
         // get data about the request
         Player player = session.attribute("UserAttrib");
         String opponentName = request.queryParams("opponent");
+        if (opponentName == null && session.attribute(SPECTATING)!=null && session.attribute(SPECTATING).equals(true)) {
+            String gameIdString = request.queryParams("gameId");
+            if (gameIdString == null) {
+                // idk how the user got here
+                response.redirect("?error=true");
+                return null;
+            }
+            // this is probably a spectator game
+            // if we are spectating a game
+            System.out.println("entering spectator");
+            vm.put(VIEW_MODE, SPECTATOR); // we currently only support the play viewmode
+            // show the game screen
+
+            Game actualGame = lobby.getGame(gameIdString);
+            if(actualGame==null){
+                response.redirect("?error=true");
+                return null;
+            }
+            vm.put(ACTIVE_COLOR, actualGame.getCurrentPlayerTurn().equals(actualGame.getRedPlayer()) ? RED : WHITE);
+            vm.put(WHITE_PLAYER, actualGame.getWhitePlayer());
+            vm.put(RED_PLAYER, actualGame.getRedPlayer());
+            vm.put(GAME_ID, gameIdString);
+            vm.put(CURRENT_USER, player);
+            vm.put(BOARD, actualGame.getRedBoard().getBoardView());
+
+            return templateEngine.render(new ModelAndView(vm, "game.ftl"));
+
+
+
+        }
         Player opponent = lobby.getPlayer(opponentName);
 
         // if the opponent is in the gmae, return to the home page with an error
@@ -76,7 +108,6 @@ public class GetGameRoute implements Route {
             response.redirect("?error=true");
             halt();
         }
-
         // if we should start a game
         if (opponent != null && !player.isInGame() && !opponent.isInGame()
                 && !lobby.isInGameWithPlayer(player, opponent)) {
@@ -87,6 +118,7 @@ public class GetGameRoute implements Route {
         }
         String sGameId = String.valueOf(lobby.getId(player));
         Game actualGame = lobby.getGame(sGameId);
+
         // if the game is over, quit
         if (actualGame != null && actualGame.isDone()) {
             opponent = lobby.getPlayer(actualGame.getRedPlayer().getName());
@@ -101,15 +133,14 @@ public class GetGameRoute implements Route {
             halt();
         }
 
-
         // attribute information about this game to the session
         vm.put(VIEW_MODE, PLAY); // we currently only support the play viewmode
-        vm.put(ACTIVE_COLOR, actualGame.getCurrentPlayerTurn() == actualGame.getRedPlayer() ? RED : WHITE);
+        vm.put(ACTIVE_COLOR, actualGame.getCurrentPlayerTurn().equals(actualGame.getRedPlayer()) ? RED : WHITE);
         vm.put(WHITE_PLAYER, actualGame.getWhitePlayer());
         vm.put(RED_PLAYER, actualGame.getRedPlayer());
         vm.put(GAME_ID, sGameId);
         vm.put(CURRENT_USER, player);
-        if (actualGame.getRedPlayer() == player) {
+        if (actualGame.getRedPlayer().equals(player)) {
             vm.put(BOARD, actualGame.getRedBoard().getBoardView());
         } else {
             vm.put(BOARD, actualGame.getWhiteBoard().getBoardView());

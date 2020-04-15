@@ -53,7 +53,9 @@
         <ol>
             <#list opponents as player1, player2>
                 <li>
-                    ${player1.getName()} vs ${player2.getName()}
+                    <form id="spectate" method="post" action="/spectate">
+                        <input type="submit" name="spectate" value="${player1.getName()} vs ${player2.getName()}">
+                    </form>
                 </li>
             </#list>
         </ol>
