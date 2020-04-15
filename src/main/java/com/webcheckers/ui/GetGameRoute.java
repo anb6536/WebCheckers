@@ -93,7 +93,17 @@ public class GetGameRoute implements Route {
             vm.put(GAME_ID, gameIdString);
             vm.put(CURRENT_USER, player);
             vm.put(BOARD, actualGame.getRedBoard().getBoardView());
-
+            Map<String, Object> modeOptions = new HashMap<>();
+            if (actualGame.isDone()) {
+                modeOptions.put(IS_GAME_OVER, true);
+                session.attribute(IS_GAME_OVER, vm.get(IS_GAME_OVER));
+                String whoWon = actualGame.getYouWon(player);
+                modeOptions.put(GAME_OVER_MESSAGE, whoWon);
+            } else {
+                modeOptions.put(IS_GAME_OVER, false);
+                modeOptions.put(GAME_OVER_MESSAGE, "");
+            }
+            vm.put(MODE_OPTIONS, gson.toJson(modeOptions));
             session.attribute(GetGameRoute.SPECTATING_GAME_ID, gameIdString);
             return templateEngine.render(new ModelAndView(vm, "game.ftl"));
         }
@@ -117,24 +127,10 @@ public class GetGameRoute implements Route {
         }
         String sGameId = String.valueOf(lobby.getId(player));
         Game actualGame = lobby.getGame(sGameId);
-        // if the game is over, quit
-        if (actualGame != null && actualGame.isDone()) {
-            opponent = lobby.getPlayer(actualGame.getRedPlayer().getName());
-            if (opponent == null) {
-                opponent = lobby.getPlayer(actualGame.getWhitePlayer().getName());
-
-                if (actualGame == null) {
-                    LOG.severe("Actual game is null in GetGameRoute");
-                    response.redirect("");
-                    halt();
-                }
-            }
-        }
-
 
         // attribute information about this game to the session
-        vm.put(VIEW_MODE, PLAY); // we currently only support the play viewmode
-        vm.put(ACTIVE_COLOR, actualGame.getCurrentPlayerTurn() == actualGame.getRedPlayer() ? RED : WHITE);
+        vm.put(VIEW_MODE, PLAY);
+        vm.put(ACTIVE_COLOR, actualGame.getCurrentPlayerTurn().equals(actualGame.getRedPlayer()) ? RED : WHITE);
         vm.put(WHITE_PLAYER, actualGame.getWhitePlayer());
         vm.put(RED_PLAYER, actualGame.getRedPlayer());
         vm.put(GAME_ID, sGameId);
@@ -155,10 +151,6 @@ public class GetGameRoute implements Route {
         session.attribute(ACTIVE_COLOR, vm.get(ACTIVE_COLOR));
         session.attribute(GAME_ID, sGameId);
 
-
-        session.attribute(IS_GAME_OVER, vm.get(IS_GAME_OVER));
-        session.attribute(GAME_OVER_MESSAGE, vm.get(GAME_OVER_MESSAGE));
-
         // if the game is over, put game over message there
         if (actualGame.isDone()) {
             opponent = lobby.getPlayer(actualGame.getRedPlayer().getName());
@@ -171,11 +163,8 @@ public class GetGameRoute implements Route {
             modeOptions.put(IS_GAME_OVER, true);
             session.attribute(IS_GAME_OVER, vm.get(IS_GAME_OVER));
             // if we finished a game, say who won
-            Game game = lobby.getGame(sGameId);
-            if (game != null) {
-                String whoWon = game.getYouWon(player);
-                modeOptions.put(GAME_OVER_MESSAGE, whoWon);
-            }
+            String whoWon = actualGame.getYouWon(player);
+            modeOptions.put(GAME_OVER_MESSAGE, whoWon);
             vm.put(MODE_OPTIONS, gson.toJson(modeOptions));
             return templateEngine.render(new ModelAndView(vm, "game.ftl"));
 
