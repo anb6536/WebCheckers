@@ -6,6 +6,7 @@ package com.webcheckers.model;
 public class Player {
     private final String name;
     private boolean inGame;
+    private boolean isSpectating;
 
     /**
      * create a player with this unique username
@@ -15,6 +16,7 @@ public class Player {
     public Player(String name) {
         this.name = name;
         this.inGame = false;
+        this.isSpectating = false;
     }
 
     /**
@@ -49,6 +51,17 @@ public class Player {
         return this.inGame;
     }
 
+    public void startSpectating(){
+        this.isSpectating = true;
+    }
+
+    public void stoppedSpectating(){
+        this.isSpectating = false;
+    }
+
+    public boolean isSpectating(){
+        return this.isSpectating;
+    }
     /**
      * see if two players are the same player
      * 

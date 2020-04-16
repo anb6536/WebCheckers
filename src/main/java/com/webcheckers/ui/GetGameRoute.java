@@ -121,6 +121,12 @@ public class GetGameRoute implements Route {
             halt();
         }
 
+        if (opponentName != null && opponent.isSpectating()) {
+            player.leftGame();
+            response.redirect("?errorS=true");
+            halt();
+        }
+
         // if we should start a game
         if (opponent != null && !player.isInGame() && !opponent.isInGame()
                 && !lobby.isInGameWithPlayer(player, opponent)) {

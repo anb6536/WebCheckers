@@ -26,6 +26,7 @@ public class SpectateApiRoute implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
 
+        Session session = request.session();
         Map<String, String> body = Deserialzer.deserialize(request.body());
         if (!body.containsKey("spectate")) {
             return gson.toJson(Message.error("To spectate, you must specify who you're spectating"));
@@ -36,6 +37,8 @@ public class SpectateApiRoute implements Route {
         }
         String player1String = playersString[0];
         String player2String = playersString[1];
+        Player player = session.attribute("UserAttrib");
+        player.startSpectating();
         Player player1 = lobby.getPlayer(player1String);
         if (player1 == null) {
             return gson.toJson(Message.error("To spectate, you must specify who you're spectating"));

@@ -98,11 +98,6 @@ public class GetHomeRoute implements Route {
         response.redirect(WebServer.GAME_URL);
         return null;
       }
-      // if I attempted to start a game with someone who is already in a game
-      else if (request.queryParams("error") != null) {
-        vm.put("message", Message.error("This player is already in a game"));
-        return templateEngine.render(new ModelAndView(vm, "home.ftl"));
-      }
 
     } else {
 
@@ -111,6 +106,16 @@ public class GetHomeRoute implements Route {
       vm.put("signedIn", false);// Get the list of players to render
     }
     vm.put("opponents", playerLobby.getOpponents());
+
+    if (request.queryParams("error") != null) {
+      vm.put("message", Message.error("This player is already in a game"));
+      return templateEngine.render(new ModelAndView(vm, "home.ftl"));
+    }
+
+    if (request.queryParams("errorS") != null) {
+      vm.put("message", Message.error("This player is spectating another Match"));
+      return templateEngine.render(new ModelAndView(vm, "home.ftl"));
+    }
     // render the View
     return templateEngine.render(new ModelAndView(vm, "home.ftl"));
   }

@@ -1,8 +1,10 @@
 package com.webcheckers.api;
 
+import com.webcheckers.model.Player;
 import spark.Request;
 import spark.Response;
 import spark.Route;
+import spark.Session;
 
 import java.util.logging.Logger;
 
@@ -15,6 +17,10 @@ public class SpectateStopApiRoute implements Route {
 
     @Override
     public Object handle(Request request, Response response) throws Exception {
+        Session session = request.session();
+
+        Player player = session.attribute("UserAttrib");
+        player.stoppedSpectating();
         response.redirect("/");
         return null;
     }
