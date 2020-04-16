@@ -141,6 +141,17 @@ public class GetGameRoute implements Route {
 
         // attribute information about this game to the session
         vm.put(VIEW_MODE, PLAY);
+        if (actualGame == null) {
+            // this opponent and game has already been removed but a refresh hopefully has already occured so
+            // just get the id from the session attribute
+            sGameId = session.attribute(GAME_ID);
+            actualGame = lobby.getGame(sGameId);
+            if (actualGame == null) {
+                // a refresh never happened (the user never entered the game or somehow the gameId was never assigned
+                // so it's fine that they don't see the game)
+                response.redirect("");
+            }
+        }
         vm.put(ACTIVE_COLOR, actualGame.getCurrentPlayerTurn().equals(actualGame.getRedPlayer()) ? RED : WHITE);
         vm.put(WHITE_PLAYER, actualGame.getWhitePlayer());
         vm.put(RED_PLAYER, actualGame.getRedPlayer());
@@ -164,9 +175,8 @@ public class GetGameRoute implements Route {
         // if the game is over, put game over message there
         if (actualGame.isDone()) {
             opponent = lobby.getPlayer(actualGame.getRedPlayer().getName());
-            if (opponent == null) {
+            if (opponent == null || opponent.equals(player)) {
                 opponent = lobby.getPlayer(actualGame.getWhitePlayer().getName());
-
             }
             player.leftGame();
             lobby.removeMatch(player, opponent);

@@ -64,14 +64,32 @@ public class PlayerLobby {
         // register that these players are opponents
         synchronized (opponentSyncObject) {
 
-            if (opponents.get(player1) != null && opponents.get(player1).equals(player2)) {
-                opponents.remove(player1);
+            if (opponents.containsKey(player1)) {
+                if (opponents.get(player1).equals(player2)) {
+                    opponents.remove(player2);
+                }
             }
             if (opponents.containsKey(player2)) {
                 if (opponents.get(player2).equals(player1)) {
                     opponents.remove(player2);
                 }
             }
+            List<Player> playersToRemove = new ArrayList<>();
+            // remove the vise versa as well
+            for (Player key : opponents.keySet()) {
+                if (opponents.get(key).equals(player1)) {
+                    playersToRemove.add(key);
+                }
+            }
+            for (Player key : opponents.keySet()) {
+                if (opponents.get(key).equals(player2)) {
+                    playersToRemove.add(key);
+                }
+            }
+            for (Player removeMe : playersToRemove) {
+                opponents.remove(removeMe);
+            }
+            int a = 3;
         }
     }
 
@@ -109,7 +127,7 @@ public class PlayerLobby {
             if ((gameIds.get(i) != null && gameIds.get(i).equals(player))
                     || gameIds.get(i).equals(getOpponent(player))) {
                 // get the most recent game
-                if (i > gameId)
+                if (i > gameId /*todo idk if this should be here && !allGames.get(String.valueOf(gameId)).isDone()*/)
                     gameId = i;
             }
         }
@@ -161,7 +179,7 @@ public class PlayerLobby {
      *
      * @param username the username of the player
      * @return null if the username does not have a corresponding player || the
-     *         player object
+     * player object
      */
     public Player getPlayer(String username) {
         synchronized (playerSyncObject) {
@@ -182,7 +200,7 @@ public class PlayerLobby {
      *
      * @param name the username of the player
      * @return null if the username exists || the player object created for that
-     *         username
+     * username
      */
     public Player addPlayer(String name) {
         synchronized (playerSyncObject) {
