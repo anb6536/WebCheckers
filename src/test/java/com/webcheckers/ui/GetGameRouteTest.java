@@ -1,4 +1,5 @@
 package com.webcheckers.ui;
+import com.google.gson.Gson;
 import com.webcheckers.appl.PlayerLobby;
 import com.webcheckers.model.Player;
 import org.junit.jupiter.api.BeforeAll;
