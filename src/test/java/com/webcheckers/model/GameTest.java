@@ -85,13 +85,13 @@ public class GameTest {
 
     @Test
     void getYouWon() {
-        assertEquals(" nobody won.", game.getYouWon(player1));
-        assertEquals(" nobody won.", game.getYouWon(player2));
+        assertEquals("No pieces can move. Nobody won.", game.getYouWon(player1));
+        assertEquals("No pieces can move. Nobody won.", game.getYouWon(player2));
         assertFalse(game.isDone());
         game.resign(player1);
         assertTrue(game.isDone());
-        assertEquals(" you won!", game.getYouWon(player2));
-        assertEquals(" you lost..", game.getYouWon(player1));
+        assertEquals("player1 has resigned.", game.getYouWon(player2));
+        assertEquals("player1 has resigned.", game.getYouWon(player1));
     }
 
     @Test
@@ -108,16 +108,16 @@ public class GameTest {
         BoardView boardView = board.getBoardView();
         game = new Game(player1, player2, board);
         assertTrue(game.isDone());
-        assertEquals(" nobody won.", game.getYouWon(player1));
+        assertEquals("No pieces can move. Nobody won.", game.getYouWon(player1));
 
         game = new Game(player1, player2, board);
         boardView.getSpace(0, 0).setPiece(Piece.Color.RED);
         assertTrue(game.isDone());
-        assertEquals(" you won!", game.getYouWon(player1));
+        assertEquals("player1 has captured all pieces", game.getYouWon(player1));
 
         game = new Game(player1, player2, board);
         boardView.getSpace(0, 0).setPiece(Piece.Color.WHITE);
         assertTrue(game.isDone());
-        assertEquals(" you lost..", game.getYouWon(player1));
+        assertEquals("player2 has captured all pieces", game.getYouWon(player1));
     }
 }
