@@ -72,7 +72,8 @@ public class GetGameRoute implements Route {
         // get data about the request
         Player player = session.attribute("UserAttrib");
         String opponentName = request.queryParams("opponent");
-        if (opponentName == null && session.attribute(SPECTATING) != null && session.attribute(SPECTATING).equals(true)) {
+        if (opponentName == null && session.attribute(SPECTATING) != null
+                && session.attribute(SPECTATING).equals(true)) {
             String gameIdString = session.attribute(SPECTATING_GAME_ID);
             if (gameIdString == null) {
                 response.redirect("/home?error=true");
@@ -142,7 +143,6 @@ public class GetGameRoute implements Route {
         Map<String, Object> modeOptions = new HashMap<>();
         modeOptions.put(IS_GAME_OVER, false);
         modeOptions.put(GAME_OVER_MESSAGE, "");
-
 
         if (actualGame.getRedPlayer() == player) {
             vm.put(BOARD, actualGame.getRedBoard().getBoardView());

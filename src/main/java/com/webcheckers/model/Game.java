@@ -123,7 +123,6 @@ public class Game {
             }
         }
 
-
     }
 
     public boolean submitMove(Player movingPlayer) {

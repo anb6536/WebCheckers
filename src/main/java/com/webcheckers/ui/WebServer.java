@@ -67,7 +67,7 @@ public class WebServer {
     public static final String RESIGN_URL = "/resignGame";
     public static final String SPECTATE_API = "/spectate";
     public static final String SPECTATE_CHECK_TURN = "/spectator/checkTurn";
-    private static final String SPECTATE_STOP ="/spectator/stopWatching" ;
+    private static final String SPECTATE_STOP = "/spectator/stopWatching";
 
     //
     // Attributes
@@ -163,7 +163,7 @@ public class WebServer {
         post(BACKUP_URL, new BackupMoveApiRoute(lobby, gson));
         post(RESIGN_URL, new ResignApiRoute(gson, lobby));
         post(SPECTATE_API, new SpectateApiRoute(gson, lobby));
-        post(SPECTATE_CHECK_TURN, new SpectateTurnApiRoute(gson, lobby,templateEngine));
+        post(SPECTATE_CHECK_TURN, new SpectateTurnApiRoute(gson, lobby, templateEngine));
         post(SPECTATE_STOP, new SpectateStopApiRoute());
         get(SPECTATE_STOP, new SpectateStopApiRoute());
         LOG.config("WebServer is initialized.");

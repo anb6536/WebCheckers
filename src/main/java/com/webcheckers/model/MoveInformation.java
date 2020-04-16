@@ -60,11 +60,11 @@ public class MoveInformation {
         return (removedPosition != null && removed != null);
     }
 
-    public boolean isRedHomeRow(){
+    public boolean isRedHomeRow() {
         return move.end.row == 7;
     }
 
-    public boolean isWhiteHomeRow(){
+    public boolean isWhiteHomeRow() {
         return move.end.row == 0;
     }
 
