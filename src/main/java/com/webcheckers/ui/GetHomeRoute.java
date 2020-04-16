@@ -92,7 +92,6 @@ public class GetHomeRoute implements Route {
       }
       vm.put("readyPlayers", playerList);
 
-
       // if the current player is in a game and we aren't already there
       if (currentPlayer != null && currentPlayer.isInGame()) {
         response.redirect(WebServer.GAME_URL);
