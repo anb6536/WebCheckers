@@ -59,9 +59,6 @@ public class SpectateApiRoute implements Route {
                 request.session().attribute(GetGameRoute.SPECTATING_GAME_ID, String.valueOf(gameId));
                 response.redirect(WebServer.GAME_URL);
                 return gson.toJson(Message.info("you are now spectating"));
-            } else {
-                // something went wrong. don't redirect
-                return gson.toJson(Message.error("To spectate, you must specify valid players"));
             }
         } else {
             if (whitePlayerString.equals(player1String) && redPlayerString.equals(player2String)) {
@@ -70,10 +67,8 @@ public class SpectateApiRoute implements Route {
                 request.session().attribute(GetGameRoute.SPECTATING_GAME_ID, String.valueOf(gameId));
                 response.redirect(WebServer.GAME_URL);
                 return gson.toJson(Message.info("you are now spectating"));
-            } else {
-                // something went wrong. don't redirect
-                return gson.toJson(Message.error("To spectate, you must specify valid players"));
             }
         }
+        return gson.toJson(Message.error("To spectate, you must specify valid players"));
     }
 }

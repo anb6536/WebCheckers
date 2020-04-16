@@ -75,16 +75,20 @@ public class GetGameRoute implements Route {
         if (opponentName == null && session.attribute(SPECTATING) != null && session.attribute(SPECTATING).equals(true)) {
             String gameIdString = session.attribute(SPECTATING_GAME_ID);
             if (gameIdString == null) {
-                // idk how the user got here
+                response.redirect("/home?error=true");
+                halt();
+                return null;
             }
             // this is probably a spectator game
             // if we are spectating a game
-            System.out.println("entering spectator");
+            LOG.finer("entering spectator");
             vm.put(VIEW_MODE, SPECTATOR); // we currently only support the play viewmode
             // show the game screen
 
             Game actualGame = lobby.getGame(gameIdString);
             if (actualGame == null) {
+                response.redirect("/home?error=true");
+                halt();
                 return null;
             }
             vm.put(ACTIVE_COLOR, actualGame.getCurrentPlayerTurn().equals(actualGame.getRedPlayer()) ? RED : WHITE);
