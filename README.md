@@ -10,6 +10,7 @@ a web micro-framework.
 - Aaron Peterham
 - Hugh Gallo
 - AbuBakr Ghaznavi
+- Brenton Cousins
 
 
 ## Prerequisites
