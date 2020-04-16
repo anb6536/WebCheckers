@@ -49,4 +49,10 @@ public class Piece {
         return this.color;
     }
 
+    /**
+     * set the type of this piece to king
+     */
+    public void KingMe() {
+        this.type = Type.KING;
+    }
 }
