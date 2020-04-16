@@ -24,6 +24,7 @@ public class GetGameRouteTest {
     private static final String RED_PLAYER = "redPlayer";
     private static final String WHITE_PLAYER = "whitePlayer";
     private static final String ACTIVE_COLOR = "activeColor";
+    private static final Gson gson = new Gson();
     PlayerLobby playerLobby;
     /**
      * Set up mock objects for each test
@@ -38,7 +39,7 @@ public class GetGameRouteTest {
         engine = mock(TemplateEngine.class);
 
         playerLobby = new PlayerLobby();
-        CuT = new GetGameRoute(engine, playerLobby, null);
+        CuT = new GetGameRoute(engine, playerLobby, gson);
     }
 
     @Test
