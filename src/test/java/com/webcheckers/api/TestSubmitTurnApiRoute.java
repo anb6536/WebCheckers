@@ -74,13 +74,14 @@ class TestSubmitTurnApiRoute {
         board.addPieces();
         playerLobby.addMatch(player1, player2, board);
         int gameId = playerLobby.getId(player1);
+        Game game = playerLobby.getGame(String.valueOf(gameId));
         Position start = Position.makePosition(5, 6);
         Position end = Position.makePosition(4, 7);
         Move move = Move.createMove(start, end);
+        game.validateMove(move, player1);
         Map<String, String> thing = new HashMap<>();
         thing.put(GAME_ID, String.valueOf(gameId));
         when(request.body()).thenReturn(Serializer.serialize(thing));
-        
         try {
             Object obj = route.handle(request, response);
             assertTrue(obj instanceof String);
