@@ -155,15 +155,17 @@ or a player resigns.
 
 
 ### UI Tier
-> _Provide a summary of the Server-side UI tier of your architecture.
+<!--- > INSTRUCTIONS FOR TIERS 
+ _Provide a summary of the Server-side UI tier of your architecture.
 > Describe the types of components in the tier and describe their
 > responsibilities.  This should be a narrative description, i.e. it has
 > a flow or "story line" that the reader can follow._
 
 > _At appropriate places as part of this narrative provide one or more
 > static models (UML class structure or object diagrams) with some
-> details such as critical attributes and methods._
+> details such as critical attributes and methods._ --->
 
+<!---
 > _You must also provide any dynamic models, such as statechart and
 > sequence diagrams, as is relevant to a particular aspect of the design
 > that you are describing.  For example, in WebCheckers you might create
@@ -176,6 +178,23 @@ or a player resigns.
 > consider placing the narrative description of that feature in a
 > separate section for describing significant features. Place this after
 > you describe the design of the three tiers._
+--->
+
+The server side of the application contains many components that communicate
+information between the user client and the server. Many of these components are 
+POST/GET routes used to send and receive information about the user's state.
+These routes largely communicate through the API tier. The SignInRoutes are 
+used for verifying correct login info. The GameRoutes are used for sending and retrieving
+information to assign players to different games. The checkTurn, validateMove, and 
+submitTurn routes all follow their namesakes and facilitate the consistent state between the application
+and the users. The makeMove route allows for the game to be updated by a move and for turns to switch.
+The spectator routes all handle instances of users watching others play games of WebCheckers.
+The spectate route allows a spectator to watch a game. The /spectator/stopWatching route allows for users to stop watching games
+and spectator/checkTurn makes sure that the spectator can see the right turns being made.
+
+<!--- Include a sequence diagram of a move being made--->
+
+
 
 
 ### Application Tier
