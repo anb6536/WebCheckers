@@ -133,7 +133,7 @@ Details of the components within these tiers are supplied below.
 This section describes the web interface flow; this is how the user views and interacts
 with the WebCheckers application.
 
-![The WebCheckers Web Interface Statechart](web-checkers-interface-statechart.png)
+![The WebCheckers Web Interface Statechart](web-interface-s4.png)
 
 <!--- > _Provide a summary of the application's user interface.  Describe, from
 > the user's perspective, the flow of the pages in the web application._ --->
@@ -143,9 +143,15 @@ Once a user is connected to the home page, they are presented with some welcome 
 They can either choose to sign in at this point, or exit the application and terminate their connection. If a player chooses
 to sign in, they will be presented with a form page to enter a valid user name. If the username is invalid they will 
 return to this page with an error message telling them the format of a proper username. If the username is valid, they will
-return to the home page being able to select from the other players to challenge a game. Once a player,
+return to the home page being able to select from the other players to challenge to a game. Additionally, players will be able to spectate
+games between other players. While spectating, the page will refresh whenever the game switches turns between the players. The game is always
+seen from the perspective of the Red player. The spectator has the ability to stop watching the game whenever they please. Once a player,
 enters a game they will enter the game page which displays the board and pieces. When either player wins or loses, they can go back to the home page and either
-select another game or sign-out. 
+select another game or sign-out. While playing the game, the client sends a request to the server to verify which player's turn is it
+The player whose turn it is makes a move which is then checked by the server. If the move fails, the piece is moved back to its previous location.
+Otherwise, the player has the option to submit their move, or to backup their move in order to make an alternative one.
+When the player submits their move, the board updates appropriately, the turns switch and the other player undergoes the same process. This continues until either a player wins
+or a player resigns.
 
 
 ### UI Tier
