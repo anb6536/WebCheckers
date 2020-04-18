@@ -198,15 +198,22 @@ and spectator/checkTurn makes sure that the spectator can see the right turns be
 
 
 ### Application Tier
-> _Provide a summary of the Application tier of your architecture. This
+<!--- > _Provide a summary of the Application tier of your architecture. This
 > section will follow the same instructions that are given for the UI
-> Tier above._
+> Tier above._ --->
+The application tier consists solely of the PlayerLobby class.
+This class is responsible for maintaining the state of the multiple players who play the game.
+It is used to pair players up in games, take them out of games and to assign which player has what color pieces.
+It is used heavily for the model and the application tier of the program.
 
+<!--- > Include the UML class diagram for Application tier (player lobby)--->
 
 ### Model Tier
-> _Provide a summary of the Application tier of your architecture. This
+<!--- > _Provide a summary of the  tier of your architecture. This
 > section will follow the same instructions that are given for the UI
-> Tier above._
+> Tier above._ --->
+
+
 
 ### Design Improvements
 > _Discuss design improvements that you would make if the project were
