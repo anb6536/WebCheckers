@@ -190,9 +190,9 @@ submitTurn routes all follow their namesakes and facilitate the consistent state
 and the users. The makeMove route allows for the game to be updated by a move and for turns to switch.
 The spectator routes all handle instances of users watching others play games of WebCheckers.
 The spectate route allows a spectator to watch a game. The /spectator/stopWatching route allows for users to stop watching games
-and spectator/checkTurn makes sure that the spectator can see the right turns being made.
+and spectator/checkTurn makes sure that the spectator can see the right turns being made. A dynamic model of a game can be seen below
+![Game statechart](statechart_game.png)
 
-<!--- Include a sequence diagram of a move being made--->
 
 
 
@@ -206,7 +206,6 @@ This class is responsible for maintaining the state of the multiple players who 
 It is used to pair players up in games, take them out of games and to assign which player has what color pieces.
 It is used heavily for the model and the application tier of the program.
 
-<!--- > Include the UML class diagram for Application tier (player lobby)--->
 
 ### Model Tier
 <!--- > _Provide a summary of the  tier of your architecture. This
