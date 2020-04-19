@@ -80,10 +80,8 @@ This section describes the features of the application.
 ### Roadmap of Enhancements
 <!--- > _Provide a list of top-level features in the order you plan to consider them._ --->
 
-* #### AI Opponent
-    * The player must be able to play against a computer opponent.
-* #### Replay Mode
-    * The player must be able to watch replays of their match so they can improve their skills.
+* #### Spectator Mode
+    * The player should be able to watch games of other players playing WebCheckers.
 
 
 ## Application Domain
@@ -95,7 +93,7 @@ there always exists two players who control pieces that occupy squares on the bo
 There is a logical concept of a "game" between these two players that is modeled in the diagram
 for cohesion. --> 
 
-![The WebCheckers Domain Model](domain_model_team.png)
+![The WebCheckers Domain Model](Sprint%204%20Domain%20Model.png)
 
 <!--- > _Provide a high-level overview of the domain for this application. You
 > can discuss the more important domain entities and their relationship
@@ -105,7 +103,8 @@ The WebCheckers application consists of several related elements to form the app
 The Game is the central element. A game consists of two players (who can be either an AI or Human).
 These players manipulate pieces that can occupy the 64 squares on the board. These pieces can either be
 normal pieces or king pieces. Each player takes turn making their moves. While manipulating the pieces, the moves made
-have to obey the rules of the game which are the standard American rules.
+have to obey the rules of the game which are the standard American rules. Logged in players are able
+to watch games of other players. At any time, players are able to leave their matches or stop watching other players' games.
 
 ## Architecture and Design
 
@@ -222,8 +221,7 @@ the validity of the move using the MoveValidator class. The MoveValidator class 
 cause to the board. That information is stored in a MoveInformation class largely responsible for determining if a jump move is made and which pieces are removed as a result. This kind of information
 combined with the Boolean checks from MoveValidator form the Pair classes we use to make and validate changes to the board.
 
-<!--- Throw in UML class diagram of relevant classes (Board, Game, Move, Position, MoveValidator, MoveInfo, Pair) --->
-
+![Sprint 4 Model](Sprint4-Model-Class-Diagram.png)
 
 ### Design Improvements
 <!--- > _Discuss design improvements that you would make if the project were
