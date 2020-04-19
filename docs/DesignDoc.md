@@ -201,7 +201,7 @@ and spectator/checkTurn makes sure that the spectator can see the right turns be
 <!--- > _Provide a summary of the Application tier of your architecture. This
 > section will follow the same instructions that are given for the UI
 > Tier above._ --->
-The application tier consists solely of the PlayerLobby class.
+>The application tier consists solely of the PlayerLobby class.
 This class is responsible for maintaining the state of the multiple players who play the game.
 It is used to pair players up in games, take them out of games and to assign which player has what color pieces.
 It is used heavily for the model and the application tier of the program.
@@ -212,11 +212,22 @@ It is used heavily for the model and the application tier of the program.
 <!--- > _Provide a summary of the  tier of your architecture. This
 > section will follow the same instructions that are given for the UI
 > Tier above._ --->
+>The model tier consists of the classes that represent the state of the WebCheckers game. The BoardView, Board,
+Row, Space and classes that relate to it are responsible for the state of the board. The Player and Piece classes are used for 
+representing the user and the piece that the player has respectively. The Game class is responsible for coordinating
+the states of all these classes. The Position class is responsible for storing a row and a column that may be used to represent
+a location on the checkers board and are used by the Move class. Having a start position and an end position, the Move class
+essentially represents a change in position (a move done by the player). The information from the move class is used to verify
+the validity of the move using the MoveValidator class. The MoveValidator class largely uses static methods that check different aspects of the move that is passed into it
+(which player is moving, which direction do they intend on moving, which piece, etc.) all of this information is used to validate the move and evaluate what kinds of changes the move would 
+cause to the board. That information is stored in a MoveInformation class largely responsible for determining if a jump move is made and which pieces are removed as a result. This kind of information
+combined with the Boolean checks from MoveValidator form the Pair classes we use to make and validate changes to the board.
 
+<!--- Throw in UML class diagram of relevant classes (Board, Game, Move, Position, MoveValidator, MoveInfo, Pair) --->
 
 
 ### Design Improvements
-> _Discuss design improvements that you would make if the project were
+<!--- > _Discuss design improvements that you would make if the project were
 > to continue. These improvement should be based on your direct
 > analysis of where there are problems in the code base which could be
 > addressed with design changes, and describe those suggested design
@@ -224,7 +235,14 @@ It is used heavily for the model and the application tier of the program.
 > will also discuss the resutling metric measurements.  Indicate the
 > hot spots the metrics identified in your code base, and your
 > suggested design improvements to address those hot spots._
-
+---> 
+>If work was to continue on this project some of the design of the model would be improved.
+Specifically the MoveValidator class. This class has a large responsibility while some of the work should
+have been delegated to smaller subclasses in order to have more organized code. Additionally some of the methods within this class
+could have been generalized in order to make writing some of the other methods easier, some of the classes in the model went completely unused.
+Additionally, some of the game model could be redesigned to make retrieving whose turn it is a little easier. Although our development team
+was not responsible for how it was implemented, we could have improved on the refresh rate for the application. For example, the board could have updated
+through AJAX calls rather than refreshing the entire page. This would have made a significant visual improvement on our application.
 ## Testing
 > _This section will provide information about the testing performed
 > and the results of the testing._
@@ -241,4 +259,4 @@ It is used heavily for the model and the application tier of the program.
 > achieved from unit testing of the code base. Discuss the team's
 > coverage targets, why you selected those values, and how well your
 > code coverage met your targets. If there are any anomalies, discuss
-> those._
+> those_
