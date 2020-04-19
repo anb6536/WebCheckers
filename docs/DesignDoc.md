@@ -165,7 +165,7 @@ or a player resigns.
 > static models (UML class structure or object diagrams) with some
 > details such as critical attributes and methods._ --->
 
-<!---
+<!--- >
 > _You must also provide any dynamic models, such as statechart and
 > sequence diagrams, as is relevant to a particular aspect of the design
 > that you are describing.  For example, in WebCheckers you might create
@@ -240,23 +240,62 @@ combined with the Boolean checks from MoveValidator form the Pair classes we use
 Specifically the MoveValidator class. This class has a large responsibility while some of the work should
 have been delegated to smaller subclasses in order to have more organized code. Additionally some of the methods within this class
 could have been generalized in order to make writing some of the other methods easier, some of the classes in the model went completely unused.
-Additionally, some of the game model could be redesigned to make retrieving whose turn it is a little easier. Although our development team
+Additionally, some of the game model could be redesigned to make retrieving whose turn it is a little easier. This would help with enforcing single responsibility. Although our development team
 was not responsible for how it was implemented, we could have improved on the refresh rate for the application. For example, the board could have updated
 through AJAX calls rather than refreshing the entire page. This would have made a significant visual improvement on our application.
+>
 ## Testing
 > _This section will provide information about the testing performed
 > and the results of the testing._
 
 ### Acceptance Testing
-> _Report on the number of user stories that have passed all their
+<!--- > _Report on the number of user stories that have passed all their
 > acceptance criteria tests, the number that have some acceptance
 > criteria tests failing, and the number of user stories that
 > have not had any testing yet. Highlight the issues found during
-> acceptance testing and if there are any concerns._
+> acceptance testing and if there are any concerns._ --->
+> All of our classes passed acceptance criteria tests as they met the business
+>needs for the application. The functional and non functional requirements set for the stories
+>were all met. The Unit Tests for some of the classes, especially in the UI and API tier are lacking
+> but we heavily tested the running of the application manually.
 
 ### Unit Testing and Code Coverage
-> _Discuss your unit testing strategy. Report on the code coverage
+<!--- > _Discuss your unit testing strategy. Report on the code coverage
 > achieved from unit testing of the code base. Discuss the team's
 > coverage targets, why you selected those values, and how well your
 > code coverage met your targets. If there are any anomalies, discuss
-> those_
+> those_ --->
+
+
+
+![Code Coverage Percentage](code_coverage.png)
+> In the beginning our unit testing strategy was to essentially complete the sprint
+>and then write our unit tests allowing us to fix any bugs we can across towards the end of the sprint.
+> We then shifted our strategy to doing more unit testing as we went along so we could verify that 
+>certain components of the application worked before continuing on dependant components. Our target for code
+>coverage was about 70% - 80% coverage. If there was a specific reason why a class or component would
+>have lower coverage, that means we don't hold that class to the same standard. The UI tier has GetGameRoute as an anomaly
+>because the branches that would be covered aren't due to other classes being used to help test those branches.
+
+#### Model Coverage
+![Code coverage model](model-code_coverage.png)
+> Almost every element in our model was tested to our threshold and beyond.
+>The exceptions are the space class and the MoveValidator class. The space class was largely used through the 
+>Position class meaning that well tested and well functioning Position class depends heavily on the space class. Since
+>position and all of its dependent classes function as expected, it can be assumed that Space works as well. The MoveValidator class
+>is thoroughly tested in all of it's used components. There are two large methods that were deprecated in sprints 3 and 4 that went untested which dragged the 
+>code coverage down.
+>
+#### Application Coverage
+![Code coverage application](appl-code_coverage.png)
+> The PlayerLobby class was well tested although there are some tests lacking for when 
+>the secondary player is not present. 
+#### UI and API Coverage
+![Code coverage ui](ui-code_coverage.png)
+![Code coverage api](api-code_coverage.png)
+> The GetGameRoute handle method is not that thoroughly tested. This is largely because there are other
+> classes that were tested that cover these cases within the UI tier. Additionally WebServer was a class that we were provided with.
+>This allows us to assume that this is class is friendly, meaning that extensive testing is not required for this class.
+>The API class is well tested except for the SpectateAPIRoutes. This lack of testing is likely a result of the last minute
+>bug fixes that were implemented towards the end of the last sprint.
+
