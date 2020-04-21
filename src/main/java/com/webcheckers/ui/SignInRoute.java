@@ -21,7 +21,7 @@ public class SignInRoute implements Route {
     }
 
     @Override
-    public Object handle(Request request, Response response){
+    public Object handle(Request request, Response response) {
         Map<String, Object> vm = new HashMap<>();
         return engine.render(new ModelAndView(vm, "signin.ftl"));
     }

@@ -59,4 +59,20 @@ public class MoveInformation {
     public boolean isJumpMove() {
         return (removedPosition != null && removed != null);
     }
+
+    public boolean isRedHomeRow() {
+        return move.end.row == 7;
+    }
+
+    public boolean isWhiteHomeRow() {
+        return move.end.row == 0;
+    }
+
+    public boolean isKingable(boolean whiteMove) {
+        if (whiteMove) {
+            return isRedHomeRow();
+        } else {
+            return isWhiteHomeRow();
+        }
+    }
 }

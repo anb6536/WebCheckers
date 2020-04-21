@@ -152,7 +152,6 @@ public class PlayerLobby {
         }
     }
 
-
     public Map<Player, Player> getOpponents() {
         return this.opponents;
     }
@@ -162,7 +161,7 @@ public class PlayerLobby {
      *
      * @param username the username of the player
      * @return null if the username does not have a corresponding player || the
-     * player object
+     *         player object
      */
     public Player getPlayer(String username) {
         synchronized (playerSyncObject) {
@@ -183,7 +182,7 @@ public class PlayerLobby {
      *
      * @param name the username of the player
      * @return null if the username exists || the player object created for that
-     * username
+     *         username
      */
     public Player addPlayer(String name) {
         synchronized (playerSyncObject) {

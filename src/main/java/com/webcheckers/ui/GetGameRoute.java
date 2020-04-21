@@ -72,19 +72,24 @@ public class GetGameRoute implements Route {
         // get data about the request
         Player player = session.attribute("UserAttrib");
         String opponentName = request.queryParams("opponent");
-        if (opponentName == null && session.attribute(SPECTATING) != null && session.attribute(SPECTATING).equals(true)) {
+        if (opponentName == null && session.attribute(SPECTATING) != null
+                && session.attribute(SPECTATING).equals(true)) {
             String gameIdString = session.attribute(SPECTATING_GAME_ID);
             if (gameIdString == null) {
-                // idk how the user got here
+                response.redirect("/home?error=true");
+                halt();
+                return null;
             }
             // this is probably a spectator game
             // if we are spectating a game
-            System.out.println("entering spectator");
+            LOG.finer("entering spectator");
             vm.put(VIEW_MODE, SPECTATOR); // we currently only support the play viewmode
             // show the game screen
 
             Game actualGame = lobby.getGame(gameIdString);
             if (actualGame == null) {
+                response.redirect("/home?error=true");
+                halt();
                 return null;
             }
             vm.put(ACTIVE_COLOR, actualGame.getCurrentPlayerTurn().equals(actualGame.getRedPlayer()) ? RED : WHITE);
@@ -117,6 +122,12 @@ public class GetGameRoute implements Route {
             halt();
         }
 
+        if (opponentName != null && opponent.isSpectating()) {
+            player.leftGame();
+            response.redirect("?errorS=true");
+            halt();
+        }
+
         // if we should start a game
         if (opponent != null && !player.isInGame() && !opponent.isInGame()
                 && !lobby.isInGameWithPlayer(player, opponent)) {
@@ -138,7 +149,6 @@ public class GetGameRoute implements Route {
         Map<String, Object> modeOptions = new HashMap<>();
         modeOptions.put(IS_GAME_OVER, false);
         modeOptions.put(GAME_OVER_MESSAGE, "");
-
 
         if (actualGame.getRedPlayer() == player) {
             vm.put(BOARD, actualGame.getRedBoard().getBoardView());

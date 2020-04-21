@@ -20,7 +20,6 @@ import spark.Route;
 import spark.Session;
 import spark.TemplateEngine;
 
-@TestInstance(Lifecycle.PER_METHOD)
 public class TestLoggedInRoutes {
     protected TemplateEngine engine;
     protected PlayerLobby playerLobby;
