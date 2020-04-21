@@ -13,6 +13,7 @@
   * Aaron Peterham
   * Hugh Gallo
   * AbuBakr Ghaznavi
+  * Brenton Cousins
 
 ## Executive Summary
 
@@ -30,7 +31,7 @@ Users of the WebCheckers application sign in in order to challenge other players
 | Term | Definition |
 |------|------------|
 | VO | Value Object |
-
+| MVP | Minimum Viable Product |
 
 ## Requirements
 
